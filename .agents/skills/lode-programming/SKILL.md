@@ -1,4 +1,16 @@
-# Skill: lode-programming
+---
+name: "lode-programming"
+description: "Use this skill for programming tasks to maintain durable project memory using Lode Coding methodology. Load when starting projects, explaining code, making architectural decisions, or when you want to preserve knowledge across sessions."
+version: "1.1"
+author: "Damian Zaręba"
+license: "MIT"
+tags:
+  - programming
+  - documentation
+  - lode
+  - project-memory
+  - knowledge-management
+---
 
 # Skill: lode-programming
 
@@ -6,7 +18,10 @@
 Implement **Lode Coding**: durable project memory in `lode/` folder.
 AI maintains the lode as a byproduct of your work.
 
-**Core Principle**: You own decisions. AI owns memory.
+**Core Principles**:
+- **You own decisions. AI owns memory.**
+- **YAGNI**: Do not build features, abstractions, or config knobs that are not needed now.
+- **Maximize human maintainability**: Clear naming, small files/functions, obvious structure over cleverness. A human must be able to pick up the code without the AI.
 
 ## When to Load
 - Starting any programming project
@@ -71,7 +86,7 @@ lode/
 - **Concrete examples** > abstract descriptions
 
 ## AMDD Inspiration
-Agile Model Driven Development (AMDD) is a lightweight approach to software modeling. It emphasizes creating models that are *just barely good enough*, *just in time*. In our workflow, this means capturing decisions and patterns as they emerge during development, not in advance. TDD (Test-Driven Development) is a key part of this approach.
+Agile Model Driven Development (AMDD) is a lightweight approach to software modeling. It emphasizes creating models that are *just barely good enough*, *just in time*. In our workflow, this means capturing decisions and patterns as they emerge during development, not in advance. red/green/blue (refactor) and **YAGNI** (You Aren't Gonna Need It) are key parts of this approach.
 
 ## Commands (Natural Language)
 - *"What does the lode say about [topic]?"* → Search lode files
@@ -81,9 +96,3 @@ Agile Model Driven Development (AMDD) is a lightweight approach to software mode
 
 ## Philosophy
 The lode is your external cognitive partner. It remembers so you can focus on creating.
-
-Base directory for this skill: /home/user/skills/lode-programming
-Relative paths in this skill are relative to this base directory.
-This skill's root SKILL.md file is already loaded in this block; do not read it again.
-Use read_file only for needed support files under this base directory.
-Note: this is the skill content.
