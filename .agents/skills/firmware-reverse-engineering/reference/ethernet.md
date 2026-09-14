@@ -64,6 +64,89 @@ Official standards:
   firmware; grep for the PHY ID (OUI) and the 100/1000BASE-T1 clause numbers
   to find the PHY init code.
 
+### Higher-layer protocols: SOME/IP and DoIP
+
+The two most common application-layer protocols on top of automotive Ethernet,
+and both worth reversing when a gateway ECU is the target.
+
+#### SOME/IP (Scalable service-Oriented MiddlewarE over IP)
+
+A serialization/RPC + publish-subscribe middleware from AUTOSAR. Runs over
+UDP (default port 30490) or TCP; service discovery (SOME/IP-SD) runs on UDP
+port 30490 (multicast 224.224.224.245:30490 by default).
+
+Official standards:
+- **SOME/IP Protocol Specification** (AUTOSAR Foundation, PRS_SOMEIPProtocol) — [AUTOSAR PRS_SOMEIPProtocol (R23-11)](https://www.autosar.org/fileadmin/standards/R23-11/FO/AUTOSAR_FO_PRS_SOMEIPProtocol.pdf)
+- **SOME/IP-SD (Service Discovery)** — AUTOSAR PRS_SOMEIPServiceDiscoveryProtocol
+- **AUTOSAR Foundation** landing — [https://www.autosar.org/standards/foundation/](https://www.autosar.org/standards/foundation/)
+
+Wire format (header is 16 bytes, big-endian):
+```
+| Message ID (Service ID 16 + Method/Event ID 16) | Length 32 |
+| Client ID 16 | Session ID 16 |
+| Protocol Version 8 | Interface Version 8 | Message Type 8 | Return Code 8 |
+| Payload ... |
+```
+- **Message Type** distinguishes REQUEST (0x00), REQUEST_NO_RETURN (0x01),
+  NOTIFICATION (0x02), RESPONSE (0x80), ERROR (0x81), etc.
+- **Service ID** identifies a service; **Method/Event ID** the method or event
+  within it. Method IDs < 0x8000 are methods, ≥ 0x8000 are events/fields.
+- SOME/IP-SD uses Service ID 0xFFFF, Method ID 0x8100, with entries (Offer/
+  Find/Subscribe) and options (IPv4/IPv6 endpoints).
+
+Why it matters for RE: service IDs and method IDs are compiled into firmware
+as constants; grep for them and label the dispatch table in Ghidra. A captured
+Offer/Find exchange reveals every service the ECU exposes and on which port.
+
+Capture with Wireshark (`someip` dissector) or `tshark`:
+```bash
+tshark -r work/<device>-eth.pcap -Y 'someip' -T fields -e someip.service_id -e someip.method_id -e someip.message_type
+tshark -r work/<device>-eth.pcap -Y 'someip.service_id == 0xffff'
+```
+
+Replay/fuzz with scapy (contrib SOMEIP):
+```python
+from scapy.all import *
+from scapy.contrib.automotive.someip import *
+# Send a SOME/IP-SD Offer for a service
+sd = SOMEIP(service_id=0xffff, method_id=0x8100, client_id=0x0000,
+            session_id=0x0001, proto_ver=0x01, iface_ver=0x01,
+            msg_type=0x02) / SOMEIPSD(...) / IP(dst="224.224.224.245") / UDP(dport=30490)
+sendp(sd, iface="eth0")
+```
+
+#### DoIP (Diagnostics over IP, ISO 13400)
+
+Carries UDS (ISO 14229) diagnostic messages over TCP/UDP. Vehicle discovery
+is over UDP 13400; diagnostic payloads run over TCP 13400.
+
+Official standards:
+- **ISO 13400-1** (general info & use cases) — [ISO 13400-1:2011](https://www.iso.org/standard/53765.html)
+- **ISO 13400-2:2025** (transport protocol & network layer) — [ISO 13400-2:2025](https://www.iso.org/standard/87961.html)
+- **ISO 13400-3:2016** (wired vehicle interface based on IEEE 802.3 100BASE-TX) — [ISO 13400-3:2016](https://www.iso.org/standard/68424.html)
+- **ISO 13400-4:2016** (Ethernet-based high-speed data link connector) — [ISO 13400-4:2016](https://www.iso.org/standard/57317.html)
+
+DoIP payload types (in the DoIP header, after a generic header):
+- `0x0001` Vehicle Identification request / `0x0004` response
+- `0x0002` Vehicle Announcement (broadcast on power-up)
+- `0x0005` Routing Activation request / `0x0006` response (opens the TCP session)
+- `0x8001`/`0x8002` Diagnostic message (carrying UDS) positive/negative ack
+
+Why it matters for RE: a DoIP endpoint is effectively a remote UDS tester over
+Ethernet — once you capture a Routing Activation + UDS exchange, you can replay
+UDS services (ReadDataByIdentifier 0x22, ReadMemoryByAddress 0x23, the flash
+sequence 0x34/0x36/0x37) without the CAN bus. Cross-reference with the UDS
+section in `reference/can.md`; the UDS service bytes are identical.
+
+Capture:
+```bash
+tshark -r work/<device>-eth.pcap -Y 'doip' -T fields -e doip.payload_type -e doip.source_logical_address -e doip.target_logical_address
+tshark -r work/<device>-eth.pcap -Y 'tcp.port == 13400'
+```
+
+Record services/IDs discovered in `lode/diagnostics.md` (VID, ECU logical
+addresses, supported UDS services) and the code path that services each.
+
 ## Why this matters for firmware RE
 
 - Ethernet frames on the wire tell you what the device sends/receives, which
@@ -176,6 +259,8 @@ handled it.
 
 - `lode/ethernet.md` — MAC address, PHY/MDIO setup, VLAN IDs, EtherTypes used,
   captured frames, and mapped code paths.
+- `lode/diagnostics.md` — SOME/IP service/method IDs, DoIP logical addresses,
+  and supported UDS services discovered.
 - `lode/toolchain.md` — capture interface, switch SPAN config, tcpdump/Wireshark.
 
 ## Dependencies

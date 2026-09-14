@@ -142,6 +142,108 @@ For CAN FD, set `flags=‘fd’` and a longer `data`; for bit-rate-switch add th
 BRS flag per the SocketCAN CAN FD frame layout. Use `cansend`/`candump` for
 ad-hoc work and `scapy` for scripted fuzzing and payload mutation.
 
+## Higher-layer protocols: ISO-TP and UDS
+
+CAN frames carry at most 8 bytes (CAN CC) / 64 (CAN FD) / 2048 (CAN XL).
+Diagnostics and flashing need far more, so two standards layer on top.
+
+### ISO-TP (ISO 15765-2, DoCAN transport)
+
+A transport protocol that segments a long message into multiple CAN frames with
+a small Protocol Control Information (PCI) header.
+
+Official standards:
+- **ISO 15765-2:2016** — [ISO 15765-2:2016](https://www.iso.org/standard/66574.html) — transport protocol and network layer services (the widely-deployed edition).
+- **ISO 15765-2:2024** — current edition (DoCAN, supersedes 2016).
+- **ISO 15765-1** — general information and use cases.
+
+Frame types (PCI first nibble = type):
+
+| Type | PCI nibble | Use |
+|---|---|---|
+| Single Frame (SF) | 0 | Payload ≤ 7 bytes (normal addressing). |
+| First Frame (FF) | 1 | Start of a multi-frame message; carries total length. |
+| Consecutive Frame (CF) | 2 | Subsequent segments; 4-bit rolling SN. |
+| Flow Control (FC) | 3 | Receiver pacing: FS flag, Block Size, STmin. |
+
+- A multi-frame transfer: FF → receiver sends FC → sender streams CF blocks.
+- Max payload 4095 bytes (classic) / 2^32-1 (2016+ escape / CAN FD).
+- Addressing: normal (CAN ID only) vs extended (first data byte = target
+  address). Six addressing modes are defined.
+
+Why it matters for RE: the ISO-TP state machine in firmware (FF/CF/FC
+handling, STmin timers) is a fixed, well-known structure — once you find the
+CAN IDs used for request/response, the segmenter/desegmenter code is a strong
+anchor. Flash downloads ride on ISO-TP.
+
+Linux exposes ISO-TP as a socket family (`PF_CAN`, `SOCK_DGRAM`), so you can
+send/receive whole messages without manual segmentation:
+```bash
+# Open an ISO-TP socket (request CAN ID 0x7E0, response 0x7E8)
+isotpsend -s 0x7E0 -d 0x7E8 can0 22 F1 90          # UDS ReadDataByIdentifier (DID 0xF190 = VIN)
+isotprecv -s 0x7E0 -d 0x7E8 can0
+# Sniff ISO-TP messages (reassembled) alongside raw CAN
+isotpsniffer -s 0x7E0 -d 0x7E8 can0
+```
+
+scapy also has an ISO-TP layer (`ISOTP`) for scripted sends/mutations.
+
+### UDS (Unified Diagnostic Services, ISO 14229)
+
+The application-layer diagnostic protocol; runs over ISO-TP/DoCAN on CAN and
+over DoIP on Ethernet. A tester sends a request, the ECU responds positive
+(`SID | 0x40`) or negative (`0x7F`, with a negative response code).
+
+Official standards:
+- **ISO 14229-1:2020** (Application layer) — [ISO 14229-1:2020](https://www.iso.org/standard/72439.html) — the data-link-independent core.
+- **ISO 14229-1:2026** — forthcoming edition — [ISO 14229-1](https://www.iso.org/standard/87962.html)
+- **ISO 14229-3** — UDS on CAN (replaces the old ISO 15765-3).
+- **ISO 14229-5** — UDS on IP (DoIP application layer).
+
+Key services (SID = Service ID, first request byte):
+
+| SID | Service | RE note |
+|---|---|---|
+| 0x10 | DiagnosticSessionControl | Extended/programming sessions unlock more services. |
+| 0x11 | ECUReset | Reset types; a soft reboot you can trigger. |
+| 0x22 | ReadDataByIdentifier | Read DIDs — VIN, ECU part number, software version, fingerprints. |
+| 0x23 | ReadMemoryByAddress | Read arbitrary memory if the ECU allows it (huge for RE). |
+| 0x27 | SecurityAccess | Seed/key challenge-response; reversing the key algo is often the goal. |
+| 0x31 | RoutineControl | Start/stop routines (factory tests, erase, flash). |
+| 0x34/0x36/0x37 | RequestDownload/TransferData/RequestTransferExit | The flash-download sequence. |
+| 0x2E | WriteDataByIdentifier | Write DIDs (config, calibration). |
+| 0x14 | ClearDiagnosticInformation | Clear DTCs. |
+| 0x19 | ReadDTCInformation | Read diagnostic trouble codes. |
+
+Negative Response Codes (NRC) to know: `0x10` generalReject, `0x11` serviceNotSupported,
+`0x22` conditionsNotCorrect, `0x24` requestSequenceError, `0x31` requestOutOfRange,
+`0x33` securityAccessDenied, `0x35` invalidKey, `0x36` exceededNumberOfAttempts,
+`0x72` generalProgrammingFailure, `0x78` responsePending (request correctly received,
+response is still being prepared — keep waiting).
+
+Why it matters for RE: UDS over CAN is the standard path to read memory
+(0x23), pull firmware fingerprints (0x22 DIDs), and trigger the flash
+sequence (0x34/0x36/0x37). `0x27` SecurityAccess is often the lock on a
+programming session — reversing the seed/key algorithm is a common RE goal
+and a good ADR candidate. The handler table (SID → function) is a fixed
+structure in firmware.
+
+Send UDS over ISO-TP with `isotpsend`:
+```bash
+# Enter extended diagnostic session
+isotpsend -s 0x7E0 -d 0x7E8 can0 10 03
+# Read VIN (DID 0xF190)
+isotpsend -s 0x7E0 -d 0x7E8 can0 22 F1 90
+# Read ECU identification (DID 0xF8 10)
+isotpsend -s 0x7E0 -d 0x7E8 can0 22 F8 10
+# Request SecurityAccess seed (subfunction 0x01)
+isotpsend -s 0x7E0 -d 0x7E8 can0 27 01
+```
+
+`pyuds` / `udsonstan` libraries script the full UDS session over ISO-TP for
+fuzzing and automated reads; capture with `candump`/Wireshark and correlate
+SID responses to the firmware handler.
+
 ## Cross-reference with firmware
 
 - Find CAN ID constants in the dump (11-bit IDs as 16-bit aligned values, 29-bit
@@ -155,6 +257,8 @@ ad-hoc work and `scapy` for scripted fuzzing and payload mutation.
 
 - `lode/can.md` — bus generation (CC/FD/XL), bit rates, ID table, payload
   semantics per ID, captured frames, and mapped code paths.
+- `lode/diagnostics.md` — ISO-TP request/response IDs, UDS SIDs supported,
+  SecurityAccess seed/key behavior, and flash sequence.
 - `lode/terminology.md` — CAN terms and higher-layer protocol abbreviations.
 - `lode/toolchain.md` — CAN adapter, SocketCAN setup, bit rates used.
 
