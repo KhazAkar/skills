@@ -1,6 +1,6 @@
 ---
 name: "firmware-development"
-description: "Use this skill for embedded firmware development in C, C++ or Rust: know the silicon (inventory + datasheets/errata) before coding, build reproducibly with a pinned toolchain, test on the host and in an emulator before flashing, flash with backup+verify and a recovery path — with the lode-programming skill loaded from the start so every phase writes its lode/ files and ADRs as it happens."
+description: "Use this skill for embedded firmware development in C, C++ or Rust: know the silicon (inventory + datasheets/errata) before coding, build reproducibly with a pinned toolchain, test on the host and in an emulator before flashing, flash with backup+verify and a recovery path — as a specialized path on top of the lode-programming backbone, which owns the lode/ folder, ADRs and their update cadence."
 version: "1.0"
 author: "Damian Zaręba"
 license: "MIT"
@@ -25,11 +25,12 @@ do we build firmware that does what we want*. Both share the same hardware
 knowledge, the same debug tooling and the same `lode/` file names, so a board
 understood with one skill is directly buildable with the other.
 
-**lode-programming is loaded first and runs through every phase.** It is not
-a pillar of its own and not a final step: each phase below ends with the
-`lode/` files it must leave behind, and the decision behind a phase is an ADR
-*before* the code that implements it. A phase whose lode output is missing is
-not done.
+**lode-programming is the backbone; this skill is a specialized path on it.**
+Load lode-programming first and follow its cadence: an ADR the moment an
+architectural decision is taken (before the code it justifies), and the
+affected `lode/` files updated at the end of each cycle — one user
+prompt/feature. This skill adds only the firmware-specific file names (see
+*Lode files* below); it does not restate structure, ADR format or cadence.
 
 The four pillars, in strict order:
 
@@ -44,10 +45,6 @@ The four pillars, in strict order:
    first, way to find out whether code works.
 4. **Flash safely.** Back up whatever is on the chip, flash, verify, keep a
    known-good image, and always know the recovery path before you need it.
-
-The `lode/` structure, ADR format, TDD/AMDD and YAGNI rules are defined once
-in **lode-programming**; this skill only adds firmware-specific file names
-(see *Lode files* below).
 
 ## When to Load
 - Starting a new firmware project or adding a new target/board to one
@@ -73,9 +70,8 @@ never copied:
   capture, when the target speaks one of them.
 
 ## Phase 0: Load lode, inventory hardware (prerequisite)
-Load **lode-programming** first. In an existing repo read `lode/lode-map.md`
-before anything else; in a new repo create the mandatory `lode/` skeleton
-now, empty files included — every later phase fills them in.
+Load **lode-programming** first; in an existing repo read `lode/lode-map.md`
+before anything else.
 
 Then, identical to Phase 0 of firmware-reverse-engineering: ask the user once which
 programmer/debug probe, soldering station, multimeter, logic analyzer,
@@ -95,22 +91,16 @@ oscilloscope and other tools exist, and record the answers in
 Tools gate methods: never plan a test or flash step you lack the hardware for.
 Record the fallback as an ADR.
 
-**Lode:** `lode/toolchain.md`, `lode/summary.md` (what the firmware is for,
-one paragraph), first ADRs for anything already decided (target, language).
-
 ## Mandatory Workflow (in order)
 Each phase is summarized here; commands and templates live in `reference/`
 and `../_shared/`. Load the linked file when you actually perform the phase.
-Every phase ends with a **Lode:** line — those files are written *during* the
-phase, in the same commit as the code they describe.
+The `lode/` files each phase feeds are listed under *Lode files* below.
 
 ### 1. Know the silicon
 For the MCU and every peripheral IC you will drive, follow the
 datasheet/errata loop in **[../_shared/datasheets.md](../_shared/datasheets.md)**
 *before* writing the driver — errata routinely change the register sequence a
-driver must use.
-
-**Lode:**
+driver must use. Produce or update:
 
 - `lode/silicon-map.md` — parts, packages, datasheet + errata links.
 - `lode/memory-map.md` — flash/RAM regions, vector table, boot address; this
@@ -120,11 +110,9 @@ driver must use.
 - `lode/register-map.md` — peripheral bases and the registers you actually
   touch, each cited to a datasheet section.
 
-- `lode/terminology.md` — the chip's own names for things (bus, clock domain,
-  peripheral instance) so code and datasheet use the same words.
 
 Never write a register address that is not in `register-map.md` with a
-datasheet citation. The map entry comes first, the driver second.
+datasheet citation.
 
 ### 2. Reproducible build
 The build must be reproducible by a human with no AI and no IDE: a pinned
@@ -141,10 +129,8 @@ the ADR *before* creating the build files:
   `embedded-hal` traits, a PAC/HAL crate, `probe-rs` for flash/debug, `defmt`
   for logging. `cargo build --release` is the build command.
 
-**Lode:** `lode/build.md` — toolchain versions, the build command, linker
-script location, flags and why, how to read the size/map report; ADRs for
-language, build system, SDK vs bare registers, bare-metal vs RTOS;
-`lode/practices.md` — the build/flags conventions a contributor must follow.
+Output: `lode/build.md` — toolchain versions, the build command, linker
+script location, flags and why, how to read the size/map report.
 
 See **[reference/toolchain-and-build.md](reference/toolchain-and-build.md)**
 for toolchain pinning, CMake toolchain files, linker script skeleton, flags,
@@ -169,10 +155,8 @@ Order of test environments, cheapest first:
 4. **Hardware-in-the-loop** — only when the Phase 0 inventory has the tool
    (logic analyzer, scope, bench supply) to observe the result.
 
-**Lode:** `lode/testing.md` — how to run each level, what it covers, what it
-cannot cover; the HAL-seam shape goes into `lode/practices.md`; a test that
-exposed an errata or hardware surprise gets an ADR or a `register-map.md`
-note the same day.
+Output: `lode/testing.md` — how to run each level, what it covers, what it
+cannot cover.
 
 See **[reference/testing.md](reference/testing.md)** for the HAL seam pattern
 in C, C++ and Rust, host test frameworks, QEMU/Renode invocation, and the
@@ -191,19 +175,15 @@ Any product that will be updated in the field needs a bootloader decision
 vendor/OSS bootloader such as MCUboot) recorded as an ADR before the memory
 map is frozen — the bootloader owns the first flash sectors.
 
-**Lode:** `lode/backups.md` (every dump and every flashed image hash),
-`lode/recovery.md`, `lode/boot-sequence.md` (reset vector → bootloader →
-application), bootloader ADR.
-
 See **[reference/flash-and-recovery.md](reference/flash-and-recovery.md)** for
 flash+verify commands per probe (`openocd`, `probe-rs`, vendor ROM
 bootloaders), the dual-slot bootloader outline, and the unbrick procedures per
 chip family with their data-loss warnings.
 
 ## Lode files
-The `lode/` structure and ADR format come from **lode-programming**. Firmware
-adds these files (shared with firmware-reverse-engineering where the name
-matches), each owned by the phase that writes it:
+Structure, ADR format and update cadence come from **lode-programming**.
+Firmware adds these files (shared with firmware-reverse-engineering where the
+name matches), each fed by the phase noted:
 
 - `silicon-map.md`, `register-map.md`, `memory-map.md`, `boot-sequence.md`,
   `backups.md`, `toolchain.md` — same meaning as in the RE skill.
@@ -215,11 +195,10 @@ matches), each owned by the phase that writes it:
   order they must be brought up in (only if the project configures clocks
   itself; YAGNI otherwise).
 
-Write an ADR for every non-obvious decision *when it is taken*, not when the
-code is finished: language, build system, SDK vs bare register access,
-bare-metal vs RTOS, bootloader strategy, logging transport, an errata
-workaround, a safety/MISRA deviation. Keep `lode/lode-map.md` current so a
-human can find all of the above without the AI.
+Decisions that get an ADR when taken: language, build system, SDK vs bare
+register access, bare-metal vs RTOS, bootloader strategy, logging transport,
+an errata workaround, a safety/MISRA deviation. Iterating on one ADR while
+the cycle is in flight is normal — that is the architecture part of AMDD.
 
 ## Driver and Runtime Rules
 Firmware bugs that survive host tests are almost always in this list. Apply
@@ -297,8 +276,8 @@ in `lode/build.md`.
   test environment, not the first.
 - **Tools gate methods.** Don't plan a debug or test step you lack the
   hardware for; record the fallback as an ADR.
-- **No phase is done without its lode.** Code and its `lode/` update land in
-  the same commit; ADRs precede the code they justify.
+- **A cycle is not done until the lode reflects it.** ADRs precede the code
+  they justify; the affected `lode/` files are updated before the cycle ends.
 
 ## Commands (Natural Language)
 - *"Inventory my hardware"* → run Phase 0, record in `lode/toolchain.md`.
@@ -313,8 +292,8 @@ in `lode/build.md`.
 - *"Create ADR for <decision>"* → use the lode ADR template.
 
 ## Dependencies
-- **lode-programming** — loaded in Phase 0 and active throughout: `lode/`
-  structure, ADRs, TDD/AMDD and YAGNI.
+- **lode-programming** — the backbone: `lode/` structure, ADRs, update
+  cadence, TDD/AMDD and YAGNI. Loaded in Phase 0.
 - **firmware-reverse-engineering** — sibling skill; shares `../_shared/` and
   the lode file names. Load it when the board already carries firmware you
   need to understand.

@@ -1,6 +1,6 @@
 ---
 name: "firmware-reverse-engineering"
-description: "Use this skill for firmware reverse-engineering work: inventory available hardware tools first, dump and back up target firmware before anything else, research datasheets/erratas (PDFs converted to markdown) to understand the hardware, and document the process with the existing lode-programming skill."
+description: "Use this skill for firmware reverse-engineering work: inventory available hardware tools first, dump and back up target firmware before anything else, research datasheets/erratas (PDFs converted to markdown) to understand the hardware, and record it in lode/ as a specialized path on the lode-programming backbone."
 version: "1.8"
 author: "Damian Zaręba"
 license: "MIT"
@@ -26,9 +26,12 @@ pillars are, in strict order:
    PMIC, radio, sensor) and read the manufacturer datasheet and errata before
    interpreting the binary. Convert reference PDFs to markdown so they are
    greppable, then search them for registers, addresses, and errata notes.
-3. **Document as you go with lode-programming.** Load and follow the existing
-   **lode-programming** skill for the `lode/` folder, ADRs, and workflow. Do
-   not redefine that structure here — extend it with firmware-specific files.
+
+**lode-programming is the backbone; this skill is a specialized path on it.**
+Load it first and follow its cadence: an ADR the moment a non-obvious
+decision is taken, the affected `lode/` files updated at the end of each
+cycle (one user prompt/feature). This skill adds only firmware-specific file
+names (see *Lode files* below).
 
 ## When to Load
 - Planning which read/analysis methods are feasible given available hardware
@@ -97,10 +100,10 @@ address without the matching datasheet entry.
 See **[../_shared/datasheets.md](../_shared/datasheets.md)** for the `anydoc`
 PDF→markdown flow, grep patterns, and the datasheet/errata research loop.
 
-### 3. Document as you go (lode-programming)
-Load and follow the existing **lode-programming** skill for the `lode/` folder
-structure, ADRs, and workflow. Do not redefine that structure here — extend it
-with firmware-specific files:
+### 3. Lode files
+Structure, ADR format and update cadence come from **lode-programming**.
+Firmware reverse-engineering adds these files (shared with
+firmware-development where the name matches):
 
 - `silicon-map.md` — parts on the board, their packages, and datasheet links.
 - `register-map.md` — peripheral bases, MMIO regions, and known registers.
@@ -110,10 +113,9 @@ with firmware-specific files:
 - `toolchain.md` — programmer, disassembler, emulator, scripts, versions, and
   the Phase 0 hardware inventory.
 
-Write an ADR (using the lode-programming ADR template) for every non-obvious
-decision (tool choice, read voltage, assumed reset vector, identification of a
-part from a partial marking, a Phase 0 method chosen because the ideal tool
-was unavailable).
+Decisions that get an ADR when taken: tool choice, read voltage, assumed
+reset vector, identification of a part from a partial marking, a Phase 0
+method chosen because the ideal tool was unavailable.
 
 ### 4. Analyze the dump (static)
 Once a verified copy exists, never touch the original backup for analysis —
@@ -185,8 +187,8 @@ starts from current truth, not memory.
 - *"Create ADR for <decision>"* → use the lode ADR template.
 
 ## Dependencies
-- **lode-programming** — loaded and followed for the `lode/` documentation
-  structure and ADRs.
+- **lode-programming** — the backbone: `lode/` structure, ADRs and update
+  cadence. Loaded first.
 - **anydoc** (or equivalent PDF→markdown converter) — to make datasheets/erratas
   greppable.
 - **Backup tools** — `flashrom` for external flash; `openocd` for on-chip
