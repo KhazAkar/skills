@@ -76,7 +76,7 @@ Before any operation that could read, write, or erase the target:
 - **Create a read-only, checksummed backup** of every readable region into a
   separate `backups/` directory that is never written to again.
   - Record device identity, read method, programmer, voltage, and the command
-    used (e.g. `flashrom -r backups/<device>-flash-<date>.bin --verify`).
+    used (e.g. `flashrom -r backups/<device>-flash-<date>.bin && flashrom -v backups/<device>-flash-<date>.bin`).
   - Store a SHA-256 alongside every dump: `sha256sum backups/*.bin > backups/SHA256SUMS`.
 - **Preserve fuses/OTP/calibration** separately; these are often one-way writes
   and the backup is the only way back.
