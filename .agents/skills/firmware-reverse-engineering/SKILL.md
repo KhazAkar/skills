@@ -1,7 +1,7 @@
 ---
 name: "firmware-reverse-engineering"
 description: "Use this skill for firmware reverse-engineering work: inventory available hardware tools first, dump and back up target firmware before anything else, research datasheets/erratas (PDFs converted to markdown) to understand the hardware, and document the process with the existing lode-programming skill."
-version: "1.4"
+version: "1.5"
 author: "Damian Zaręba"
 license: "MIT"
 tags:
