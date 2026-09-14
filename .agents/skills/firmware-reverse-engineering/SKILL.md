@@ -1,7 +1,7 @@
 ---
 name: "firmware-reverse-engineering"
-description: "Use this skill for firmware reverse-engineering work: dump and back up target firmware before anything else, research datasheets/erratas (PDFs converted to markdown) to understand the hardware, and document the process with the lode-programming methodology."
-version: "1.0"
+description: "Use this skill for firmware reverse-engineering work: inventory available hardware tools first, dump and back up target firmware before anything else, research datasheets/erratas (PDFs converted to markdown) to understand the hardware, and document the process with the existing lode-programming skill."
+version: "1.1"
 author: "Damian Zaręba"
 license: "MIT"
 tags:
@@ -26,17 +26,45 @@ pillars are, in strict order:
    PMIC, radio, sensor) and read the manufacturer datasheet and errata before
    interpreting the binary. Convert reference PDFs to markdown so they are
    greppable, then search them for registers, addresses, and errata notes.
-3. **Document as you go with lode-programming.** Maintain a `lode/` folder
-   capturing the target, the silicon map, the toolchain, ADRs for every
-   non-obvious decision, and the findings as they emerge.
+3. **Document as you go with lode-programming.** Load and follow the existing
+   **lode-programming** skill for the `lode/` folder, ADRs, and workflow. Do
+   not redefine that structure here — extend it with firmware-specific files.
 
 ## When to Load
+- Planning which read/analysis methods are feasible given available hardware
 - Dumping or analyzing firmware from a device
 - Identifying unknown chips, register maps, or boot sequences
 - Researching datasheets/erratas for parts on a target board
 - Mapping a binary to its hardware peripherals
 - Setting up toolchains (disassemblers, emulators, JTAG/SWD/UART)
 - Onboarding a new target into an existing reversing effort
+
+## Phase 0: Inventory available hardware (prerequisite)
+Before touching the device, find out which physical tools are available.
+Available hardware determines what is feasible: a JTAG/SWD adapter enables
+on-chip debug dumps; a logic analyzer enables bus capture; an oscilloscope
+verifies power/reset sequencing; a soldering station enables rework and
+fly-wires. Ask the user once and record the answers in `lode/toolchain.md`.
+
+Ask at minimum about:
+
+- **Programmer / debug probe** — JTAG adapter (with model name), SWD adapter,
+  UART adapter, ISP/SPI flasher, test clip / programming foot
+- **Soldering station** — iron and/or hot-air rework (for lifting parts,
+  attaching fly wires, reworking footprints)
+- **Multimeter** — continuity, voltage rails, identifying pull-ups/pull-downs
+- **Logic analyzer** — capture bus traffic (UART, SPI, I2C, SWD/SWJ)
+- **Oscilloscope** — power sequencing, reset/BOOT timing, clock presence
+- **Other** — standalone chip programmer, microscope, UV/EEPROM eraser, etc.
+
+Then:
+
+- Map each planned step to a tool that is actually available.
+- If a needed method lacks its tool, either source the tool or choose the
+  next-best **non-invasive** read path. Record the choice as an ADR
+  (using the lode-programming ADR template).
+- Treat the inventory as a constraint on every later step: never assume a
+  method is available without a tool to back it.
 
 ## Mandatory Workflow (in order)
 
@@ -86,30 +114,23 @@ board:
 Never reason about a register address without the matching datasheet entry.
 
 ### 3. Document as you go (lode-programming)
-Load the **lode-programming** skill and keep the `lode/` folder current. For a
-firmware effort the lode minimally contains:
-
-```
-lode/
-├── summary.md              # Target device, board revision, goal of the effort
-├── terminology.md          # Part numbers, acronyms, tool names
-├── practices.md            # Read methods, voltages, toolchain, safety rules
-├── lode-map.md             # Index of all lode files
-└── decisions/             # ADRs
-    └── [number]-[name].md
-```
-
-Recommended firmware-specific lode files (one topic per file, <250 lines):
+Load and follow the existing **lode-programming** skill for the `lode/` folder
+structure, ADRs, and workflow — including its file-size limits, one-topic-per-
+file rule, and ADR template. Do not redefine that structure here. Extend it with
+firmware-specific files:
 
 - `silicon-map.md` — parts on the board, their packages, and datasheet links.
 - `register-map.md` — peripheral bases, MMIO regions, and known registers.
 - `memory-map.md` — flash regions, RAM, EEPROM/fuses, vector/boot addresses.
 - `boot-sequence.md` — reset path from entry point to first user code.
 - `backups.md` — what was dumped, from where, with which command + checksum.
-- `toolchain.md` — programmer, disassembler, emulator, scripts, and versions.
+- `toolchain.md` — programmer, disassembler, emulator, scripts, versions, and
+  the Phase 0 hardware inventory.
 
-Write an ADR for every non-obvious decision (tool choice, read voltage, assumed
-reset vector, identification of a part from a partial marking).
+Write an ADR (using the lode-programming ADR template) for every non-obvious
+decision (tool choice, read voltage, assumed reset vector, identification of a
+part from a partial marking, a Phase 0 method chosen because the ideal tool
+was unavailable).
 
 ## Safety Rules
 - **Read before write.** Never write to a device you have not fully backed up.
@@ -120,6 +141,8 @@ reset vector, identification of a part from a partial marking).
 - **Don't trust markings** as the sole identifier; cross-check package, pinout,
   and at least one datasheet register against the binary.
 - **Errata change behavior.** Always read the errata, not just the datasheet.
+- **Tools gate methods.** Don't plan a read/analysis method you lack the
+  hardware to perform; fall back to a non-invasive path or source the tool.
 
 ## Datasheet/Errata Research Loop
 1. Identify a part or a behavior you don't understand in the binary.
@@ -131,6 +154,8 @@ reset vector, identification of a part from a partial marking).
 6. Cross-reference the finding against the binary.
 
 ## Commands (Natural Language)
+- *"Inventory my hardware"* → run Phase 0, record answers in
+  `lode/toolchain.md`.
 - *"Back up this device"* → dump every readable region, checksum, verify, log to
   `lode/backups.md`.
 - *"Research <part>"* → fetch datasheet+errata, `anydoc` to markdown, grep for
@@ -139,7 +164,8 @@ reset vector, identification of a part from a partial marking).
 - *"Create ADR for <decision>"* → use the lode ADR template.
 
 ## Dependencies
-- **lode-programming** — for the `lode/` documentation structure and ADRs.
+- **lode-programming** — loaded and followed for the `lode/` documentation
+  structure and ADRs.
 - **anydoc** (or equivalent PDF→markdown converter) — to make datasheets/erratas
   greppable.
 - A flash read tool (e.g. `flashrom`, vendor tools, JTAG/SWD) for backups.
