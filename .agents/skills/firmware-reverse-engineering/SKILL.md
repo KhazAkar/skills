@@ -76,7 +76,11 @@ Before any operation that could read, write, or erase the target:
 - **Create a read-only, checksummed backup** of every readable region into a
   separate `backups/` directory that is never written to again.
   - Record device identity, read method, programmer, voltage, and the command
-    used (e.g. `flashrom -r backups/<device>-flash-<date>.bin && flashrom -v backups/<device>-flash-<date>.bin`).
+    used. Use the lowest-invasive path that the Phase 0 hardware supports:
+    - External flash: `flashrom -r backups/<device>-flash-<date>.bin && flashrom -v backups/<device>-flash-<date>.bin`
+    - On-chip flash over JTAG/SWD via `openocd`, e.g.
+      `openocd -f interface/<adapter>.cfg -f target/<chip>.cfg -c "init; halt; dump_image backups/<device>-flash-<date>.bin 0x08000000 0x100000; reset; shutdown"`
+      then verify the size and checksum match the chip's expected flash size.
   - Store a SHA-256 alongside every dump: `sha256sum backups/*.bin > backups/SHA256SUMS`.
 - **Preserve fuses/OTP/calibration** separately; these are often one-way writes
   and the backup is the only way back.
@@ -132,6 +136,43 @@ decision (tool choice, read voltage, assumed reset vector, identification of a
 part from a partial marking, a Phase 0 method chosen because the ideal tool
 was unavailable).
 
+### 4. Analyze the dump (static)
+Once a verified copy exists, never touch the original backup for analysis —
+work on a copy. Trips the binary with cheap, deterministic tools before
+reaching for a disassembler/emulator:
+
+- **`binwalk`** — scan for embedded filesystems, compressed kernels, uImages,
+  CPIO/SquashFS/JFFS2, certificates, and known headers. Extract interesting
+  regions to a working dir, never into `backups/`:
+  ```bash
+  cp backups/<device>-flash-<date>.bin work/<device>.bin
+  binwalk work/<device>.bin
+  binwalk -e work/<device>.bin          # extracts to work/_<device>.bin.extracted/
+  binwalk -e --matryoshka work/<device>.bin   # recurse into nested containers
+  ```
+  Log every signature hit and its offset in `lode/memory-map.md`.
+
+- **`xxd`** — inspect raw bytes at known offsets (vectors, headers, magic
+  strings) and compare regions between dumps:
+  ```bash
+  xxd work/<device>.bin | head -n 16                  # first bytes / vector table
+  xxd -s 0x0 -l 0x40 work/<device>.bin               # specific offset + length
+  xxd -r patch.hex > work/<device>.patched.bin        # apply a hex patch
+  ```
+
+- **`strings`** — pull human-readable clues (version banners, build paths,
+  URLs, keys, error messages) and orient the search:
+  ```bash
+  strings -n 6 work/<device>.bin > work/<device>.strings
+  strings -a -n 6 work/<device>.bin | grep -iE 'version|build|http|root|pass'
+  strings -tx work/<device>.bin                       # with hex offsets
+  ```
+
+These three are complementary: `binwalk` finds *structure*, `strings` finds
+*meaning*, `xxd` confirms *exactly* what bytes live where. Cross-reference any
+finding against the datasheet register/memory map before drawing conclusions.
+Record findings in `lode/memory-map.md` and `lode/boot-sequence.md`.
+
 ## Safety Rules
 - **Read before write.** Never write to a device you have not fully backed up.
 - **Lowest safe voltage** for reads; document the voltage used.
@@ -168,4 +209,8 @@ was unavailable).
   structure and ADRs.
 - **anydoc** (or equivalent PDF→markdown converter) — to make datasheets/erratas
   greppable.
-- A flash read tool (e.g. `flashrom`, vendor tools, JTAG/SWD) for backups.
+- **Backup tools** — `flashrom` for external flash; `openocd` for on-chip
+  flash over JTAG/SWD (adapter depends on Phase 0 inventory).
+- **Static analysis** — `binwalk` (signature scan/extract), `strings`
+  (printable extraction), `xxd` (hex dump/patch); all standard on most
+  reversing setups.
