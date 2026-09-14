@@ -185,7 +185,7 @@ For deeper static analysis, two more:
   arm-none-eabi-objdump -d work/<device>.elf > work/<device>.disasm
   # Raw blob with no ELF header — set the arch and base address explicitly:
   arm-none-eabi-objdump -D -b binary -m arm --adjust-vma=0x08000000 work/<device>.bin | head -n 200
-  ````
+  ```
   If the blob is an ELF, prefer `readelf`/`nm` for ground truth; if it's a raw
   flash dump, feed `objdump` the `-b binary -m <arch> --adjust-vma=<base>` so
   addresses line up with the datasheet memory map.
