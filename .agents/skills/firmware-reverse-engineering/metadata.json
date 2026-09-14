@@ -1,0 +1,13 @@
+{
+  "id": "2f9846e4-980d-42b5-bd42-b883218eb608",
+  "name": "firmware-reverse-engineering",
+  "version": 1,
+  "latestVersion": 1,
+  "createdAt": "2026-09-14T13:40:16.000000Z",
+  "updatedAt": "2026-09-14T13:40:16.000000Z",
+  "sharingScope": "workspace",
+  "notes": "",
+  "aliases": [
+    "main"
+  ]
+}
