@@ -1,7 +1,7 @@
 ---
 name: "lode-programming"
 description: "Use this skill for programming tasks to maintain durable project memory using Lode Coding methodology. Load when starting projects, explaining code, making architectural decisions, or when you want to preserve knowledge across sessions."
-version: "1.2"
+version: "1.2.1"
 author: "Damian Zaręba"
 license: "MIT"
 tags:
@@ -47,6 +47,11 @@ lode/
 If `lode/` does not exist, ask the user before creating it. Add `lode/tmp/` to
 `.gitignore`.
 
+Pre-filled templates for every standard lode file live in `templates/` — copy
+the matching one instead of writing from a blank page (`templates/summary.md`
+→ `lode/summary.md`, `templates/terminology.md` → `lode/terminology.md`,
+`templates/decisions/adr-template.md` → new ADRs).
+
 ## Session Start
 1. Read `lode-map.md`, `terminology.md`, `summary.md`.
 2. Check `lode-map.md` *before* exploring the codebase — it is the index.
@@ -89,23 +94,9 @@ cadence; they do not define their own.
   decisions, approaches tried, blockers, next steps
 
 ## ADR Template
-```markdown
-# [Number]: [Decision Title]
-
-**Status**: ✅ Accepted | ❌ Superseded by [ADR-XXX] | 🚧 Proposed
-
-**Context**: [The problem/forces at play]
-
-**Decision**: [What we decided]
-
-**Consequences**:
-- ✅ [Positive impact]
-- ❌ [Negative tradeoff]
-
-**Alternatives Considered**:
-- [Option A]: Why rejected
-- [Option B]: Why rejected
-```
+The ADR form lives in
+[templates/decisions/adr-template.md](templates/decisions/adr-template.md) —
+copy it for each new ADR; do not inline or retype it here.
 
 ## Subsystems (Optional)
 For complex projects, create domain folders:
