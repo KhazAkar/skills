@@ -54,7 +54,7 @@ If `lode/` does not exist, ask the user before creating it. Add `lode/tmp/` to
 
 ## Cadence
 A **cycle** is one user request or feature: discussion → decision →
-implementation → acceptance. The lode is touched at two moments only:
+implementation → acceptance. Main lode files are written at two moments:
 
 1. **When a decision is taken** — create the ADR before the code it justifies.
    Iterating on that ADR while the cycle is in flight is normal (the
@@ -63,8 +63,16 @@ implementation → acceptance. The lode is touched at two moments only:
    immediately update every affected lode file so it reflects the current
    state, before moving to the next request.
 
-Not per step, not per commit. Specialized skills (e.g. firmware) add their own
-file names but follow this cadence; they do not define their own.
+Not per step, not per commit. Outside the cadence:
+
+- `lode/tmp/` and anything the user explicitly asks for (a handover, "write
+  this down now") — written when requested.
+- Operational records a specialized skill must capture as they happen (a
+  hardware inventory, a dump checksum) — jotted immediately, tidied at
+  acceptance.
+
+Specialized skills (e.g. firmware) add their own file names but follow this
+cadence; they do not define their own.
 
 ## Workflow
 1. **Before coding**: Check `lode-map.md` for relevant files
