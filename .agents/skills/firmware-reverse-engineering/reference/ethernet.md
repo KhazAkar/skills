@@ -114,10 +114,11 @@ from scapy.all import *
 load_contrib("automotive.someip")
 # Send a SOME/IP request: service 0x1234, method 0x0421, over UDP/IPv4.
 # msg_type 0x00 = REQUEST; wrap with Ether/IP/UDP to send on the wire.
-# Obtain <service-port> from the captured SOME/IP-SD endpoint option; port
+# Obtain the application service port from the captured SOME/IP-SD endpoint option; port
 # 30490 is reserved for SOME/IP-SD itself, not application method traffic.
+service_port = 30509  # example; replace with the port advertised in your captured SOME/IP-SD offer
 pkt = Ether(src="00:11:22:33:44:55", dst="ff:ff:ff:ff:ff:ff") \
-    / IP(dst="192.168.1.10") / UDP(dport=<service-port>) \
+    / IP(dst="192.168.1.10") / UDP(dport=service_port) \
     / SOMEIP(srv_id=0x1234, sub_id=0x0421, client_id=0x0001,
             session_id=0x0001, proto_ver=0x01, iface_ver=0x01,
             msg_type=0x00) / Raw(load=b"\x00\x00\x00\x01")
@@ -249,9 +250,13 @@ for p in pkts[:10]:
     p[Ether].src = "00:11:22:33:44:55"
     sendp(p, iface="eth0")
 
-# Fuzz and send a vendor EtherType: random payloads under a fixed header
-from scapy.all import fuzz
-sendp(fuzz(Ether(src="00:11:22:33:44:55", dst="ff:ff:ff:ff:ff:ff", type=0x88B5) / Raw(load=b"\x00"*8)), iface="eth0")
+# Fuzz and send a vendor EtherType: keep the L2 header fixed and randomize the payload on each send.
+# fuzz() leaves explicitly assigned fields unchanged, so set the Raw load to RandBin(8) (a random
+# generator) rather than a literal b"\x00"*8 that fuzz() would preserve verbatim.
+from scapy.all import fuzz, RandBin
+for _ in range(16):
+    sendp(Ether(src="00:11:22:33:44:55", dst="ff:ff:ff:ff:ff:ff", type=0x88B5) / Raw(load=RandBin(8)),
+          iface="eth0")
 ```
 
 `sendp` works at L2 (raw frames, any EtherType); `send` works at L3 and lets the
