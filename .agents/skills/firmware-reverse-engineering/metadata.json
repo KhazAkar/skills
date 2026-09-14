@@ -1,10 +1,10 @@
 {
   "id": "2f9846e4-980d-42b5-bd42-b883218eb608",
   "name": "firmware-reverse-engineering",
-  "version": 7,
-  "latestVersion": 7,
+  "version": 8,
+  "latestVersion": 8,
   "createdAt": "2026-09-14T13:40:16.000000Z",
-  "updatedAt": "2026-09-14T13:40:16.000000Z",
+  "updatedAt": "2026-09-14T21:40:00.000000Z",
   "sharingScope": "workspace",
   "notes": "",
   "aliases": [
