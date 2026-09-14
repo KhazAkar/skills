@@ -86,8 +86,8 @@ SocketCAN interfaces on Linux.
 cansend can0 123#DEADBEEF01234567
 # Send a CAN FD frame (FF flag, BRS, ESI)
 cansend can0 123##1DEADBEEF01234567890ABCDEF
-# Replay a recorded log
-cangraceful can0 work/<device>-can.log
+# Replay a recorded compact (candump -L) log; canplayer reads the .cnd file
+canplayer -I work/<device>-can.cnd
 # Random/brute IDs to discover listeners
 for id in $(seq 0 0x7FF); do cansend can0 $(printf '%03X' $id)#00; done
 ```
@@ -116,8 +116,8 @@ from scapy.all import *
 frame = CAN(identifier=0x123, length=8, data=b"\xde\xad\xbe\xef\x01\x23\x45\x67")
 sendp(frame, iface="can0")
 
-# 29-bit extended ID (EFF flag)
-ext = CAN(identifier=0x18DAF110, flags=‘extended’, length=8, data=b"\x02\x10\x00\x00\x00\x00\x00\x00")
+# 29-bit extended ID (set the named 'extended' flag)
+ext = CAN(identifier=0x18DAF110, flags='extended', length=8, data=b"\x02\x10\x00\x00\x00\x00\x00\x00")
 sendp(ext, iface="can0")
 
 # Sniff for a short window and print matching frames
@@ -138,9 +138,14 @@ for ident in range(0x700, 0x7FF):
     sendp(CAN(identifier=ident, length=1, data=b"\x00"), iface="can0")
 ```
 
-For CAN FD, set `flags=‘fd’` and a longer `data`; for bit-rate-switch add the
-BRS flag per the SocketCAN CAN FD frame layout. Use `cansend`/`candump` for
-ad-hoc work and `scapy` for scripted fuzzing and payload mutation.
+For CAN FD, use the `CANFD` class (it sets the `fd_frame` fd_flag) with a
+longer `data`; for bit-rate-switch add the named `bit_rate_switch` fd_flag:
+```python
+fd = CANFD(identifier=0x123, length=64, data=b"\x00"*64, fd_flags='fd_frame+bit_rate_switch')
+sendp(fd, iface="can0")
+```
+Use `cansend`/`candump` for ad-hoc work and `scapy` for scripted fuzzing and
+payload mutation.
 
 ## Higher-layer protocols: ISO-TP and UDS
 
@@ -180,7 +185,8 @@ Linux exposes ISO-TP as a socket family (`PF_CAN`, `SOCK_DGRAM`), so you can
 send/receive whole messages without manual segmentation:
 ```bash
 # Open an ISO-TP socket (request CAN ID 0x7E0, response 0x7E8)
-isotpsend -s 0x7E0 -d 0x7E8 can0 22 F1 90          # UDS ReadDataByIdentifier (DID 0xF190 = VIN)
+# isotpsend reads the payload from STDIN, not positional args.
+printf '22F190' | isotpsend -s 0x7E0 -d 0x7E8 can0   # UDS ReadDataByIdentifier (DID 0xF190 = VIN)
 isotprecv -s 0x7E0 -d 0x7E8 can0
 # Sniff ISO-TP messages (reassembled) alongside raw CAN
 isotpsniffer -s 0x7E0 -d 0x7E8 can0
@@ -231,13 +237,13 @@ structure in firmware.
 Send UDS over ISO-TP with `isotpsend`:
 ```bash
 # Enter extended diagnostic session
-isotpsend -s 0x7E0 -d 0x7E8 can0 10 03
+printf '1003' | isotpsend -s 0x7E0 -d 0x7E8 can0
 # Read VIN (DID 0xF190)
-isotpsend -s 0x7E0 -d 0x7E8 can0 22 F1 90
-# Read ECU identification (DID 0xF8 10)
-isotpsend -s 0x7E0 -d 0x7E8 can0 22 F8 10
+printf '22F190' | isotpsend -s 0x7E0 -d 0x7E8 can0
+# Read ECU identification (DID 0xF810)
+printf '22F810' | isotpsend -s 0x7E0 -d 0x7E8 can0
 # Request SecurityAccess seed (subfunction 0x01)
-isotpsend -s 0x7E0 -d 0x7E8 can0 27 01
+printf '2701' | isotpsend -s 0x7E0 -d 0x7E8 can0
 ```
 
 `pyuds` / `udsonstan` libraries script the full UDS session over ISO-TP for
@@ -264,6 +270,6 @@ SID responses to the firmware handler.
 
 ## Dependencies
 
-- `can-utils` (`candump`/`cansend`/`cangraceful`), `ip` (iproute2) with
+- `can-utils` (`candump`/`cansend`/`canplayer`), `ip` (iproute2) with
   SocketCAN, `tcpdump`/Wireshark, `scapy` (CAN layer), and a SocketCAN-
   compatible CAN adapter.

@@ -119,10 +119,12 @@ it against the descriptor tables you found statically in the dump.
 from a file:
 ```bash
 sudo modprobe usbmon
-ls /sys/kernel/debug/usb/usbmon/      # 0t (all), 1t..Nt (per bus)
-# Live capture in Wireshark: select usbmonN for the device's bus number
-# Command-line capture to a pcap:
-sudo cat /sys/kernel/debug/usb/usbmon/0t > work/<device>-usb.pcap &
+ls /sys/kernel/debug/usb/usbmon/      # 0t (all buses), 1t..Nt (per bus)
+# Capture the ONE bus the target is on, not 0t—0t records every USB device,
+# which can leak credentials/keystrokes/storage from unrelated devices.
+# Find the bus number from `lsusb` (the "Bus 001" line -> usbmon1t), then:
+sudo cat /sys/kernel/debug/usb/usbmon/1t > work/<device>-usb.pcap &
+# Live capture in Wireshark: select the matching usbmonN for the device's bus.
 # Capture, then replay in Wireshark:
 wireshark work/<device>-usb.pcap
 ```

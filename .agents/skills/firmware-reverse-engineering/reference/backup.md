@@ -23,8 +23,10 @@ flashrom -r backups/<device>-flash-<date>.bin && flashrom -v backups/<device>-fl
 
 On-chip flash over JTAG/SWD via `openocd`:
 ```bash
-openocd -f interface/<adapter>.cfg -f target/<chip>.cfg -c "init; halt; dump_image backups/<device>-flash-<date>.bin 0x08000000 0x100000; reset; shutdown"
-# then verify the size and checksum match the chip's expected flash size
+openocd -f interface/<adapter>.cfg -f target/<chip>.cfg -c "init; halt; dump_image backups/<device>-flash-<date>.bin <flash-base> <flash-size>; shutdown"
+# <flash-base> and <flash-size> come from the chip datasheet and `flash info 0`; never assume STM32 geometry.
+# Keep the core halted through shutdown so no reset runs the firmware before the dump is verified.
+# Then verify the size and checksum match the chip's expected flash size:
 ls -l backups/<device>-flash-<date>.bin
 ```
 

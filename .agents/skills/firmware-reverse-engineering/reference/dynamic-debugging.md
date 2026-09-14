@@ -34,8 +34,10 @@ telnet localhost 4444
 For printf-style output without a UART, use semihosting or RTT:
 ```bash
 openocd -f interface/<adapter>.cfg -f target/<chip>.cfg \
-  -c "init; reset init; rtt setup work/<device>-rtt.log 0x20000000 0x1000; rtt start; reset run"
-# RTT logs stream to the host file while the target runs.
+  -c "init; reset init; rtt setup 0x20000000 0x1000 \"RTT\"; rtt start; rtt server 0 9090; reset run"
+# rtt setup takes <control-block-address> <size> <id>, NOT a log path.
+# `rtt server 0 9090` exposes channel 0 on TCP 9090; capture it on the host:
+#   nc localhost 9090 | tee work/<device>-rtt.log
 ```
 
 Record the adapter, target config, and any register/MMIO writes you make in
@@ -79,10 +81,13 @@ single-step without the board:
 qemu-arm -g 1234 work/<device>.elf
 arm-none-eabi-gdb work/<device>.elf -ex "target remote :1234"
 
-# System mode (bare-metal/RTOS blob at flash base)
+# System mode (bare-metal/RTOS blob). lm3s6965evb maps flash at 0x00000000,
+# so do NOT force $pc to an STM32-style 0x08000000—let the reset vector run.
 qemu-system-arm -M lm3s6965evb -kernel work/<device>.bin -serial stdio -S -gdb tcp::1234
 arm-none-eabi-gdb work/<device>.bin \
-  -ex "target remote :1234" -ex "set $pc=0x08000000"
+  -ex "target remote :1234"
+# If you need a flash base of 0x08000000, pick a QEMU machine whose memory map
+# places flash there (or load via -device/loader) instead of overriding $pc.
 ```
 If QEMU's machine model doesn't match the target, emulation still works for
 architecture-level triage of standalone functions; record the mismatch and its

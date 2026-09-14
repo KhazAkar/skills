@@ -104,16 +104,26 @@ tshark -r work/<device>-eth.pcap -Y 'someip' -T fields -e someip.service_id -e s
 tshark -r work/<device>-eth.pcap -Y 'someip.service_id == 0xffff'
 ```
 
-Replay/fuzz with scapy (contrib SOMEIP):
+Replay/fuzz with scapy (contrib `automotive.someip`). Field names are
+`srv_id`/`sub_id` (the service/method or event id); a simple request is
+fully constructible without placeholders:
 ```python
 from scapy.all import *
-from scapy.contrib.automotive.someip import *
-# Send a SOME/IP-SD Offer for a service
-sd = SOMEIP(service_id=0xffff, method_id=0x8100, client_id=0x0000,
+load_contrib("automotive.someip")
+# Send a SOME/IP request: service 0x1234, method 0x0421, over UDP/IPv4.
+# msg_type 0x00 = REQUEST; wrap with Ether/IP/UDP to send on the wire.
+pkt = Ether(src="00:11:22:33:44:55", dst="ff:ff:ff:ff:ff:ff") \
+    / IP(dst="192.168.1.10") / UDP(dport=30490) \
+    / SOMEIP(srv_id=0x1234, sub_id=0x0421, client_id=0x0001,
             session_id=0x0001, proto_ver=0x01, iface_ver=0x01,
-            msg_type=0x02) / SOMEIPSD(...) / IP(dst="224.224.224.245") / UDP(dport=30490)
-sendp(sd, iface="eth0")
+            msg_type=0x00) / Raw(load=b"\x00\x00\x00\x01")
+sendp(pkt, iface="eth0")
 ```
+For SOME/IP-SD (Service Discovery), load `automotive.someip_sd` and build the
+offer with the `SDEntry_Service` / `SD` helper classes rather than a literal
+`SOMEIPSD(...)` placeholder; see the scapy automotive test suite for the field
+layout. Treat any SD snippet you have not run against your target as
+illustrative pseudo-code until validated.
 
 #### DoIP (Diagnostics over IP, ISO 13400)
 
