@@ -81,7 +81,7 @@ lode/
 - **One topic per file**
 - **<250 lines per file** (split if larger)
 - **Link to code**: `Implementation: src/auth/service.go:42`
-- **Link between files**: `[ADR-001](templates/decisions/adr-template.md)`
+- **Link between files**: `[ADR-001](../decisions/adr-001.md)`
 - **Current state only** (not changelog)
 - **Concrete examples** > abstract descriptions
 

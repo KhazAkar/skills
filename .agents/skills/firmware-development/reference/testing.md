@@ -85,19 +85,15 @@ the firmware link.
 
 ## Rust unit tests
 
-Gate host-only support behind a feature:
+Let the crate be `no_std` on the target and `std` under `cargo test`:
 
 ```toml
-[features]
-default = []
-std = []
-
 [dev-dependencies]
 embedded-hal-mock = "<version>"
 ```
 
 ```rust
-#![cfg_attr(not(feature = "std"), no_std)]
+#![cfg_attr(not(test), no_std)]
 
 #[cfg(test)]
 mod tests {
@@ -108,10 +104,11 @@ mod tests {
 }
 ```
 
-Run the host target explicitly:
+Run on the host target explicitly (`.cargo/config.toml` defaults to the thumb
+target, which cannot run tests):
 
 ```bash
-cargo test --features std --target x86_64-unknown-linux-gnu
+cargo test --target x86_64-unknown-linux-gnu
 ```
 
 Use `cargo test` for pure logic and trait-driven peripherals; it cannot prove

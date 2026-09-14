@@ -66,10 +66,10 @@ Record the control-block address and RAM region in `lode/toolchain.md`.
 Rust can use `rtt-target`:
 
 ```rust
-let channels = rtt_target::rtt_init! {
-    up: { 0: { size: 1024, mode: NoBlockSkip, name: "log" } }
-};
-channels.up.0.write_str("boot\n");
+use rtt_target::{rtt_init_print, rprintln};
+
+rtt_init_print!();
+rprintln!("boot");
 ```
 
 ## Rust defmt
@@ -80,14 +80,12 @@ Use deferred formatting over RTT:
 [dependencies]
 defmt = "<version>"
 defmt-rtt = "<version>"
+panic-probe = { version = "<version>", features = ["print-defmt"] }
 ```
 
 ```rust
-#[defmt::panic_handler]
-fn panic(info: &core::panic::PanicInfo) -> ! {
-    defmt::error!("panic: {}", defmt::Debug2Format(info));
-    loop {}
-}
+use defmt_rtt as _;
+use panic_probe as _;
 
 defmt::info!("boot");
 ```

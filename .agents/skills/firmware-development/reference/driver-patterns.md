@@ -46,9 +46,9 @@ constexpr uintptr_t UartBase = 0x40004000u;
 constexpr uint32_t TxReady = 1u << 7;
 
 auto* const status =
-    static_cast<volatile uint32_t*>(UartBase + 0x00u);
+    reinterpret_cast<volatile uint32_t*>(UartBase + 0x00u);
 auto* const data =
-    static_cast<volatile uint32_t*>(UartBase + 0x04u);
+    reinterpret_cast<volatile uint32_t*>(UartBase + 0x04u);
 
 if ((*status & TxReady) != 0u) {
   *data = byte;
@@ -196,8 +196,8 @@ Follow the datasheet sequence and verify readiness at each gate:
 
 1. Enable the HSE (or selected oscillator) and wait for its ready bit.
 2. Configure and enable the PLL; wait for PLL lock.
-3. Switch SYSCLK to the PLL and confirm the switch status.
-4. Set bus prescalers and flash wait states.
+3. Set flash wait states and bus prescalers for the *target* frequency.
+4. Switch SYSCLK to the PLL and confirm the switch status.
 5. Enable each peripheral clock.
 6. Configure each peripheral.
 7. Enable each peripheral and its interrupts/DMA.
