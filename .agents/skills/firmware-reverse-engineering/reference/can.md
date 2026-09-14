@@ -103,6 +103,45 @@ tshark -r work/<device>-can.pcap -Y 'canfd.id == 0x123'
 tshark -r work/<device>-can.pcap -x -c 1
 ```
 
+## Craft / send / fuzz with scapy
+
+`scapy` supports CAN via the `CAN` layer (Linux SocketCAN), so you can build,
+send, and sniff frames in Python — useful for targeted fuzzing of a frame ID
+or replaying a captured payload with modifications.
+
+```python
+from scapy.all import *
+
+# Send a classic 11-bit-ID data frame (8-byte payload)
+frame = CAN(identifier=0x123, length=8, data=b"\xde\xad\xbe\xef\x01\x23\x45\x67")
+sendp(frame, iface="can0")
+
+# 29-bit extended ID (EFF flag)
+ext = CAN(identifier=0x18DAF110, flags=‘extended’, length=8, data=b"\x02\x10\x00\x00\x00\x00\x00\x00")
+sendp(ext, iface="can0")
+
+# Sniff for a short window and print matching frames
+pkts = sniff(iface="can0", timeout=5,
+             lfilter=lambda p: p.haslayer(CAN) and p[CAN].identifier == 0x123)
+for p in pkts:
+    p.show()
+
+# Replay a captured SocketCAN pcap with a modified payload
+pkts = rdpcap("work/<device>-can.pcap")
+for p in pkts:
+    if p.haslayer(CAN):
+        p[CAN].data = b"\xAA\xBB\xCC\xDD\xEE\xFF\x00\x11"[: p[CAN].length]
+        sendp(p, iface="can0")
+
+# Fuzz: walk a range of IDs with a fixed payload to discover listeners
+for ident in range(0x700, 0x7FF):
+    sendp(CAN(identifier=ident, length=1, data=b"\x00"), iface="can0")
+```
+
+For CAN FD, set `flags=‘fd’` and a longer `data`; for bit-rate-switch add the
+BRS flag per the SocketCAN CAN FD frame layout. Use `cansend`/`candump` for
+ad-hoc work and `scapy` for scripted fuzzing and payload mutation.
+
 ## Cross-reference with firmware
 
 - Find CAN ID constants in the dump (11-bit IDs as 16-bit aligned values, 29-bit
@@ -122,4 +161,5 @@ tshark -r work/<device>-can.pcap -x -c 1
 ## Dependencies
 
 - `can-utils` (`candump`/`cansend`/`cangraceful`), `ip` (iproute2) with
-  SocketCAN, `tcpdump`/Wireshark, and a SocketCAN-compatible CAN adapter.
+  SocketCAN, `tcpdump`/Wireshark, `scapy` (CAN layer), and a SocketCAN-
+  compatible CAN adapter.
