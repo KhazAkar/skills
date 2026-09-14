@@ -71,9 +71,11 @@ and both worth reversing when a gateway ECU is the target.
 
 #### SOME/IP (Scalable service-Oriented MiddlewarE over IP)
 
-A serialization/RPC + publish-subscribe middleware from AUTOSAR. Runs over
-UDP (default port 30490) or TCP; service discovery (SOME/IP-SD) runs on UDP
-port 30490 (multicast 224.224.224.245:30490 by default).
+A serialization/RPC + publish-subscribe middleware from AUTOSAR. Application
+method/event traffic runs over UDP or TCP on the per-service port advertised
+by SOME/IP-SD (there is no universal default application port); service
+discovery (SOME/IP-SD) runs on UDP port 30490 (multicast
+224.224.224.245:30490 by default).
 
 Official standards:
 - **SOME/IP Protocol Specification** (AUTOSAR Foundation, PRS_SOMEIPProtocol) — [AUTOSAR PRS_SOMEIPProtocol (R23-11)](https://www.autosar.org/fileadmin/standards/R23-11/FO/AUTOSAR_FO_PRS_SOMEIPProtocol.pdf)
@@ -112,8 +114,10 @@ from scapy.all import *
 load_contrib("automotive.someip")
 # Send a SOME/IP request: service 0x1234, method 0x0421, over UDP/IPv4.
 # msg_type 0x00 = REQUEST; wrap with Ether/IP/UDP to send on the wire.
+# Obtain <service-port> from the captured SOME/IP-SD endpoint option; port
+# 30490 is reserved for SOME/IP-SD itself, not application method traffic.
 pkt = Ether(src="00:11:22:33:44:55", dst="ff:ff:ff:ff:ff:ff") \
-    / IP(dst="192.168.1.10") / UDP(dport=30490) \
+    / IP(dst="192.168.1.10") / UDP(dport=<service-port>) \
     / SOMEIP(srv_id=0x1234, sub_id=0x0421, client_id=0x0001,
             session_id=0x0001, proto_ver=0x01, iface_ver=0x01,
             msg_type=0x00) / Raw(load=b"\x00\x00\x00\x01")
@@ -245,9 +249,9 @@ for p in pkts[:10]:
     p[Ether].src = "00:11:22:33:44:55"
     sendp(p, iface="eth0")
 
-# Fuzz a vendor EtherType: random payloads under a fixed header
+# Fuzz and send a vendor EtherType: random payloads under a fixed header
 from scapy.all import fuzz
-fuzz(Ether(src="00:11:22:33:44:55", dst="ff:ff:ff:ff:ff:ff", type=0x88B5) / Raw(load=b"\x00"*8))
+sendp(fuzz(Ether(src="00:11:22:33:44:55", dst="ff:ff:ff:ff:ff:ff", type=0x88B5) / Raw(load=b"\x00"*8)), iface="eth0")
 ```
 
 `sendp` works at L2 (raw frames, any EtherType); `send` works at L3 and lets the

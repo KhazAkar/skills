@@ -95,9 +95,14 @@ PDF→markdown flow, grep patterns, and the datasheet/errata research loop.
 
 ### 3. Document as you go (lode-programming)
 Load and follow the existing **lode-programming** skill for the `lode/` folder
-structure, ADRs, and workflow — including its file-size limits, one-topic-per-
-file rule, and ADR template. Do not redefine that structure here. Extend it
-with firmware-specific files:
+structure, ADRs, and workflow — including its file-size limits (<250 lines,
+split if larger), one-topic-per-file rule, and ADR template. These limits
+govern the `lode/` documentation files written during a project. The
+`reference/` files under this skill are consolidated, read-only command
+references for a single protocol (USB, Ethernet, CAN); they may exceed 250
+lines where splitting would fragment one protocol's capture/send/fuzz flow,
+but each must stay one-topic (one protocol per file). Do not redefine that
+structure here. Extend it with firmware-specific files:
 
 - `silicon-map.md` — parts on the board, their packages, and datasheet links.
 - `register-map.md` — peripheral bases, MMIO regions, and known registers.
