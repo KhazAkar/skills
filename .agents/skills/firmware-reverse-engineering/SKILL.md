@@ -1,7 +1,7 @@
 ---
 name: "firmware-reverse-engineering"
 description: "Use this skill for firmware reverse-engineering work: inventory available hardware tools first, dump and back up target firmware before anything else, research datasheets/erratas (PDFs converted to markdown) to understand the hardware, and document the process with the existing lode-programming skill."
-version: "1.7"
+version: "1.8"
 author: "Damian Zaręba"
 license: "MIT"
 tags:
@@ -38,6 +38,10 @@ pillars are, in strict order:
 - Mapping a binary to its hardware peripherals
 - Setting up toolchains (disassemblers, emulators, JTAG/SWD/UART)
 - Onboarding a new target into an existing reversing effort
+
+## Shared references
+Shared content lives in `../_shared/` and is used by
+firmware-development too. Link to it, never copy it.
 
 ## Phase 0: Inventory available hardware (prerequisite)
 Before touching the device, find out which physical tools are available.
@@ -78,7 +82,7 @@ OTP, calibration). Preserve fuses/OTP/calibration separately; they are often
 one-way writes. Confirm the backup is restorable before touching the live
 device further. Work only from copies after this point.
 
-See **[reference/backup.md](reference/backup.md)** for `flashrom` and `openocd`
+See **[../_shared/backup.md](../_shared/backup.md)** for `flashrom` and `openocd`
 dump/verify commands, the lowest-invasive-path selection, and the SHA-256
 checksum step.
 
@@ -90,7 +94,7 @@ addresses, and errata notes. Build a register/address map from the datasheet
 and cross-reference it against the binary. Never reason about a register
 address without the matching datasheet entry.
 
-See **[reference/datasheets.md](reference/datasheets.md)** for the `anydoc`
+See **[../_shared/datasheets.md](../_shared/datasheets.md)** for the `anydoc`
 PDF→markdown flow, grep patterns, and the datasheet/errata research loop.
 
 ### 3. Document as you go (lode-programming)
@@ -131,18 +135,18 @@ spare chip; never mutate the only good copy. Drive the core over JTAG/SWD with
 the openocd server for source-level stepping, and run/step suspect code off
 the hardware with QEMU.
 
-See **[reference/dynamic-debugging.md](reference/dynamic-debugging.md)** for
+See **[../_shared/dynamic-debugging.md](../_shared/dynamic-debugging.md)** for
 the `openocd` session examples (halt/reg/mem/breakpoints/flash/RTT), UART
 console setup, `gdb`-over-`openocd`, and QEMU user/system mode.
 
 If the target speaks USB, Ethernet, or CAN, also see the protocol-specific
 references for descriptors/framing, transfer/frame types, and capture with
 Wireshark:
-- **[reference/usb.md](reference/usb.md)** — USB descriptors, transfer types,
+- **[../_shared/usb.md](../_shared/usb.md)** — USB descriptors, transfer types,
   device/interface/endpoint layout, class codes, enumeration, and capture.
-- **[reference/ethernet.md](reference/ethernet.md)** — Ethernet framing, MAC,
+- **[../_shared/ethernet.md](../_shared/ethernet.md)** — Ethernet framing, MAC,
   VLAN, ARP, and live capture with tcpdump/Wireshark.
-- **[reference/can.md](reference/can.md)** — CAN CC/FD/XL frames, IDs, arbitration,
+- **[../_shared/can.md](../_shared/can.md)** — CAN CC/FD/XL frames, IDs, arbitration,
   and capture with `can-utils`/`ip`/Wireshark (SocketCAN).
 
 Record every dynamic session (commands issued, register/memory state, UART,
@@ -190,7 +194,7 @@ starts from current truth, not memory.
 - **Static analysis** — `binwalk`/`strings`/`xxd`, cross binutils
   (`objdump`/`readelf`/`nm`), and Ghidra. See `reference/static-analysis.md`.
 - **Dynamic debugging** — `openocd`, cross `gdb`, UART terminal (`picocom`/
-  `screen`), and QEMU. See `reference/dynamic-debugging.md`.
-- **USB** — `lsusb`, `usbmon`, Wireshark. See `reference/usb.md`.
-- **Ethernet** — `tcpdump`, Wireshark. See `reference/ethernet.md`.
-- **CAN** — `can-utils`, `ip` (SocketCAN), Wireshark. See `reference/can.md`.
+  `screen`), and QEMU. See `../_shared/dynamic-debugging.md`.
+- **USB** — `lsusb`, `usbmon`, Wireshark. See `../_shared/usb.md`.
+- **Ethernet** — `tcpdump`, Wireshark. See `../_shared/ethernet.md`.
+- **CAN** — `can-utils`, `ip` (SocketCAN), Wireshark. See `../_shared/can.md`.
