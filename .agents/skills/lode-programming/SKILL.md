@@ -94,23 +94,9 @@ cadence; they do not define their own.
   decisions, approaches tried, blockers, next steps
 
 ## ADR Template
-```markdown
-# [Number]: [Decision Title]
-
-**Status**: ✅ Accepted | ❌ Superseded by [ADR-XXX] | 🚧 Proposed
-
-**Context**: [The problem/forces at play]
-
-**Decision**: [What we decided]
-
-**Consequences**:
-- ✅ [Positive impact]
-- ❌ [Negative tradeoff]
-
-**Alternatives Considered**:
-- [Option A]: Why rejected
-- [Option B]: Why rejected
-```
+The ADR form lives in
+[templates/decisions/adr-template.md](templates/decisions/adr-template.md) —
+copy it for each new ADR; do not inline or retype it here.
 
 ## Subsystems (Optional)
 For complex projects, create domain folders:
