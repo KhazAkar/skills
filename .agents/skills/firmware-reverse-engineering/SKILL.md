@@ -16,9 +16,8 @@ tags:
 # Skill: firmware-reverse-engineering
 
 ## Purpose
-Reverse-engineer embedded/firmware targets safely and methodically. The skill
-assumes the person running it owns the hardware they are working on and is
-dumping/analyzing their own devices. The three pillars are, in strict order:
+Reverse-engineer embedded/firmware targets safely and methodically. The three
+pillars are, in strict order:
 
 1. **Back up everything first.** Never mutate the only copy of a device, flash
    image, or dump. Create read-only backups of firmware, EEPROM, fuses, config,
