@@ -1,0 +1,13 @@
+{
+  "id": "08b7c2f8-e46e-46ec-91b1-1ec6f150d668",
+  "name": "firmware-development",
+  "version": 1,
+  "latestVersion": 1,
+  "createdAt": "2026-09-14T21:13:05Z",
+  "updatedAt": "2026-09-14T21:13:05Z",
+  "sharingScope": "workspace",
+  "notes": "",
+  "aliases": [
+    "main"
+  ]
+}

@@ -1,7 +1,7 @@
 ---
 name: "firmware-reverse-engineering"
-description: "Use this skill for firmware reverse-engineering work: inventory available hardware tools first, dump and back up target firmware before anything else, research datasheets/erratas (PDFs converted to markdown) to understand the hardware, and document the process with the existing lode-programming skill."
-version: "1.7"
+description: "Use this skill for firmware reverse-engineering work: inventory available hardware tools first, dump and back up target firmware before anything else, research datasheets/erratas (PDFs converted to markdown) to understand the hardware, and record it in lode/ as a specialized path on the lode-programming backbone."
+version: "1.8"
 author: "Damian Zaręba"
 license: "MIT"
 tags:
@@ -16,7 +16,7 @@ tags:
 # Skill: firmware-reverse-engineering
 
 ## Purpose
-Reverse-engineer embedded/firmware targets safely and methodically. The three
+Reverse-engineer embedded/firmware targets safely and methodically. The two
 pillars are, in strict order:
 
 1. **Back up everything first.** Never mutate the only copy of a device, flash
@@ -26,9 +26,12 @@ pillars are, in strict order:
    PMIC, radio, sensor) and read the manufacturer datasheet and errata before
    interpreting the binary. Convert reference PDFs to markdown so they are
    greppable, then search them for registers, addresses, and errata notes.
-3. **Document as you go with lode-programming.** Load and follow the existing
-   **lode-programming** skill for the `lode/` folder, ADRs, and workflow. Do
-   not redefine that structure here — extend it with firmware-specific files.
+
+**lode-programming is the backbone; this skill is a specialized path on it.**
+Load it first and follow its cadence: an ADR the moment a non-obvious
+decision is taken, the affected `lode/` files updated at the end of each
+cycle (one user prompt/feature). This skill adds only firmware-specific file
+names (see *Lode files* below).
 
 ## When to Load
 - Planning which read/analysis methods are feasible given available hardware
@@ -38,6 +41,10 @@ pillars are, in strict order:
 - Mapping a binary to its hardware peripherals
 - Setting up toolchains (disassemblers, emulators, JTAG/SWD/UART)
 - Onboarding a new target into an existing reversing effort
+
+## Shared references
+Shared content lives in `../_shared/` and is used by
+firmware-development too. Link to it, never copy it.
 
 ## Phase 0: Inventory available hardware (prerequisite)
 Before touching the device, find out which physical tools are available.
@@ -78,7 +85,7 @@ OTP, calibration). Preserve fuses/OTP/calibration separately; they are often
 one-way writes. Confirm the backup is restorable before touching the live
 device further. Work only from copies after this point.
 
-See **[reference/backup.md](reference/backup.md)** for `flashrom` and `openocd`
+See **[../_shared/backup.md](../_shared/backup.md)** for `flashrom` and `openocd`
 dump/verify commands, the lowest-invasive-path selection, and the SHA-256
 checksum step.
 
@@ -90,13 +97,13 @@ addresses, and errata notes. Build a register/address map from the datasheet
 and cross-reference it against the binary. Never reason about a register
 address without the matching datasheet entry.
 
-See **[reference/datasheets.md](reference/datasheets.md)** for the `anydoc`
+See **[../_shared/datasheets.md](../_shared/datasheets.md)** for the `anydoc`
 PDF→markdown flow, grep patterns, and the datasheet/errata research loop.
 
-### 3. Document as you go (lode-programming)
-Load and follow the existing **lode-programming** skill for the `lode/` folder
-structure, ADRs, and workflow. Do not redefine that structure here — extend it
-with firmware-specific files:
+### 3. Lode files
+Structure, ADR format and update cadence come from **lode-programming**.
+Firmware reverse-engineering adds these files (shared with
+firmware-development where the name matches):
 
 - `silicon-map.md` — parts on the board, their packages, and datasheet links.
 - `register-map.md` — peripheral bases, MMIO regions, and known registers.
@@ -106,10 +113,9 @@ with firmware-specific files:
 - `toolchain.md` — programmer, disassembler, emulator, scripts, versions, and
   the Phase 0 hardware inventory.
 
-Write an ADR (using the lode-programming ADR template) for every non-obvious
-decision (tool choice, read voltage, assumed reset vector, identification of a
-part from a partial marking, a Phase 0 method chosen because the ideal tool
-was unavailable).
+Decisions that get an ADR when taken: tool choice, read voltage, assumed
+reset vector, identification of a part from a partial marking, a Phase 0
+method chosen because the ideal tool was unavailable.
 
 ### 4. Analyze the dump (static)
 Once a verified copy exists, never touch the original backup for analysis —
@@ -131,18 +137,18 @@ spare chip; never mutate the only good copy. Drive the core over JTAG/SWD with
 the openocd server for source-level stepping, and run/step suspect code off
 the hardware with QEMU.
 
-See **[reference/dynamic-debugging.md](reference/dynamic-debugging.md)** for
+See **[../_shared/dynamic-debugging.md](../_shared/dynamic-debugging.md)** for
 the `openocd` session examples (halt/reg/mem/breakpoints/flash/RTT), UART
 console setup, `gdb`-over-`openocd`, and QEMU user/system mode.
 
 If the target speaks USB, Ethernet, or CAN, also see the protocol-specific
 references for descriptors/framing, transfer/frame types, and capture with
 Wireshark:
-- **[reference/usb.md](reference/usb.md)** — USB descriptors, transfer types,
+- **[../_shared/usb.md](../_shared/usb.md)** — USB descriptors, transfer types,
   device/interface/endpoint layout, class codes, enumeration, and capture.
-- **[reference/ethernet.md](reference/ethernet.md)** — Ethernet framing, MAC,
+- **[../_shared/ethernet.md](../_shared/ethernet.md)** — Ethernet framing, MAC,
   VLAN, ARP, and live capture with tcpdump/Wireshark.
-- **[reference/can.md](reference/can.md)** — CAN CC/FD/XL frames, IDs, arbitration,
+- **[../_shared/can.md](../_shared/can.md)** — CAN CC/FD/XL frames, IDs, arbitration,
   and capture with `can-utils`/`ip`/Wireshark (SocketCAN).
 
 Record every dynamic session (commands issued, register/memory state, UART,
@@ -181,8 +187,8 @@ starts from current truth, not memory.
 - *"Create ADR for <decision>"* → use the lode ADR template.
 
 ## Dependencies
-- **lode-programming** — loaded and followed for the `lode/` documentation
-  structure and ADRs.
+- **lode-programming** — the backbone: `lode/` structure, ADRs and update
+  cadence. Loaded first.
 - **anydoc** (or equivalent PDF→markdown converter) — to make datasheets/erratas
   greppable.
 - **Backup tools** — `flashrom` for external flash; `openocd` for on-chip
@@ -190,7 +196,7 @@ starts from current truth, not memory.
 - **Static analysis** — `binwalk`/`strings`/`xxd`, cross binutils
   (`objdump`/`readelf`/`nm`), and Ghidra. See `reference/static-analysis.md`.
 - **Dynamic debugging** — `openocd`, cross `gdb`, UART terminal (`picocom`/
-  `screen`), and QEMU. See `reference/dynamic-debugging.md`.
-- **USB** — `lsusb`, `usbmon`, Wireshark. See `reference/usb.md`.
-- **Ethernet** — `tcpdump`, Wireshark. See `reference/ethernet.md`.
-- **CAN** — `can-utils`, `ip` (SocketCAN), Wireshark. See `reference/can.md`.
+  `screen`), and QEMU. See `../_shared/dynamic-debugging.md`.
+- **USB** — `lsusb`, `usbmon`, Wireshark. See `../_shared/usb.md`.
+- **Ethernet** — `tcpdump`, Wireshark. See `../_shared/ethernet.md`.
+- **CAN** — `can-utils`, `ip` (SocketCAN), Wireshark. See `../_shared/can.md`.

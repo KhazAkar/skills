@@ -55,7 +55,7 @@ Official standards:
 
 - An automotive ECU often bridges CAN and Ethernet (a gateway ECU): a single
   firmware image may carry **both** a CAN stack and an automotive-Ethernet
-  stack (AVB/TSN, SOME/IP, DoIP). Cross-reference with `reference/can.md`.
+  stack (AVB/TSN, SOME/IP, DoIP). Cross-reference with `can.md`.
 - Higher-layer automotive protocols on top of Ethernet to look for:
   **SOME/IP** (service-oriented middleware, often on UDP/TCP 30490+),
   **DoIP** (Diagnostics over IP, ISO 13400, TCP 13400), **AVB/TSN**
@@ -151,7 +151,7 @@ Why it matters for RE: a DoIP endpoint is effectively a remote UDS tester over
 Ethernet — once you capture a Routing Activation + UDS exchange, you can replay
 UDS services (ReadDataByIdentifier 0x22, ReadMemoryByAddress 0x23, the flash
 sequence 0x34/0x36/0x37) without the CAN bus. Cross-reference with the UDS
-section in `reference/can.md`; the UDS service bytes are identical.
+section in `can.md`; the UDS service bytes are identical.
 
 Capture:
 ```bash

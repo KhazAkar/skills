@@ -135,7 +135,7 @@ For targeted capture, find the bus number from `lsusb` (the `Bus 001` line →
 
 ### Replay / fuzz with `usbredirparser` or a script
 For owner-side protocol RE, replay captured URBs and watch the device's
-response on the UART/console captured in `reference/dynamic-debugging.md`.
+response on the UART/console captured in `dynamic-debugging.md`.
 Record endpoint, transfer type, and payload for each interesting transaction
 in `lode/usb.md`.
 
