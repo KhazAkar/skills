@@ -7,6 +7,17 @@ device exposes one or more **configurations**, each with one or more
 **direction**. When reversing a USB device, you are mapping descriptors to
 behavior and capturing traffic on the bus.
 
+## Official standards
+
+- **USB 2.0 Specification** (Revision 2.0; the canonical spec for Low/Full/High
+  speed devices) — [USB-IF document library](https://www.usb.org/document-library/usb-20-specification)
+- **USB 3.x / USB4** specifications and class specs — [USB-IF document library index](https://www.usb.org/documents?search=&tid_2%5B0%5D=40&items_per_page=50)
+- **USB Type-C / USB Power Delivery** — [USB-IF documents](https://www.usb.org/documents) (filter by topic)
+- **USB class codes** (registry of `bDeviceClass`/`bInterfaceClass` values) — [USB-IF class codes](https://www.usb.org/defined-class-codes)
+
+When a section below says "per the spec", it means the USB 2.0 spec unless
+noted; USB 3.x adds SuperSpeed transfer and a dual-bus model on top of USB 2.0.
+
 ## Why this matters for firmware RE
 
 - Descriptors in firmware tell you what the device *claims* to be (VID/PID,
@@ -18,9 +29,10 @@ behavior and capturing traffic on the bus.
 
 ## Speeds and modes
 
-- **Speeds** — Low (1.5 Mbps), Full (12 Mbps), High (480 Mbps), SuperSpeed+
-  (5/10 Gbps). The first three share the USB 2.0 model; SuperSpeed is a
-  different physical layer. Most embedded targets are Low/Full/High.
+- **Speeds** — Low (1.5 Mbps), Full (12 Mbps), High (480 Mbps), SuperSpeed (5
+  Gbps), SuperSpeed+ (10 Gbps). The first three share the USB 2.0 model;
+  SuperSpeed is a different physical layer with separate RX/TX lanes and no
+  polling. Most embedded targets are Low/Full/High.
 - **Device modes**
   - **Host** — controls the bus, enumerates devices, schedules transactions.
   - **Device (peripheral)** — the target under reversing; responds to SETUP
@@ -35,14 +47,15 @@ behavior and capturing traffic on the bus.
 Read these from the firmware first; they often live as constant tables in
 flash. Hierarchy:
 
-- **Device** — `idVendor` (VID), `idProduct` (PID), `bcdDevice`, USB version,
-  max packet size for EP0, number of configurations.
-- **Configuration** — `bNumInterfaces`, power draw (`bMaxPower` in 2 mA units),
-  attributes (self-powered, remote wakeup).
-- **Interface** — `bInterfaceNumber`, alternate settings, class/subclass/protocol
+- **Device** — `idVendor` (VID), `idProduct` (PID), `bcdDevice` (often a
+  firmware-version encoded in BCD), `bcdUSB` (USB version), `bMaxPacketSize0`
+  (EP0 max packet: 8/64 for Low/Full, 512 for SuperSpeed), `bNumConfigurations`.
+- **Configuration** — `bNumInterfaces`, power draw (`bMaxPower` in 2 mA units,
+  so `0x32` = 100 mA), `bmAttributes` (self-powered bit 6, remote-wakeup bit 5).
+- **Interface** — `bInterfaceNumber`, `bAlternateSetting`, class/subclass/protocol
   (may be 0xFF = vendor-specific).
-- **Endpoint** — address (number + direction IN/OUT), transfer type, max packet
-  size, bInterval.
+- **Endpoint** — `bEndpointAddress` (number + direction: bit 7 = IN),
+  `bmAttributes` (transfer type in bits 0:1), `wMaxPacketSize`, `bInterval`.
 - **String** — indexed, language-tagged; `iManufacturer`, `iProduct`,
   `iSerialNumber` point here. Often leaks vendor/firmware-version strings.
 
@@ -56,19 +69,27 @@ Class codes to watch for in `bDeviceClass`/`bInterfaceClass`:
   download channel).
 - `0xFF` — Vendor-specific. Custom protocols; the interesting case for RE.
 
-Standard SETUP requests (EP0, control transfer): `GET_DESCRIPTOR`,
-`SET_ADDRESS`, `SET_CONFIGURATION`, `GET_STATUS`, `CLEAR_FEATURE`, `SET_FEATURE`,
-plus class-specific requests (HID `GET_REPORT`/`SET_REPORT`, MSC `BBB_RESET`,
-CDC `SET_LINE_CODING`).
-
 ## Transfer types (per endpoint)
 
-| Type | Use | RE note |
-|---|---|---|
-| **Control** | EP0, SETUP requests, descriptors | Enumeration + class requests; structured and well-defined. |
-| **Bulk** | Large, reliable data (MSC, CDC data) | Where the payload lives; grep firmware for the EP size and toggle handling. |
-| **Interrupt** | Small, polled (HID, notifications) | `bInterval` sets poll rate; often the control/status channel. |
-| **Isochronous** | Streaming, no retransmit (audio/video) | Hard to fuzz/capture cleanly; bounded latency, lossy. |
+| Type | bmAttributes | Use | RE note |
+|---|---|---|---|
+| **Control** | 0x00 | EP0, SETUP requests, descriptors | Enumeration + class requests; structured and well-defined. |
+| **Isochronous** | 0x01 | Streaming, no retransmit (audio/video) | Hard to fuzz/capture cleanly; bounded latency, lossy. |
+| **Bulk** | 0x02 | Large, reliable data (MSC, CDC data) | Where the payload lives; grep firmware for the EP size and toggle handling. |
+| **Interrupt** | 0x03 | Small, polled (HID, notifications) | `bInterval` sets poll rate; often the control/status channel. |
+
+## Standard and class requests (EP0 control)
+
+Standard SETUP requests (per USB 2.0 spec, table 9-4): `GET_DESCRIPTOR`,
+`SET_ADDRESS`, `SET_CONFIGURATION`, `GET_STATUS`, `CLEAR_FEATURE`, `SET_FEATURE`,
+`SET_INTERFACE`, `SYNCH_FRAME`.
+
+Class requests map to behavior:
+- HID — `GET_REPORT`, `SET_REPORT`, `GET_IDLE`, `SET_IDLE`, `GET_PROTOCOL`.
+- MSC — `BBB_RESET` (`0xFF21`), `GET_MAX_LUN`.
+- CDC — `SET_LINE_CODING`, `GET_LINE_CODING`, `SET_CONTROL_LINE_STATE`.
+
+A class request handler in firmware is a good anchor point for RE.
 
 ## Enumeration (what the host does)
 

@@ -1,7 +1,7 @@
 ---
 name: "firmware-reverse-engineering"
 description: "Use this skill for firmware reverse-engineering work: inventory available hardware tools first, dump and back up target firmware before anything else, research datasheets/erratas (PDFs converted to markdown) to understand the hardware, and document the process with the existing lode-programming skill."
-version: "1.3"
+version: "1.4"
 author: "Damian Zaręba"
 license: "MIT"
 tags:
@@ -136,13 +136,19 @@ See **[reference/dynamic-debugging.md](reference/dynamic-debugging.md)** for
 the `openocd` session examples (halt/reg/mem/breakpoints/flash/RTT), UART
 console setup, `gdb`-over-`openocd`, and QEMU user/system mode.
 
-If the target speaks USB, also see **[reference/usb.md](reference/usb.md)** —
-USB descriptors, transfer types, device/interface/endpoint layout, class codes
-(HID/CDC/MSD/custom), and capture with `lsusb`/`usbmon`/Wireshark.
+If the target speaks USB, Ethernet, or CAN, also see the protocol-specific
+references for descriptors/framing, transfer/frame types, and capture with
+Wireshark:
+- **[reference/usb.md](reference/usb.md)** — USB descriptors, transfer types,
+  device/interface/endpoint layout, class codes, enumeration, and capture.
+- **[reference/ethernet.md](reference/ethernet.md)** — Ethernet framing, MAC,
+  VLAN, ARP, and live capture with tcpdump/Wireshark.
+- **[reference/can.md](reference/can.md)** — CAN CC/FD/XL frames, IDs, arbitration,
+  and capture with `can-utils`/`ip`/Wireshark (SocketCAN).
 
-Record every dynamic session (commands issued, register/memory state, UART and
-USB output) in the matching lode file so the next session starts from current
-truth, not memory.
+Record every dynamic session (commands issued, register/memory state, UART,
+USB, Ethernet, and CAN output) in the matching lode file so the next session
+starts from current truth, not memory.
 
 ## Safety Rules
 - **Read before write.** Never write to a device you have not fully backed up.
@@ -187,3 +193,5 @@ truth, not memory.
 - **Dynamic debugging** — `openocd`, cross `gdb`, UART terminal (`picocom`/
   `screen`), and QEMU. See `reference/dynamic-debugging.md`.
 - **USB** — `lsusb`, `usbmon`, Wireshark. See `reference/usb.md`.
+- **Ethernet** — `tcpdump`, Wireshark. See `reference/ethernet.md`.
+- **CAN** — `can-utils`, `ip` (SocketCAN), Wireshark. See `reference/can.md`.
