@@ -1,7 +1,7 @@
 ---
 name: "lode-programming"
 description: "Use this skill for programming tasks to maintain durable project memory using Lode Coding methodology. Load when starting projects, explaining code, making architectural decisions, or when you want to preserve knowledge across sessions."
-version: "1.2"
+version: "1.2.1"
 author: "Damian Zaręba"
 license: "MIT"
 tags:
@@ -46,6 +46,11 @@ lode/
 ```
 If `lode/` does not exist, ask the user before creating it. Add `lode/tmp/` to
 `.gitignore`.
+
+Pre-filled templates for every standard lode file live in `templates/` — copy
+the matching one instead of writing from a blank page (`templates/summary.md`
+→ `lode/summary.md`, `templates/terminology.md` → `lode/terminology.md`,
+`templates/decisions/adr-template.md` → new ADRs).
 
 ## Session Start
 1. Read `lode-map.md`, `terminology.md`, `summary.md`.
