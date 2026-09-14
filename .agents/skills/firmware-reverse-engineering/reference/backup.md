@@ -23,9 +23,7 @@ flashrom -r backups/<device>-flash-<date>.bin && flashrom -v backups/<device>-fl
 
 On-chip flash over JTAG/SWD via `openocd`:
 ```bash
-openocd -f interface/<adapter>.cfg -f target/<chip>.cfg -c "init; halt; dump_image backups/<device>-flash-<date>.bin <flash-base> <flash-size>; shutdown"
 # <flash-base> and <flash-size> come from the chip datasheet and `flash info 0`; never assume STM32 geometry.
-# Keep the core halted through shutdown so no reset runs the firmware before the dump is verified.
 # A correct file size and checksum only prove the dump is internally consistent; they do not prove it
 # matches the chip. Read protection, transport errors, or a wrong region can still yield a full-sized
 # bad dump. Verify the bytes against the device before any later write. Run dump_image and verify_image
