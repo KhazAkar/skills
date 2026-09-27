@@ -1,7 +1,7 @@
 ---
 name: "lode-programming"
 description: "Use this skill for programming tasks to maintain durable project memory using Lode Coding methodology. Load when starting projects, explaining code, making architectural decisions, or when you want to preserve knowledge across sessions."
-version: "1.2.1"
+version: "1.2.2"
 author: "Damian Zaręba"
 license: "MIT"
 tags:
@@ -24,7 +24,7 @@ AI maintains the lode as a byproduct of your work.
 - **Code is the source of truth.** If the lode contradicts the code, summarize the gap and ask before fixing the lode.
 - **Summarize, don't dump.** Relay lode contents in your own words; quote a file verbatim only when asked for it by path.
 - **YAGNI**: Do not build features, abstractions, or config knobs that are not needed now.
-- **Maximize human maintainability**: Clear naming, small files/functions, obvious structure over cleverness. A human must be able to pick up the code without the AI.
+- **Maximize human maintainability**: Clear naming, small files/functions, obvious structure over cleverness. A human of junior level experience must be able to pick up the code without the AI.
 
 ## When to Load
 - Starting any programming project
