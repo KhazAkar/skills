@@ -1,7 +1,7 @@
 ---
 name: "lode-programming"
 description: "Use this skill for programming tasks to maintain durable project memory using Lode Coding methodology. Load when starting projects, explaining code, making architectural decisions, or when you want to preserve knowledge across sessions."
-version: "1.2.2"
+version: "1.2.3"
 author: "Damian Zaręba"
 license: "MIT"
 tags:
@@ -118,6 +118,21 @@ lode/
 - **Current state only** (not changelog)
 - **Concrete examples** > abstract descriptions
 - **Diagrams are Mermaid only**
+
+## Language
+Write lode files and code comments in plain, simple, direct language:
+
+- **English: follow ASD-STE100 Simplified Technical English** — one word, one meaning;
+  short sentences (max ~20 words); active voice; present tense; no idioms;
+  no inflated wording ("utilize" → "use", "in order to" → "to",
+  "exacerbate" → "make worse"). Prefer the approved verb list mindset:
+  if a simpler word fits, it is the right word.
+- **Polish: no direct STE standard exists** — apply the same STE principles
+  in Polish: prosto, konkretnie, czas teraźniejszy, strona czynna,
+  jedno słowo = jedno znaczenie. Unikaj języka urzędowego i długich
+  złożeń słowotwórczych.
+- Same rule for ADRs, summaries, and commit messages: clarity for a
+  junior-level reader beats vocabulary.
 
 ## AMDD Inspiration
 Agile Model Driven Development (AMDD) is a lightweight approach to software modeling. It emphasizes creating models that are *just barely good enough*, *just in time*. In our workflow, this means capturing decisions and patterns as they emerge during development, not in advance. red/green/blue (refactor) and **YAGNI** (You Aren't Gonna Need It) are key parts of this approach.
