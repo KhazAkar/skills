@@ -18,13 +18,16 @@ tags:
 Implement **Lode Coding**: durable project memory in `lode/` folder.
 AI maintains the lode as a byproduct of your work.
 
-**Core Principles**:
+**Core Principles** (the lode contract):
 - **You own decisions. AI owns memory.**
 - **Lode is a byproduct, not a documentation job.** It grows from planning, correcting and reviewing with the agent — never written upfront as an inventory.
 - **Code is the source of truth.** If the lode contradicts the code, summarize the gap and ask before fixing the lode.
 - **Summarize, don't dump.** Relay lode contents in your own words; quote a file verbatim only when asked for it by path.
+
+**Code Discipline** (how code gets written; single source of truth — Devin memory and project `lode/practices.md` link here, do not restate the rules):
 - **YAGNI**: Do not build features, abstractions, or config knobs that are not needed now.
 - **Maximize human maintainability**: Clear naming, small files/functions, obvious structure over cleverness. A human of junior level experience must be able to pick up the code without the AI.
+- **TDD as the key practice**: Chat/design first (AMDD). Once the architecture skeleton exists, tests drive the implementation (red/green/blue).
 
 ## When to Load
 - Starting any programming project
@@ -135,7 +138,7 @@ Write lode files and code comments in plain, simple, direct language:
   junior-level reader beats vocabulary.
 
 ## AMDD Inspiration
-Agile Model Driven Development (AMDD) is a lightweight approach to software modeling. It emphasizes creating models that are *just barely good enough*, *just in time*. In our workflow, this means capturing decisions and patterns as they emerge during development, not in advance. red/green/blue (refactor) and **YAGNI** (You Aren't Gonna Need It) are key parts of this approach.
+Agile Model Driven Development (AMDD) is a lightweight approach to software modeling. It emphasizes creating models that are *just barely good enough*, *just in time*. In our workflow, this means capturing decisions and patterns as they emerge during development, not in advance. TDD (red/green/blue) and YAGNI, as defined under **Code Discipline** above, are key parts of this approach.
 
 ## Commands (Natural Language)
 - *"What does the lode say about [topic]?"* → Search lode files
