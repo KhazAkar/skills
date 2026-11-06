@@ -53,7 +53,8 @@ previous stage produced its artifact. Artifacts go in the commit body.
 - No `lode/` here: docs-only repo. Decisions live in commit bodies;
   the skills themselves are the memory.
 - `_shared/` holds firmware topic references only. Link, never copy.
-- Commits end with an appropriate trailer for the agent that did the
-  work, not Co-Authored-By:
+- Commits end with a trailer stating the agent's official identity
+  and a real contact address of the agent or its vendor, not
+  Co-Authored-By:
   `Assisted-By: [agent name] <email>` (example:
   `Assisted-By: Mistral Vibe <vibe@mistral.ai>`)
