@@ -61,8 +61,10 @@ description, or session note). Every point is non-negotiable.
   cadence — create the ADR before the code it justifies, update the
   lode at acceptance. Commit-body artifacts record the change; ADRs
   record the decision. Both, not either.
-- When an AI agent assisted, commits end with:
-  `Assisted-By: Mistral Vibe <vibe@mistral.ai>`
+- When an AI agent assisted, commits end with an appropriate trailer
+  for the agent that did the work, not Co-Authored-By:
+  `Assisted-By: [agent name] <email>` (example:
+  `Assisted-By: Mistral Vibe <vibe@mistral.ai>`)
 
 ## Self-check before declaring done
 
