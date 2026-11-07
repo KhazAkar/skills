@@ -1,6 +1,7 @@
 # Development Practices
 
 ## Coding Standards
+- Standards tier: [spirit | strict — per the code-standards skill; strict adopted by ADR]
 - Language: [Go 1.x]
 - Formatter: [gofmt]
 - Linter: [golangci-lint]

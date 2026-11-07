@@ -29,6 +29,7 @@ AI maintains the lode as a byproduct of your work.
 - **Maximize human maintainability**: Clear naming, small files/functions, obvious structure over cleverness. A human of junior level experience must be able to pick up the code without the AI.
 - **TDD as the key practice**: Chat/design first (AMDD). Once the architecture skeleton exists, tests drive the implementation (red/green/blue).
 - **Surgical edits**: every code change also follows the **code-edit** skill — five non-negotiable stages (INTENT, LOCATE, IMPACT, EDIT, PROPAGATE). The stages nest into the lode cycle: INTENT enters at discussion, LOCATE + IMPACT are the just-in-time modeling before the decision, EDIT runs after the ADR exists, PROPAGATE is the acceptance where the lode updates land in the same moment. Commit bodies record the change; ADRs record the decision — both, not either.
+- **Code standards**: what good code looks like follows the **code-standards** skill — spirit rules in every repo, strict tier where a repo's ADR adopted it. The tier and the project dials are recorded in `lode/practices.md`.
 
 ## When to Load
 - Starting any programming project
