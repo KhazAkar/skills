@@ -122,5 +122,7 @@ Same pipeline as code-edit. Canonical text: this repo. Per repo:
 1. An ADR records the adopted tier. Spirit-only repos record it too,
    in one line.
 2. The tier and the project dials go into `lode/practices.md`.
-3. CI gates: zero warnings, at least one static analyzer.
+3. CI gates: zero warnings, at least one static analyzer, in repos
+   with buildable code. Docs-only repos (this one) gate on file
+   verification and version sync instead, per AGENTS.md.
 Advisory-only adoption is rejected: rules without gates drift.
