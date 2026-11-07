@@ -24,12 +24,9 @@ AI maintains the lode as a byproduct of your work.
 - **Code is the source of truth.** If the lode contradicts the code, summarize the gap and ask before fixing the lode.
 - **Summarize, don't dump.** Relay lode contents in your own words; quote a file verbatim only when asked for it by path.
 
-**Code Discipline** (how code gets written; single source of truth — Devin memory and project `lode/practices.md` link here, do not restate the rules):
-- **YAGNI**: Do not build features, abstractions, or config knobs that are not needed now.
-- **Maximize human maintainability**: Clear naming, small files/functions, obvious structure over cleverness. A human of junior level experience must be able to pick up the code without the AI.
-- **TDD as the key practice**: Chat/design first (AMDD). Once the architecture skeleton exists, tests drive the implementation (red/green/blue).
+**Code Discipline** (how code gets written; pure pointers to the stack's sibling skills — single source of truth — Devin memory and project `lode/practices.md` link here, do not restate the rules):
 - **Surgical edits**: every code change also follows the **code-edit** skill — five non-negotiable stages (INTENT, LOCATE, IMPACT, EDIT, PROPAGATE). The stages nest into the lode cycle: INTENT enters at discussion, LOCATE + IMPACT are the just-in-time modeling before the decision, EDIT runs after the ADR exists, PROPAGATE is the acceptance where the lode updates land in the same moment. Commit bodies record the change; ADRs record the decision — both, not either.
-- **Code standards**: what good code looks like follows the **code-standards** skill — spirit rules in every repo, strict tier where a repo's ADR adopted it. The tier and the project dials are recorded in `lode/practices.md`.
+- **Code standards**: what good code looks like follows the **code-standards** skill — development principles (YAGNI, test first, junior-readable) and spirit rules in every repo, strict tier where a repo's ADR adopted it. The tier and the project dials are recorded in `lode/practices.md`.
 
 ## When to Load
 - Starting any programming project
@@ -140,7 +137,7 @@ Write lode files and code comments in plain, simple, direct language:
   junior-level reader beats vocabulary.
 
 ## AMDD Inspiration
-Agile Model Driven Development (AMDD) is a lightweight approach to software modeling. It emphasizes creating models that are *just barely good enough*, *just in time*. In our workflow, this means capturing decisions and patterns as they emerge during development, not in advance. TDD (red/green/blue) and YAGNI, as defined under **Code Discipline** above, are key parts of this approach.
+Agile Model Driven Development (AMDD) is a lightweight approach to software modeling. It emphasizes creating models that are *just barely good enough*, *just in time*. In our workflow, this means capturing decisions and patterns as they emerge during development, not in advance. TDD (red/green/blue) and YAGNI, as defined in the **code-standards** skill, are key parts of this approach.
 
 ## Commands (Natural Language)
 - *"What does the lode say about [topic]?"* → Search lode files

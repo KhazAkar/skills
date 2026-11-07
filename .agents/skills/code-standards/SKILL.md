@@ -34,6 +34,18 @@ or moves to the strict tier.
 3. **Experience** — optimize for those who read and run the code many
    times, not for the one who writes it once.
 
+## Development principles (always)
+Judgment-level, moved from the lode Code Discipline on 2026-11-07, so
+the lode keeps pointers only:
+1. **YAGNI.** Build what is needed now. No speculative features,
+   abstractions, or config knobs.
+2. **Test first.** Chat and design first (AMDD). Once the architecture
+   skeleton exists, a failing test drives the implementation, red to
+   green to blue. The failing test is the code-edit INTENT evidence.
+3. **Junior-readable.** Clear naming, small files and functions,
+   obvious structure over cleverness. A human of junior level
+   experience must be able to pick up the code without the AI.
+
 ## Tiers
 - **Spirit tier** — every repo, every language. No adoption needed.
 - **Strict tier** — native code that runs unattended: firmware,
@@ -86,9 +98,9 @@ or moves to the strict tier.
    (P10 R5)
 
 ## Boundaries with the neighbors
-- YAGNI bounds scope. This skill bounds quality inside the scope. Do
-  the hard thing at the ADR, never as a drive-by refactor inside a
-  diff — code-edit already forbids those.
+- The YAGNI principle bounds scope. The rules bound quality inside
+  the scope. Do the hard thing at the ADR, never as a drive-by
+  refactor inside a diff — code-edit already forbids those.
 - TDD and assertions are complements. Tests catch defects at dev time.
   Assertions guard invariants at runtime and multiply fuzzing.
 - Project dials — cache-line alignment, batching, zero-copy, static
