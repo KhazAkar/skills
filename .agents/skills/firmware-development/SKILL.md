@@ -1,7 +1,7 @@
 ---
 name: "firmware-development"
 description: "Use this skill for embedded firmware development in C, C++ or Rust: know the silicon (inventory + datasheets/errata) before coding, build reproducibly with a pinned toolchain, test on the host and in an emulator before flashing, flash with backup+verify and a recovery path — as a specialized path on top of the lode-programming backbone, which owns the lode/ folder, ADRs and their update cadence."
-version: "1.0"
+version: "1.1"
 author: "Damian Zaręba"
 license: "MIT"
 tags:
