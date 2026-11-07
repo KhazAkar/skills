@@ -1,180 +1,105 @@
-# TigerStyle — source snapshot
+# TigerStyle — rationale digest
 
-Source: https://tigerstyle.dev (TigerBeetle). Fetched 2026-11-07 and
-converted to Markdown: wording preserved, layout normalized, page
-visuals reduced to the examples that carry meaning. This snapshot
-backs the distillation in [SKILL.md](../SKILL.md); where the two
-disagree, the distilled skill text wins for Damian's repos.
+Paraphrased digest of https://tigerstyle.dev, the methodology published
+by TigerBeetle, compiled 2026-11-07 for review-time and ADR-time
+reference. This file carries our wording, not the source's; short
+quotes are attributed. Read the site for the original prose. The
+distilled rules in [SKILL.md](../SKILL.md) win over both.
 
-> The software engineering methodology developed by TigerBeetle to
-> produce safer, faster software in less time.
->
-> Do the hard thing today to make tomorrow easy.
+Their tagline, quoted: "Do the hard thing today to make tomorrow
+easy."
 
 ## Values, in order
 
-1. Safety
-2. Performance
-3. Experience
+Safety first, performance second, the experience of readers and
+operators third. The ordering is deliberate: safety is never traded
+away for speed or polish.
 
 ## Safety
 
-Correctness is necessary but not sufficient for safety. To be safe, a
-program must not only run correctly. It must apply defense-in-depth
-and verify itself while running, to run correctly or else shut down
-if it detects that it has violated expectations.
+Correct code can still be unsafe. TigerStyle asks a program to check
+itself while it runs: layered defenses, runtime verification of
+expectations, and a preference for shutting down over continuing in a
+known-bad state. TigerStyle explicitly follows the spirit of NASA's
+Power of Ten (Holzmann); static allocation, assertions, and explicit
+limits are its three visible habits.
 
-### NASA's Power Of Ten Rules
-
-TigerStyle follows the spirit of NASA's Power of Ten Rules for
-Safety-Critical Code by Gerard J. Holzmann. For example, static
-allocation, assertions and explicit limits.
-
-> "The rules act like the seat-belt in your car: initially they are
-> perhaps a little uncomfortable, but after a while their use becomes
-> second-nature and not using them becomes unimaginable."
->
-> — Gerard J. Holzmann
-
-### Explicit Limits
-
-Put a limit on everything because everything has a limit. Bound all
-resources, concurrency, and execution. Don't react to stimuli but use
-fixed intervals to schedule work. Avoid recursion. Bound loops and
-queues to detect infinite loops and latency spikes. Use fixed types
-like `u32`. Avoid architecture-specific types like `usize`.
-
-### Static Memory Allocation
-
-Allocate all memory at startup. Don't allocate after initialization.
-This centralizes and simplifies resource management, solves
-fragmentation, forces you to think through "the physics of the
-system", and leads to an elegant design, with efficient, predictable
-performance.
-
-### Assertions
-
-Where types check structure, assertions check all logic and state, to
-detect programmer error, multiply fuzzing, and downgrade catastrophe.
-Assert arguments, returns, and invariants: what you expect and don't
-expect, the positive and negative space, not only contract but breach.
-
-### Logical Interfaces
-
-The safety (as well as performance and experience) of a system is
-dominated by the quality of its interfaces.
-
-- Minimize surface area
-- Define fault models
-- Abstract physical non-deterministic interfaces with logical
-  deterministic interfaces
-- Push control flow up and data flow down
-
-### Dimensionality
-
-Simplify function signatures to minimize branches at the call site,
-which are viral through the call graph. As a return type, `bool`
-trumps `u64` trumps `!u64`. Minimize or define variables near to
-when/where they are used, to close semantic gaps in time/space.
-
-### Zero Dependencies
-
-Dependencies risk safety and performance, invite supply chain attacks,
-and increase install times. For infrastructure in particular, these
-costs multiply up the stack. Similarly, tools have costs. A small
-standard toolbox feels slow for you at first but accelerates the team
-long term.
-
-### Zero Technical Debt
-
-Code, like steel, is easier to change while it's hot. Do it right the
-first time, the best you know how, because you may not get another
-chance, and because quality builds momentum. This is the only way to
-make steady progress, knowing that the foundations are solid.
+- **Explicit limits.** Everything finite gets a number: bounded
+  resources, bounded concurrency, bounded execution. Work is
+  scheduled at fixed intervals instead of reacting to stimuli,
+  recursion is avoided, and loops and queues are capped so runaway
+  code and latency spikes surface immediately. Fixed-width types
+  (`u32`) are preferred over architecture-dependent ones (`usize`)
+  so a limit means the same thing everywhere.
+- **Static memory allocation.** Reserve memory at startup, never
+  allocate afterwards. This centralizes resource management, removes
+  fragmentation, forces early clarity about the system's real
+  resource needs, and yields predictable performance.
+- **Assertions.** Types check structure; assertions check logic and
+  state. Assert arguments, returns, and invariants, on both the
+  expected side and the must-never-happen side. The payoff: programmer
+  error surfaces at the fault instead of downstream, and fuzzing is
+  multiplied because every assertion is a tripwire.
+- **Logical interfaces.** System quality tracks interface quality.
+  Keep the surface small, state what can fail and how, wrap
+  non-deterministic (physical, concurrent) things behind
+  deterministic logical interfaces, push control flow up and data flow
+  down.
+- **Dimensionality.** Fewer parameters mean fewer branches at call
+  sites, and call-site branches spread through the whole call graph.
+  Prefer the simplest honest return type (a bool over a count, a
+  count over a nullable count) and define variables close to their
+  use, to close the gap in time and space between a name and its
+  meaning.
+- **Zero dependencies.** Each dependency carries safety and
+  performance risk, supply-chain exposure, and install-time cost, and
+  those costs compound in infrastructure. The same logic applies to
+  tools: a small standard toolbox feels slow at first and pays off
+  later.
+- **Zero technical debt.** Change is cheapest while the code is still
+  hot, so do it right the first time, the best you know how. Solid
+  foundations are what make steady progress possible.
 
 ## Performance
 
-The lack of back-of-the-envelope sketches is the root of all evil.
-Think about performance from the outset. The time to solve
-performance, and get the 1000x wins, is in the design phase, when you
-can't profile. It's hard to fix a system after implementation, and
-the gains are less. Have mechanical sympathy. Like a carpenter, work
-with the grain.
+The root failure is skipping the back-of-envelope sketch. The big
+wins come at design time, before anything can be profiled;
+retrofitting performance onto a built system is harder and gains
+less. Have mechanical sympathy: work with the grain of the hardware,
+like a carpenter with wood.
 
-### Primary Colors
-
-Like a painter, perform back-of-the-envelope performance sketches with
-respect to the four primary colors (network, storage, memory,
-compute) and their two textures (bandwidth, latency) to be "roughly
-right" and land within 90% of the global maxima.
-
-### Control Plane / Data Plane
-
-Separate the control plane from the data plane by batching. Use bigger
-buffers to amortize network, storage, memory and compute costs, and to
-enable assertions in the control plane without trading performance in
-the data plane. Let the CPU sprint through large units of work.
-
-### Make the Roads Bigger
-
-Think of the future, where things are going. Use bigger block sizes to
-amortize fixed costs, to minimize control plane overhead, and to place
-fewer demands on hardware for performance. Embrace concurrency.
-
-### Zero Copy / Deserialization
-
-Per core memory bandwidth is a new bottleneck:
-
-- Do things in the most direct way possible
-- Don't copy memory in the data plane
-- Don't thrash the CPU cache
-- Don't serialize or deserialize data
-- Use fixed-size cache line aligned structs
-- Align structs to their largest field
+- **Primary colors.** Sketch any hot path against four resources
+  (network, storage, memory, compute) and two textures (bandwidth,
+  latency). Rough numbers land within striking distance of the global
+  optimum; precision can wait.
+- **Control plane / data plane.** Separate the two with batching:
+  bigger buffers amortize per-operation costs, assertions live in
+  the control plane without slowing the data plane, and the CPU
+  sprints through large units of work.
+- **Bigger blocks.** Think about where hardware is going. Larger block
+  sizes amortize fixed costs and cut control-plane overhead per byte;
+  embrace concurrency rather than fear it.
+- **Zero copy.** Per-core memory bandwidth is the modern bottleneck:
+  take the most direct path, do not copy in the data plane, do not
+  thrash the cache, do not serialize/deserialize, and lay out
+  fixed-size structs on cache-line boundaries aligned to their
+  largest field.
 
 ## Experience
 
-Together, we serve the users. A day of design is worth weeks or months
-in production. Therefore, go slow to go fast. Optimize the total cost
-of software ownership, not for those who write it once, but for those
-who read and run it many times. Trade linear deadlines for exponential
-quality.
+Serve the people who read and run the code, not the one who writes it
+once. A day of design saves weeks of production firefighting, so go
+slow to go fast; optimize total cost of ownership and trade linear
+deadlines for exponential quality.
 
-### Simplicity And Elegance
-
-> "...simple and elegant systems tend to be easier and faster to
-> design and get right, more efficient in execution, and much more
-> reliable, [but] require hard work and discipline to achieve..."
->
-> — Edsger Dijkstra
-
-### Nouns And Verbs
-
-Great names are the essence of great code, capturing what a thing is or
-does, for a crisp mental model.
-
-- Append qualifiers to names
-- Sort by most significant word (big endian naming)
-- Use the same number of characters for related names (e.g.
-  source/target) so they line up in the source
-- Use `snake_case`
-- Don't abbreviate
-
-Naming example from the page:
-
-```
-Little Endian Naming                Big Endian Naming
-min_connection_delay                connection_delay_ms_min
-max_connection_delay                connection_delay_ms_max
-max_connections                     connection_count_max
-```
-
-### Biodigital Jazz
-
-> Software is engineering, and more, it is art. Information and
-> inspiration. Reason and experience. Precision and poetry. Just like
-> music. A tight beat. A rare groove. Words that rhyme and rhymes that
-> break. If you believe in the songs, take them on tour. Making is
-> showbiz.
-
-> If you want to be remembered, be remarkable.
+- **Simplicity and elegance.** In Dijkstra's words, simple and elegant
+  systems are easier to get right, more efficient to run, and much
+  more reliable — at the price of hard work and discipline.
+- **Nouns and verbs.** Names carry the mental model: name things for
+  what they are or do, order words most-significant first so related
+  names sort together, keep paired names the same length, use
+  snake_case, and do not abbreviate.
+- **The art of it.** TigerStyle closes by acknowledging that
+  engineering is also craft: reason and experience, precision and
+  poetry. Their parting line, quoted: "If you want to be remembered,
+  be remarkable."

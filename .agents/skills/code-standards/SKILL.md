@@ -23,12 +23,12 @@ What good code looks like. The standards layer of the stack:
 
 Sources: TigerStyle (https://tigerstyle.dev) and NASA JPL Power of Ten
 (G. J. Holzmann, https://spinroot.com/gerard/pdf/P10.pdf). This text
-distills both; the distilled rules win over the sources. Full
-snapshots live in [reference/tigerstyle.md](reference/tigerstyle.md)
+distills both; the distilled rules win over the sources. Paraphrased
+rationale digests live in [reference/tigerstyle.md](reference/tigerstyle.md)
 and [reference/power-of-ten.md](reference/power-of-ten.md): consult
-them for the rationale behind a rule during review or ADR work.
-Where a rule is C- or Zig-specific, it names its scope or moves to the
-strict tier.
+them for the reasoning behind a rule during review or ADR work, and
+the sources for original wording. Where a rule is C- or Zig-specific,
+it names its scope or moves to the strict tier.
 
 ## Values, in order
 1. **Safety** — correctness is necessary but not sufficient. Verify
