@@ -58,8 +58,10 @@ the lode keeps pointers only:
 
 ## Spirit rules (every repo)
 1. **Explicit limits on everything.** Bound queues, retries, timeouts,
-   concurrency. Schedule work at fixed intervals; do not react to
-   stimuli.
+   concurrency. Prefer scheduled work at fixed intervals over reacting
+   to stimuli; where the domain is event-driven (UI, servers,
+   interrupts), bound the handler instead: bounded queue, bounded work
+   per event, no re-entrancy.
 2. **Check returns.** Check every return value you can act on. Mark a
    deliberate ignore explicitly: `(void)`, `_ =`, or a comment that
    says why. (P10 R7)
