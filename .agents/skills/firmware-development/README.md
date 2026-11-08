@@ -9,4 +9,4 @@ lode-programming backbone, which owns the lode/ folder, ADRs and cadence.
 08b7c2f8-e46e-46ec-91b1-1ec6f150d668
 
 ## Version
-1.1
+1.2

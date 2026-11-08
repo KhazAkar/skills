@@ -1,7 +1,7 @@
 ---
 name: "lode-programming"
 description: "Use this skill for programming tasks to maintain durable project memory using Lode Coding methodology. Load when starting projects, explaining code, making architectural decisions, or when you want to preserve knowledge across sessions."
-version: "1.6.0"
+version: "1.6.1"
 author: "Damian Zaręba"
 license: "GPL-3.0-or-later"
 tags:

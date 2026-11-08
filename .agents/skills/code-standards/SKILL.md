@@ -1,7 +1,7 @@
 ---
 name: "code-standards"
 description: "Load when writing, reviewing, or designing code alongside code-edit, when creating or updating lode/practices.md, or when a repo adopts a standards tier. What good code looks like: TigerStyle and NASA Power of Ten distilled into a spirit tier (every repo) and a strict tier (unattended native cores, adopted by ADR)."
-version: "1.1.0"
+version: "1.1.1"
 author: "Damian Zaręba"
 license: "GPL-3.0-or-later"
 tags:
