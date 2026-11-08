@@ -1,7 +1,7 @@
 ---
 name: "firmware-development"
 description: "Use this skill for embedded firmware development in C, C++ or Rust: know the silicon (inventory + datasheets/errata) before coding, build reproducibly with a pinned toolchain, test on the host and in an emulator before flashing, flash with backup+verify and a recovery path — as a specialized path on top of the lode-programming backbone, which owns the lode/ folder, ADRs and their update cadence."
-version: "1.0"
+version: "1.1"
 author: "Damian Zaręba"
 license: "MIT"
 tags:
@@ -138,8 +138,8 @@ for toolchain pinning, CMake toolchain files, linker script skeleton, flags,
 "build twice, compare hashes" reproducibility check.
 
 ### 3. Test before you flash
-Follow TDD (the lode-programming/AMDD practice): the test comes before the
-code, on the host first. Structure firmware so that application logic depends
+Follow TDD (the **code-standards** principle, on the AMDD cadence from
+lode-programming): the test comes before the code, on the host first. Structure firmware so that application logic depends
 on a thin HAL seam (C/C++ interface or Rust trait) that can be replaced by a
 fake on the host.
 
@@ -293,7 +293,9 @@ in `lode/build.md`.
 
 ## Dependencies
 - **lode-programming** — the backbone: `lode/` structure, ADRs, update
-  cadence, TDD/AMDD and YAGNI. Loaded in Phase 0.
+  cadence. Loaded in Phase 0.
+- **code-standards** — development principles (TDD, YAGNI) and the tier
+  rules; firmware is a strict-tier candidate, adopted by ADR.
 - **firmware-reverse-engineering** — sibling skill; shares `../_shared/` and
   the lode file names. Load it when the board already carries firmware you
   need to understand.
