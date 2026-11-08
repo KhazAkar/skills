@@ -20,6 +20,9 @@ One skill per folder under `.agents/skills/`:
   any project.
 - **lode-programming** — Lode Coding: durable project memory in `lode/`,
   ADRs at decision, lode updates at acceptance.
+- **code-standards** — engineering standards distilled from TigerStyle
+  (tigerstyle.dev) and NASA JPL's Power of Ten: spirit tier in every
+  repo, strict tier for unattended native cores, adopted by ADR.
 - **firmware-development** — embedded firmware path on the lode
   backbone: silicon first, pinned toolchain, host and emulator tests,
   safe flashing.
@@ -34,5 +37,9 @@ One skill per folder under `.agents/skills/`:
 - Commits: conventional titles; a change commit, then a bump commit.
 - code-edit and lode-programming are cross-wired: Code Discipline names
   the edit contract; the contract's Deployment carries the lode cadence.
+- code-standards joins the wiring: Code Discipline names it; its
+  Deployment carries the tier-adoption cadence (ADR, practices.md, CI
+  gates). Together the three form the Lode Stack: memory
+  (lode-programming), process (code-edit), standards (code-standards).
 
 Editing this repo? Read [AGENTS.md](AGENTS.md) first.
