@@ -1,7 +1,7 @@
 ---
 name: "firmware-development"
 description: "Use this skill for embedded firmware development in C, C++ or Rust: know the silicon (inventory + datasheets/errata) before coding, build reproducibly with a pinned toolchain, test on the host and in an emulator before flashing, flash with backup+verify and a recovery path — as a specialized path on top of the lode-programming backbone, which owns the lode/ folder, ADRs and their update cadence."
-version: "1.1"
+version: "1.2.0"
 author: "Damian Zaręba"
 license: "MIT"
 tags:
@@ -294,6 +294,8 @@ in `lode/build.md`.
 ## Dependencies
 - **lode-programming** — the backbone: `lode/` structure, ADRs, update
   cadence. Loaded in Phase 0.
+- **code-edit** — the surgical edit contract for every code change:
+  drivers, HAL, tests and build files alike.
 - **code-standards** — development principles (TDD, YAGNI) and the tier
   rules; firmware is a strict-tier candidate, adopted by ADR.
 - **firmware-reverse-engineering** — sibling skill; shares `../_shared/` and

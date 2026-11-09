@@ -1,7 +1,7 @@
 ---
 name: "lode-programming"
 description: "Use this skill for programming tasks to maintain durable project memory using Lode Coding methodology. Load when starting projects, explaining code, making architectural decisions, or when you want to preserve knowledge across sessions."
-version: "1.6.0"
+version: "1.6.1"
 author: "Damian Zaręba"
 license: "MIT"
 tags:
@@ -82,11 +82,9 @@ Specialized skills (e.g. firmware) add their own file names but follow this
 cadence; they do not define their own.
 
 ## Workflow
-1. **Before coding**: Check `lode-map.md` for relevant files
-2. **During design**: Chat first, code second; implement only after a clear decision
-3. **After decisions**: Immediately create/update ADR
-4. **At acceptance**: Update lode to reflect current state
-5. **After big changes**: Check the lode structure still mirrors the codebase; refactor it if not
+Reading order is in *Session Start*; write moments are in *Cadence*. On top of them:
+1. **During design**: Chat first, code second; implement only after a clear decision
+2. **After big changes**: Check the lode structure still mirrors the codebase; refactor it if not
 
 ## What Goes Where
 - Needed in a future session → main lode file (permanent learning)

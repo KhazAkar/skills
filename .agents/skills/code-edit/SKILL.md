@@ -1,7 +1,7 @@
 ---
 name: "code-edit"
 description: "Default mode for ALL code work — load this skill for every code change, code review, or coding task, in any project. The universal surgical edit contract: five non-negotiable stages (INTENT, LOCATE, IMPACT, EDIT, PROPAGATE) with checkable artifacts, research-first (codebase, then official docs, then CLI help/man), reuse-first, per-change metrics in commit bodies."
-version: "1.0.2"
+version: "1.0.3"
 author: "Damian Zaręba"
 license: "MIT"
 tags:
@@ -56,7 +56,7 @@ description, or session note). Every point is non-negotiable.
   copy; it may name stack-specific sources.
 - Repo without one: follow this contract anyway — it is the default —
   and propose adopting it (an AGENTS.md / CLAUDE.md at the repo root)
-   before the first substantial change.
+  before the first substantial change.
 - Repo with a `lode/` folder: also follow the lode-programming skill
   cadence — create the ADR before the code it justifies, update the
   lode at acceptance. Commit-body artifacts record the change; ADRs
