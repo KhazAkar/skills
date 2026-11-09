@@ -56,7 +56,7 @@ description, or session note). Every point is non-negotiable.
   copy; it may name stack-specific sources.
 - Repo without one: follow this contract anyway — it is the default —
   and propose adopting it (an AGENTS.md / CLAUDE.md at the repo root)
-   before the first substantial change.
+  before the first substantial change.
 - Repo with a `lode/` folder: also follow the lode-programming skill
   cadence — create the ADR before the code it justifies, update the
   lode at acceptance. Commit-body artifacts record the change; ADRs
