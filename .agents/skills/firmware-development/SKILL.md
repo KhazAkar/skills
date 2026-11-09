@@ -294,6 +294,8 @@ in `lode/build.md`.
 ## Dependencies
 - **lode-programming** — the backbone: `lode/` structure, ADRs, update
   cadence. Loaded in Phase 0.
+- **code-edit** — the surgical edit contract for every code change:
+  drivers, HAL, tests and build files alike.
 - **code-standards** — development principles (TDD, YAGNI) and the tier
   rules; firmware is a strict-tier candidate, adopted by ADR.
 - **firmware-reverse-engineering** — sibling skill; shares `../_shared/` and
