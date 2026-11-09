@@ -10,7 +10,7 @@ Read first:
 - `.agents/skills/lode-programming/SKILL.md` — the lode backbone. It
   governs projects with a `lode/` folder; this repo has none.
 
-## The edit contract (v1.2 — every point non-negotiable)
+## The edit contract (from code-edit — every point non-negotiable)
 
 Every change runs five stages, in order. A stage starts only after the
 previous stage produced its artifact. Artifacts go in the commit body.
@@ -47,6 +47,9 @@ previous stage produced its artifact. Artifacts go in the commit body.
   `version`/`latestVersion`/`updatedAt`, README.md `## Version` bump
   together in the bump commit. Never skip a file: the 2026-11-03 1.3.0
   bump skipped two and created ledger drift.
+- Version scheme: SKILL.md `version:` is semver `"MAJOR.MINOR.PATCH"`.
+  metadata.json `version` and `latestVersion` are the integer revision,
+  +1 per bump. README.md `## Version` repeats the integer revision.
 - Commits: conventional title with the skill as scope; a change
   commit, then a version-bump commit (repo history: 34bce29d then
   50549fa7; 349d9a2d then 1a284393).
