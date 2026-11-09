@@ -189,6 +189,8 @@ starts from current truth, not memory.
 ## Dependencies
 - **lode-programming** — the backbone: `lode/` structure, ADRs and update
   cadence. Loaded first.
+- **code-edit** and **code-standards** — load them when the work turns into
+  code: patches, emulator harnesses, extraction tools.
 - **anydoc** (or equivalent PDF→markdown converter) — to make datasheets/erratas
   greppable.
 - **Backup tools** — `flashrom` for external flash; `openocd` for on-chip
