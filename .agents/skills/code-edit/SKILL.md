@@ -1,7 +1,7 @@
 ---
 name: "code-edit"
 description: "Default mode for ALL code work — load this skill for every code change, code review, or coding task, in any project. The universal surgical edit contract: five non-negotiable stages (INTENT, LOCATE, IMPACT, EDIT, PROPAGATE) with checkable artifacts, research-first (codebase, then official docs, then CLI help/man), reuse-first, per-change metrics in commit bodies."
-version: "1.0.2"
+version: "1.0.3"
 author: "Damian Zaręba"
 license: "MIT"
 tags:
