@@ -168,13 +168,8 @@ starts from current truth, not memory.
   hardware to perform; fall back to a non-invasive path or source the tool.
 
 ## Datasheet/Errata Research Loop
-1. Identify a part or a behavior you don't understand in the binary.
-2. Locate the datasheet and errata PDFs.
-3. Convert to markdown: `anydoc <file>.pdf`.
-4. `grep` the markdown for registers, addresses, or errata keywords.
-5. Record the finding in the matching lode file (`register-map.md`,
-   `boot-sequence.md`, etc.) and cite the datasheet page/section.
-6. Cross-reference the finding against the binary.
+The loop lives in
+[../_shared/datasheets.md](../_shared/datasheets.md) — link, do not restate.
 
 ## Commands (Natural Language)
 - *"Inventory my hardware"* → run Phase 0, record answers in
