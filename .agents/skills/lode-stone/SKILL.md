@@ -1,7 +1,7 @@
 ---
 name: lode-stone
 description: Central hub for per-project lode memory. Always loads with the Lode Stack; detects lode-stone membership from the project's lode-map and no-ops otherwise. Use at acceptance to sync member lodes into the hub, verify membership markers, and promote shared entries.
-version: 1.0.0
+version: 1.0.1
 author: Damian Zaręba
 license: MIT
 tags: [lode, memory, sync, hub]
