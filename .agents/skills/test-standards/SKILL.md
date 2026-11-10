@@ -1,7 +1,7 @@
 ---
 name: "test-standards"
 description: "Load when writing, reviewing, or designing tests, or when deciding what to test and at which level. How to write tests: system/integration level by default, executable specifications as contracts, few E2E and unit tests only where integration does not fit, one test file per specification, adversarial safety-critical mindset. The change cadence stays with code-edit; the ask-the-developer rule is stated here."
-version: "1.0.0"
+version: "1.0.1"
 author: "Damian Zaręba"
 license: "MIT"
 tags:
