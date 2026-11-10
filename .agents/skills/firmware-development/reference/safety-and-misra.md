@@ -1,4 +1,4 @@
-Reference for Phase 2 / section Safety and coding standards of the workflow.
+Reference for the Safety and coding standards section of the workflow.
 
 ## When it applies
 

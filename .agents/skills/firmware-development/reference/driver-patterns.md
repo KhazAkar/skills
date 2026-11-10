@@ -1,4 +1,4 @@
-Reference for Phase 1 / section Driver and runtime rules of the workflow.
+Reference for the Driver and runtime rules section of the workflow.
 
 ## Errata first
 
@@ -112,6 +112,13 @@ struct ring {
 The C++ equivalent uses `std::atomic<size_t>` for indices and a fixed array.
 Rust uses an interrupt-safe queue or an `AtomicBool` flag with a bounded
 buffer. Keep ISR ownership and memory ordering documented.
+
+## No dynamic allocation after init
+
+Do not allocate dynamically after initialization (`malloc`/`new` in C/C++,
+heap growth in Rust) unless an ADR justifies it. Reserve fixed pools at
+startup; with no recursion this keeps stack and heap usage statically
+reviewable (strict-tier rule 3 in the code-standards skill).
 
 ## Shared state
 
