@@ -206,7 +206,8 @@ runtime rules — apply them from the first commit, not after the first field
 failure. See **[reference/driver-patterns.md](reference/driver-patterns.md)**
 for the full rules and idioms: MMIO access in C, C++ and Rust, short ISRs and
 shared state, watchdog and reset cause, clocks before peripherals, DMA and
-cache coherency, errata first.
+cache coherency, errata first. **No dynamic allocation after init** unless an
+ADR justifies it.
 
 ## Debug Output
 Pick one logging transport per project and record the choice as an ADR.
