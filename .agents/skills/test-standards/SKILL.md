@@ -1,6 +1,6 @@
 ---
 name: "test-standards"
-description: "Load when writing, reviewing, or designing tests, or when deciding what to test and at which level. How to write tests: system/integration level by default, executable specifications as contracts, few E2E and unit tests only where integration does not fit, one test file per specification, adversarial safety-critical mindset. Cadence and ask-the-developer rules stay with code-edit."
+description: "Load when writing, reviewing, or designing tests, or when deciding what to test and at which level. How to write tests: system/integration level by default, executable specifications as contracts, few E2E and unit tests only where integration does not fit, one test file per specification, adversarial safety-critical mindset. The change cadence stays with code-edit; the ask-the-developer rule is stated here."
 version: "1.0.0"
 author: "Damian Zaręba"
 license: "MIT"
@@ -30,7 +30,7 @@ How to write tests — what good tests look like. The test-design layer next to 
 ## Test levels, in default order
 1. **System integration / system architecture level, for the most part.** Test the system as the user experiences it: components wired together, real data flow, real failure modes.
 2. **Executable specifications / contracts.** Execute each logical interface's contract (code-standards spirit rule 9) as a test. The contract is the specification; the test proves it.
-3. **Few E2E and few unit tests** — only where the system/integration level would not fit without substantial modifications to the system architecture. Before skipping a level, moving a test to the backlog, or proceeding right away, **ask the developer**. The cadence and the asking rule live in **code-edit** (INTENT and IMPACT stages; no silent decisions). Link, do not restate.
+3. **Few E2E and few unit tests** — only where the system/integration level would not fit without substantial modifications to the system architecture. Before skipping a level, moving a test to the backlog, or proceeding right away, **ask the developer** — that rule is this skill's own. **code-edit** INTENT still requires acceptance evidence before any change. Link, do not restate.
 
 ## Duplication and focus
 - Keep unique tests only. Do not write many variations of the same thing.
@@ -44,7 +44,7 @@ Put on the hat of a senior system test engineer from safety-critical domains (au
 
 ## Boundaries with the neighbors
 - **code-standards** owns what good code looks like and the test-first cadence. Link, do not restate.
-- **code-edit** owns the change process and the ask-the-developer rule for skipping or deferring tests. Link, do not restate.
+- **code-edit** owns the change process (INTENT, LOCATE, IMPACT, EDIT, PROPAGATE). The ask-the-developer rule for skipping or deferring tests is this skill's own, stated above. Link, do not restate.
 - **firmware-development** owns the hardware test environments (host → emulator → on-target → HIL) in its `reference/testing.md`. This skill owns test design; that skill owns the environments. Link, do not copy.
 
 ## Deployment
