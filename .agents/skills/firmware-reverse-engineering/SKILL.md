@@ -1,7 +1,7 @@
 ---
 name: "firmware-reverse-engineering"
 description: "Use this skill for firmware reverse-engineering work: inventory available hardware tools first, dump and back up target firmware before anything else, research datasheets/erratas (PDFs converted to markdown) to understand the hardware, and record it in lode/ as a specialized path on the lode-programming backbone."
-version: "1.9.0"
+version: "1.9.1"
 author: "Damian Zaręba"
 license: "MIT"
 tags:
@@ -168,13 +168,8 @@ starts from current truth, not memory.
   hardware to perform; fall back to a non-invasive path or source the tool.
 
 ## Datasheet/Errata Research Loop
-1. Identify a part or a behavior you don't understand in the binary.
-2. Locate the datasheet and errata PDFs.
-3. Convert to markdown: `anydoc <file>.pdf`.
-4. `grep` the markdown for registers, addresses, or errata keywords.
-5. Record the finding in the matching lode file (`register-map.md`,
-   `boot-sequence.md`, etc.) and cite the datasheet page/section.
-6. Cross-reference the finding against the binary.
+The loop lives in
+[../_shared/datasheets.md](../_shared/datasheets.md) — link, do not restate.
 
 ## Commands (Natural Language)
 - *"Inventory my hardware"* → run Phase 0, record answers in

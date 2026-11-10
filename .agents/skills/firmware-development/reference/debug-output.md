@@ -1,4 +1,4 @@
-Reference for Phase 5 / section Debug output of the workflow.
+Reference for the Debug output section of the workflow.
 
 ## UART printf
 
