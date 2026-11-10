@@ -15,8 +15,12 @@ tags: [lode, memory, sync, hub]
 ## When this skill loads
 This skill always loads with the Lode Stack in any coding session. Its first
 action is to grep `Lode-Stone: member` in `lode/lode-map.md`. If the grep
-finds no line, the project is not a lode-stone member and this skill no-ops
-for the rest of the session.
+finds a line, the project is a declared member and this skill runs. If the
+grep finds no line, the skill scans `lode/decisions/` for a `Lode-Stone`
+field before it no-ops: an ADR field without a map marker is a silent member,
+so the skill warns and reports the gap. With neither side present, the
+project is not a member and this skill no-ops for the rest of the session.
+Sync stays disabled until both sides agree.
 
 ## Marker contract
 Membership is two-sided. Both sides must exist.
@@ -30,13 +34,17 @@ The membership lifecycle rides the ADR status.
 
 ## Verification rules
 Sync follows the marker to the ADR. It requires both the `Lode-Stone` field
-and `Status: ✅ Accepted`. On any mismatch, refuse and report the gap.
+and an accepted status. On any mismatch, refuse and report the gap.
 Surface the gap and ask; do not guess. No silent members, in both directions.
+
+Read the ADR with a Markdown-aware check: the ADR template writes fields as
+`**Status**: ✅ Accepted`, so parse the field name and compare the parsed
+status value, not a literal unformatted string.
 
 - Marker line without a valid ADR → undeclared member → refuse
 - ADR field without the lode-map line → silent member → warn
-- ADR `Status` not `✅ Accepted` → refuse
-- ADR `Status: ❌ Superseded` → stop syncing; keep the last mirror state with
+- ADR status not `✅ Accepted` → refuse
+- ADR status `❌ Superseded` → stop syncing; keep the last mirror state with
   a `RETIRED` note; rejoining needs a new ADR
 - The hub origin record must match the project repo URL and the ADR id
 
@@ -47,9 +55,12 @@ stays canonical; the hub is derived. Subtree vs scripted copy is a hub-side
 implementation detail: this skill states the contract, not the mechanism.
 
 ## Commons promotion
-Move an entry from a project lode to `shared/<topic>/` when at least two
-projects need it. Keep provenance to the origin project. One place per fact;
-link elsewhere.
+Copy an entry from a project lode to `shared/<topic>/` when at least two
+projects need it. The project lode keeps its own entry: the project repo
+stays canonical and self-contained without the hub. In the hub,
+`shared/<topic>/` is the one authoritative place for the fact; project
+mirrors point to it instead of duplicating it. Keep provenance to the origin
+project. One place per fact; link elsewhere.
 
 ## Link format
 - In the hub: `[[projects/<name>/...]]` and `[[shared/<topic>/...]]`
