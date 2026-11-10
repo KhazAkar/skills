@@ -2,9 +2,11 @@
 """Consistency gates for the skills repo (the AGENTS.md contract).
 
 Per skill under .agents/skills/ (excluding _shared):
-- SKILL.md frontmatter: name matches the folder, description <= 1024 chars,
+- SKILL.md frontmatter: all required fields present (name, description,
+  version, author, license, tags), description nonempty and <= 1024 chars,
   version is semver MAJOR.MINOR.PATCH
-- metadata.json: name matches the folder, version == latestVersion (integers)
+- metadata.json: name matches the folder, version == latestVersion (integers),
+  createdAt/updatedAt are ISO 8601 UTC, updatedAt does not go backwards
 - README.md: ## Skill ID matches metadata id, ## Version matches metadata version
 
 Plus: every relative Markdown link in the repo resolves to an existing file.
@@ -13,6 +15,7 @@ Exits non-zero and prints every violation if any check fails.
 """
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -20,8 +23,11 @@ ROOT = Path(__file__).resolve().parent.parent
 SKILLS = ROOT / ".agents" / "skills"
 MAX_DESCRIPTION = 1024
 SEMVER = re.compile(r"^\d+\.\d+\.\d+$")
+ISO8601 = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$")
 FRONTMATTER = re.compile(r"\A---\n(.*?)\n---\n", re.S)
 LINK = re.compile(r"\]\(([^)#\s]+)(?:#[^)]*)?\)")
+REQUIRED_FIELDS = ["name", "description", "version", "author", "license", "tags"]
+TARGET_REF = "origin/main"
 # Illustrative example links that point at files a project would create,
 # not at files in this repo (kept as examples, not real links).
 EXAMPLE_LINKS = {"../decisions/adr-001.md", "subsystem-name/"}
@@ -58,9 +64,14 @@ for skill_dir in sorted(p for p in SKILLS.iterdir() if p.is_dir() and p.name != 
     if fields is None:
         err(f"{name}: SKILL.md has no YAML frontmatter")
         continue
+    for field in REQUIRED_FIELDS:
+        if field not in fields:
+            err(f"{name}: SKILL.md frontmatter is missing required field {field!r}")
     if fields.get("name") != name:
         err(f"{name}: frontmatter name is {fields.get('name')!r}")
     desc = fields.get("description", "")
+    if not desc:
+        err(f"{name}: description is empty")
     if len(desc) > MAX_DESCRIPTION:
         err(f"{name}: description is {len(desc)} chars (max {MAX_DESCRIPTION})")
     version = fields.get("version", "")
@@ -73,6 +84,22 @@ for skill_dir in sorted(p for p in SKILLS.iterdir() if p.is_dir() and p.name != 
     v, lv = meta.get("version"), meta.get("latestVersion")
     if not (isinstance(v, int) and isinstance(lv, int) and v == lv):
         err(f"{name}: metadata version/latestVersion must be equal integers, got {v!r}/{lv!r}")
+    for ts_field in ("createdAt", "updatedAt"):
+        ts = meta.get(ts_field, "")
+        if not ISO8601.match(ts):
+            err(f"{name}: metadata {ts_field} is not ISO 8601 UTC: {ts!r}")
+    old = subprocess.run(
+        ["git", "show", f"{TARGET_REF}:{meta_path.relative_to(ROOT)}"],
+        capture_output=True, text=True,
+    ).stdout
+    if old:
+        try:
+            old_ts = json.loads(old).get("updatedAt", "")
+            new_ts = meta.get("updatedAt", "")
+            if ISO8601.match(old_ts) and ISO8601.match(new_ts) and new_ts < old_ts:
+                err(f"{name}: updatedAt went backwards ({old_ts} -> {new_ts})")
+        except json.JSONDecodeError:
+            pass
 
     readme_text = readme.read_text(encoding="utf-8")
     rid = re.search(r"## Skill ID\s*\n\s*(\S+)", readme_text)
