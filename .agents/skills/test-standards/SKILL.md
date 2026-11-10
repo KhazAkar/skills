@@ -17,9 +17,9 @@ tags:
 How to write tests — what good tests look like. The test-design layer next to the stack:
 
 - **lode-programming** owns memory — why it was decided.
-- **code-edit** owns the change process — how a change moves, and the rule to ask the developer before skipping, deferring to the backlog, or proceeding.
+- **code-edit** owns the change process — how a change moves.
 - **code-standards** owns the code itself — what good code looks like, and the test-first cadence.
-- **test-standards** owns the tests — what good tests look like.
+- **test-standards** owns the tests — what good tests look like, and the ask-the-developer rule for skipping, deferring to the backlog, or proceeding.
 
 ## When to Load
 - Writing, reviewing, or designing tests.
