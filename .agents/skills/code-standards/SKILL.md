@@ -20,6 +20,7 @@ What good code looks like. The standards layer of the stack:
 - **lode-programming** owns memory — why it was decided.
 - **code-edit** owns the change process — how a change moves.
 - **code-standards** owns the code itself — what good looks like.
+- **test-standards** owns the tests — what good tests look like.
 
 Sources: TigerStyle (https://tigerstyle.dev) and NASA JPL Power of Ten
 (G. J. Holzmann, https://spinroot.com/gerard/pdf/P10.pdf). This text
@@ -46,6 +47,8 @@ the lode keeps pointers only:
 2. **Test first.** Chat and design first (AMDD). Once the architecture
    skeleton exists, a failing test drives the implementation, red to
    green to blue. The failing test is the code-edit INTENT evidence.
+   The test can live at any level; **test-standards** sets the default
+   level (system/integration).
 3. **Junior-readable.** Clear naming, small files and functions,
    obvious structure over cleverness. A human of junior level
    experience must be able to pick up the code without the AI.
