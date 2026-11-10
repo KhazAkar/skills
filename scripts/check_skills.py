@@ -6,7 +6,8 @@ Per skill under .agents/skills/ (excluding _shared):
   version, author, license, tags), description nonempty and <= 1024 chars,
   version is semver MAJOR.MINOR.PATCH
 - metadata.json: name matches the folder, version == latestVersion (integers),
-  createdAt/updatedAt are ISO 8601 UTC, updatedAt does not go backwards
+  createdAt/updatedAt are valid ISO 8601 UTC timestamps, updatedAt does not
+  go backwards vs the baseline ref
 - README.md: ## Skill ID matches metadata id, ## Version matches metadata version
 
 Plus: every relative Markdown link in the repo resolves to an existing file.
@@ -17,6 +18,7 @@ import json
 import re
 import subprocess
 import sys
+from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -37,6 +39,16 @@ errors = []
 
 def err(msg):
     errors.append(msg)
+
+
+def parse_ts(ts):
+    """Parse an ISO 8601 UTC timestamp; return None if invalid or impossible."""
+    if not isinstance(ts, str) or not ISO8601.match(ts):
+        return None
+    try:
+        return datetime.fromisoformat(ts.replace("Z", "+00:00"))
+    except ValueError:
+        return None
 
 
 def frontmatter_fields(text):
@@ -86,20 +98,29 @@ for skill_dir in sorted(p for p in SKILLS.iterdir() if p.is_dir() and p.name != 
         err(f"{name}: metadata version/latestVersion must be equal integers, got {v!r}/{lv!r}")
     for ts_field in ("createdAt", "updatedAt"):
         ts = meta.get(ts_field, "")
-        if not ISO8601.match(ts):
-            err(f"{name}: metadata {ts_field} is not ISO 8601 UTC: {ts!r}")
-    old = subprocess.run(
-        ["git", "show", f"{TARGET_REF}:{meta_path.relative_to(ROOT)}"],
+        if parse_ts(ts) is None:
+            err(f"{name}: metadata {ts_field} is not a valid ISO 8601 UTC timestamp: {ts!r}")
+    baseline = subprocess.run(
+        ["git", "rev-parse", "--verify", "--quiet", TARGET_REF],
         capture_output=True, text=True,
-    ).stdout
-    if old:
-        try:
-            old_ts = json.loads(old).get("updatedAt", "")
-            new_ts = meta.get("updatedAt", "")
-            if ISO8601.match(old_ts) and ISO8601.match(new_ts) and new_ts < old_ts:
-                err(f"{name}: updatedAt went backwards ({old_ts} -> {new_ts})")
-        except json.JSONDecodeError:
-            pass
+    )
+    if baseline.returncode != 0:
+        err(f"{name}: cannot read baseline ref {TARGET_REF}; fetch it before running the gate")
+    else:
+        old = subprocess.run(
+            ["git", "show", f"{TARGET_REF}:{meta_path.relative_to(ROOT)}"],
+            capture_output=True, text=True,
+        )
+        if old.returncode == 0:
+            try:
+                old_ts = parse_ts(json.loads(old.stdout).get("updatedAt", ""))
+            except json.JSONDecodeError:
+                old_ts = None
+            new_ts = parse_ts(meta.get("updatedAt", ""))
+            if old_ts is not None and new_ts is not None and new_ts < old_ts:
+                err(f"{name}: updatedAt went backwards vs {TARGET_REF} ({old.stdout and json.loads(old.stdout).get('updatedAt')} -> {meta.get('updatedAt')})")
+        # returncode != 0 with a valid baseline ref means the skill is new on
+        # this branch: no baseline metadata exists, which is legitimate.
 
     readme_text = readme.read_text(encoding="utf-8")
     rid = re.search(r"## Skill ID\s*\n\s*(\S+)", readme_text)
