@@ -43,7 +43,9 @@ One skill per folder under `.agents/skills/`:
   the edit contract; the contract's Deployment carries the lode cadence.
 - code-standards joins the wiring: Code Discipline names it; its
   Deployment carries the tier-adoption cadence (ADR, practices.md, CI
-  gates). Together the three form the Lode Stack: memory
-  (lode-programming), process (code-edit), standards (code-standards).
+  gates). test-standards completes the stack: Code Discipline names it;
+  it owns test design. Together they form the Lode Stack: memory
+  (lode-programming), process (code-edit), code (code-standards), tests
+  (test-standards).
 
 Editing this repo? Read [AGENTS.md](AGENTS.md) first.
