@@ -32,7 +32,7 @@ REQUIRED_FIELDS = ["name", "description", "version", "author", "license", "tags"
 TARGET_REF = "origin/main"
 # Illustrative example links that point at files a project would create,
 # not at files in this repo (kept as examples, not real links).
-EXAMPLE_LINKS = {"../decisions/adr-001.md", "subsystem-name/"}
+EXAMPLE_LINKS = {"../decisions/adr-001.md", "subsystem-name/", "decisions/xxx-lode-stone-membership.md"}
 
 errors = []
 
