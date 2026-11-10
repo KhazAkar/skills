@@ -20,6 +20,8 @@ One skill per folder under `.agents/skills/`:
   any project.
 - **lode-programming** — Lode Coding: durable project memory in `lode/`,
   ADRs at decision, lode updates at acceptance.
+- **lode-stone** — central hub for per-project lode memory; always loads with
+  the Lode Stack, no-ops without a member marker, git sync at acceptance.
 - **code-standards** — engineering standards distilled from TigerStyle
   (tigerstyle.dev) and NASA JPL's Power of Ten: spirit tier in every
   repo, strict tier for unattended native cores, adopted by ADR.
