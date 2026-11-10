@@ -1,4 +1,4 @@
-Reference for Phase 1 / section Driver and runtime rules of the workflow.
+Reference for the Driver and runtime rules section of the workflow.
 
 ## Errata first
 

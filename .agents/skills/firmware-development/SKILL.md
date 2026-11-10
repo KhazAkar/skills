@@ -201,57 +201,31 @@ an errata workaround, a safety/MISRA deviation. Iterating on one ADR while
 the cycle is in flight is normal — that is the architecture part of AMDD.
 
 ## Driver and Runtime Rules
-Firmware bugs that survive host tests are almost always in this list. Apply
-them from the first commit, not after the first field failure:
-
-- **MMIO is `volatile`** (C/C++) or goes through the PAC's `read()/write()/
-  modify()` (Rust). Never cache a status register in a plain variable.
-- **ISRs are short**: set a flag or push to a queue, return. No blocking, no
-  allocation, no printf. Shared state between ISR and main is `volatile` +
-  atomic (or a `critical_section`/`Mutex<RefCell>` in Rust).
-- **Watchdog on from day one**, kicked from the main loop, never from a timer
-  ISR (that defeats it).
-- **Brown-out / reset cause** read and logged at boot; it is the only clue you
-  get for field resets.
-- **No dynamic allocation after init** unless an ADR justifies it.
-- **Clocks and power before peripherals**: enable the peripheral clock, then
-  configure, then enable the peripheral — in that order, per the datasheet.
-- **DMA + cache**: on cores with a data cache, clean/invalidate around DMA
-  buffers or place them in non-cacheable memory; document which in an ADR.
-- **Errata first**: before blaming your driver, grep the errata for the
-  peripheral (see the datasheet loop).
-
-See **[reference/driver-patterns.md](reference/driver-patterns.md)** for
-register-access idioms in C, C++ and Rust, ISR/shared-state patterns, DMA and
-cache coherency, watchdog and reset-cause handling, and clock bring-up order.
+Firmware bugs that survive host tests are almost always in the driver and
+runtime rules — apply them from the first commit, not after the first field
+failure. See **[reference/driver-patterns.md](reference/driver-patterns.md)**
+for the full rules and idioms: MMIO access in C, C++ and Rust, short ISRs and
+shared state, watchdog and reset cause, clocks before peripherals, DMA and
+cache coherency, errata first.
 
 ## Debug Output
-Pick one logging transport per project and record it as an ADR: UART is the
-cheapest and works with any terminal; semihosting is free but halts the core
-on every message; RTT (`openocd rtt`, `probe-rs`) is fast and needs only the
-debug probe; `defmt` (Rust) is RTT with deferred formatting. Never ship a
-build whose only difference from the debug build is `printf` being compiled
-out — test what you flash.
+Pick one logging transport per project and record the choice as an ADR.
+Never ship a build whose only difference from the debug build is logging
+being compiled out — test what you flash.
 
-See **[reference/debug-output.md](reference/debug-output.md)** for wiring each
-transport in C/C++ and Rust and the trade-offs; the `openocd`/`gdb`/UART
-commands themselves are in
+See **[reference/debug-output.md](reference/debug-output.md)** for the
+transports, their wiring in C/C++ and Rust, and the trade-offs; the
+`openocd`/`gdb`/UART commands themselves are in
 **[../_shared/dynamic-debugging.md](../_shared/dynamic-debugging.md)**.
 
 ## Safety and Coding Standards
 If the firmware is safety-relevant or a customer requires it, adopt a coding
-standard early — retrofitting is far more expensive than starting with it:
-
-- **C** — MISRA C:2012 (with Amendments), enforced with a static analyzer
-  (`cppcheck --addon=misra`, or a commercial checker). Every deviation is an
-  ADR.
-- **C++** — MISRA C++:2023 or AUTOSAR C++14; the same deviation rule.
-- **Rust** — no MISRA equivalent yet; use `#![forbid(unsafe_code)]` outside
-  the HAL layer, `clippy` with `pedantic`, and document every `unsafe` block
-  with a `// SAFETY:` comment.
-- **Process** — if ISO 26262 / IEC 61508 / IEC 62304 apply, requirements
-  tracing and test coverage evidence are project deliverables, not
-  afterthoughts. Record the target level (ASIL/SIL/Class) in an ADR.
+standard early — retrofitting is far more expensive than starting with it.
+Pick per language (MISRA C:2012 for C, MISRA C++:2023 or AUTOSAR C++14 for
+C++, `#![forbid(unsafe_code)]` plus `clippy` pedantic for Rust); every
+deviation is an ADR. If ISO 26262 / IEC 61508 / IEC 62304 apply, requirements
+tracing and coverage evidence are deliverables; record the target level
+(ASIL/SIL/Class) in an ADR.
 
 See **[reference/safety-and-misra.md](reference/safety-and-misra.md)** for the
 analyzer setup, the deviation ADR shape, the rules that bite embedded code
