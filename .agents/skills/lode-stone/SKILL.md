@@ -17,10 +17,13 @@ This skill always loads with the Lode Stack in any coding session. Its first
 action is to grep `Lode-Stone: member` in `lode/lode-map.md`. If the grep
 finds a line, the project is a declared member and this skill runs. If the
 grep finds no line, the skill scans `lode/decisions/` for a `Lode-Stone`
-field before it no-ops: an ADR field without a map marker is a silent member,
-so the skill warns and reports the gap. With neither side present, the
-project is not a member and this skill no-ops for the rest of the session.
-Sync stays disabled until both sides agree.
+field before it no-ops. The scan parses each ADR's status the same
+Markdown-aware way as verification: only an ADR with status `✅ Accepted` and
+a `Lode-Stone` field but no map marker is a silent member, so the skill warns
+and reports the gap. Proposed or superseded ADRs are not active members and
+never trigger the warning. With neither side present, the project is not a
+member and this skill no-ops for the rest of the session. Sync stays
+disabled until both sides agree.
 
 ## Marker contract
 Membership is two-sided. Both sides must exist.
@@ -53,14 +56,19 @@ Sync runs at acceptance, in the same moment the lode files update. It mirrors
 `lode/` content into `projects/<repo-name>/` in the hub. The project repo
 stays canonical; the hub is derived. Subtree vs scripted copy is a hub-side
 implementation detail: this skill states the contract, not the mechanism.
+When a synced entry has a promoted shared copy, sync follows the shared
+entry's provenance record (origin project repo, ADR id, source entry path)
+and updates `shared/<topic>/` from the canonical project entry, so the
+shared copy never goes stale.
 
 ## Commons promotion
 Copy an entry from a project lode to `shared/<topic>/` when at least two
 projects need it. The project lode keeps its own entry: the project repo
 stays canonical and self-contained without the hub. In the hub,
 `shared/<topic>/` is the one authoritative place for the fact; project
-mirrors point to it instead of duplicating it. Keep provenance to the origin
-project. One place per fact; link elsewhere.
+mirrors point to it instead of duplicating it. Every shared entry carries a
+provenance record naming the origin project repo, the membership ADR id, and
+the source entry path. One place per fact; link elsewhere.
 
 ## Link format
 - In the hub: `[[projects/<name>/...]]` and `[[shared/<topic>/...]]`
