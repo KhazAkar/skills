@@ -1,10 +1,10 @@
 {
   "id": "01a1c611-3a50-7134-acc3-e1d1a903aca2",
   "name": "test-standards",
-  "version": 2,
-  "latestVersion": 2,
+  "version": 3,
+  "latestVersion": 3,
   "createdAt": "2026-11-10T15:30:00.000Z",
-  "updatedAt": "2026-11-10T17:15:00.000Z",
+  "updatedAt": "2026-11-10T17:30:00.000Z",
   "sharingScope": "workspace",
   "notes": "",
   "aliases": [
