@@ -3,7 +3,7 @@ stages:
 
 skill-consistency:
   stage: check
-  image: python:3.12-slim
+  image: python:3.12
   script:
     - git fetch origin main
     - python scripts/check_skills.py
