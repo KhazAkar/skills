@@ -1,11 +1,11 @@
 {
-  "id": "5c49ab32-e191-4925-8887-0736ea0403fa",
+  "id": "01a1acef-9e9c-7492-9602-23c02c6648de",
   "name": "code-edit",
-  "version": 4,
-  "latestVersion": 4,
+  "version": 6,
+  "latestVersion": 6,
   "createdAt": "2026-11-05T19:00:00.000Z",
-  "updatedAt": "2026-11-09T00:33:00.000Z",
-  "sharingScope": "workspace",
+  "updatedAt": "2026-11-09T00:49:26.333091Z",
+  "sharingScope": "private",
   "notes": "",
   "aliases": [
     "main"

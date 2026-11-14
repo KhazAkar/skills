@@ -6,7 +6,7 @@ flash with backup and verification. A specialized path on the
 lode-programming backbone, which owns the lode/ folder, ADRs and cadence.
 
 ## Skill ID
-08b7c2f8-e46e-46ec-91b1-1ec6f150d668
+01a0a202-6dd9-7050-80f2-cb465f89c59a
 
 ## Version
-5
+4

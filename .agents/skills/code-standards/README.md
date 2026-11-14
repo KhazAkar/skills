@@ -3,7 +3,7 @@
 Engineering standards layer of the stack: TigerStyle and NASA Power of Ten distilled. Spirit tier in every repo; strict tier for unattended native cores, adopted per repo by ADR.
 
 ## Skill ID
-cc1037f4-31de-4e64-b99b-5c80f1d04a61
+01a1b5f2-9829-7605-a25b-5c088f24b90d
 
 ## Version
-3
+6

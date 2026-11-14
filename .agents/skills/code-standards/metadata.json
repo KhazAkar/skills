@@ -1,11 +1,11 @@
 {
-  "id": "cc1037f4-31de-4e64-b99b-5c80f1d04a61",
+  "id": "01a1b5f2-9829-7605-a25b-5c088f24b90d",
   "name": "code-standards",
-  "version": 3,
-  "latestVersion": 3,
+  "version": 6,
+  "latestVersion": 6,
   "createdAt": "2026-11-07T20:00:00.000Z",
-  "updatedAt": "2026-11-10T16:13:00.000Z",
-  "sharingScope": "workspace",
+  "updatedAt": "2026-11-10T17:27:56.898017Z",
+  "sharingScope": "private",
   "notes": "",
   "aliases": [
     "main"
