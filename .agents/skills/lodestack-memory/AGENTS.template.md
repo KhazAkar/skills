@@ -19,6 +19,9 @@ Project memory entry point: `lode/lode-map.md`.
 ## Rules
 
 - Follow loaded skills strictly.
+- Commits are authored by the developer's git identity; the agent
+  never overrides author or committer. Agent assistance is recorded
+  only in the trailer below.
 - Commits end with exactly one trailer:
   `Assisted-By: <name-of-agent> <email@ofagent.xyz>`
   Never Co-Authored-By.
