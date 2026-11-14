@@ -6,4 +6,4 @@ The LodeStack Test Standards contract - tests are executable specifications deri
 01a1dc6a-95d8-73b6-a6c2-6e657ea6c733
 
 ## Version
-2
+3

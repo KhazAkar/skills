@@ -1,7 +1,7 @@
 ---
 name: "lodestack-test-standards"
 description: "The LodeStack Test Standards contract - tests are executable specifications, not afterthoughts. System/integration level by default, sparse unit and E2E tests, one test file per specification, one test per rule for standard-derived tests, adversarial safety-critical mindset (boundaries, partial failure, timeouts, ordering, concurrency, exhaustion, external impact). Derived from ADR Verification blocks per AMDD. Load when writing, reviewing or designing tests, or deciding what to test at which level."
-version: "1.0.1"
+version: "1.0.2"
 author: "Damian Zaręba"
 license: "MIT"
 constitution: "573391b421fd31c4d4be1f0f0e540d51bc1a08fb"

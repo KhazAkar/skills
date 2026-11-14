@@ -1,7 +1,7 @@
 ---
 name: "lodestack-code-standards"
 description: "The LodeStack Code Standards contract - one universal rule set distilled from MISRA C:2025, MISRA C++:2023, NASA JPL Power of Ten, TigerStyle, Zen of Python, YAGNI and Grug-brain, annotated by gate (test / analyzer / review) so hard rules become executable checks. Junior-maintainable code is the first principle. Per-language additions and deviations (ADR receipts) live in Reference.md. Load when writing or reviewing code, adopting a linter or analyzer, or authoring lode/practices.md."
-version: "1.0.1"
+version: "1.0.2"
 author: "Damian Zaręba"
 license: "MIT"
 constitution: "573391b421fd31c4d4be1f0f0e540d51bc1a08fb"
