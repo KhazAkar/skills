@@ -1,7 +1,7 @@
 # lodestack-edit - Reference
 
 Context and operational detail for the Edit contract. Consumed during
-assembly: `constitution/LodeStack.md` @ `74386bb`, the 2026-11-14
+assembly: `constitution/LodeStack.md` @ `573391b`, the 2026-11-14
 assembly digest (sections 3, 4, 5), and the v1 `code-edit` skill
 (rules ported per the per-rule review).
 

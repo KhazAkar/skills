@@ -4,7 +4,7 @@ description: "The LodeStack Code Standards contract - one universal rule set dis
 version: "1.0.1"
 author: "Damian Zaręba"
 license: "MIT"
-constitution: "74386bb298143f6a43909b2e3c594658d6c3ec0b"
+constitution: "573391b421fd31c4d4be1f0f0e540d51bc1a08fb"
 tags:
   - lodestack
   - code-standards
@@ -127,5 +127,5 @@ Distilled rule digests per source in `refs/`: `power-of-ten.md`,
 - pending distillation from the bought copies; paraphrase-only,
 never verbatim rule text (copyright).
 
-Constitution: `constitution/LodeStack.md` at `74386bb`.
+Constitution: `constitution/LodeStack.md` at `573391b`.
 Context: [Reference.md](Reference.md).

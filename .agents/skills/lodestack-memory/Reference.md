@@ -1,7 +1,7 @@
 # lodestack-memory - Reference
 
 Context, interpretations and mappings for the Memory contract.
-Consumed during assembly: `constitution/LodeStack.md` @ `74386bb`,
+Consumed during assembly: `constitution/LodeStack.md` @ `573391b`,
 the 2026-11-14 assembly digest (sections 2, 6, 7, 8), and the v1
 `lode-programming` skill (ported folklore per the per-rule review).
 

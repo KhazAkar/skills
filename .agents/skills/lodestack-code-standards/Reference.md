@@ -2,7 +2,7 @@
 
 Interpretations, mappings and per-language additions for the Code
 Standards contract. Consumed during assembly:
-`constitution/LodeStack.md` @ `74386bb`, the 2026-11-14 assembly
+`constitution/LodeStack.md` @ `573391b`, the 2026-11-14 assembly
 digest (sections 5, 6), v1 `code-standards` (rules ported per the
 per-rule review).
 

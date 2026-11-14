@@ -4,7 +4,7 @@ description: "Durable project memory - the LodeStack Memory contract. lode/ stru
 version: "1.0.1"
 author: "Damian Zaręba"
 license: "MIT"
-constitution: "74386bb298143f6a43909b2e3c594658d6c3ec0b"
+constitution: "573391b421fd31c4d4be1f0f0e540d51bc1a08fb"
 tags:
   - lodestack
   - memory
@@ -163,5 +163,5 @@ layout and the migration runbook.
 - "Migrate this project to lode-stone" -> `refs/lode-stone.md`
 
 ## Sources
-Constitution: `constitution/LodeStack.md` at `74386bb`.
+Constitution: `constitution/LodeStack.md` at `573391b`.
 Context and mappings: [Reference.md](Reference.md).

@@ -4,7 +4,7 @@ description: "The LodeStack Edit contract - the code-editing cycle for every cod
 version: "1.0.1"
 author: "Damian Zaręba"
 license: "MIT"
-constitution: "74386bb298143f6a43909b2e3c594658d6c3ec0b"
+constitution: "573391b421fd31c4d4be1f0f0e540d51bc1a08fb"
 tags:
   - lodestack
   - edit
@@ -106,6 +106,6 @@ INTENT = REASON, IMPACT = ANALYZE, PROPAGATE absorbed into VERIFY
 decode.
 
 ## Sources
-Constitution: `constitution/LodeStack.md` at `74386bb`.
+Constitution: `constitution/LodeStack.md` at `573391b`.
 Context: [Reference.md](Reference.md). Tool recipes:
 [tse-recipes.md](tse-recipes.md) - pinned by SHA header.

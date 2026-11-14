@@ -4,7 +4,7 @@ description: "The LodeStack Test Standards contract - tests are executable speci
 version: "1.0.1"
 author: "Damian Zaręba"
 license: "MIT"
-constitution: "74386bb298143f6a43909b2e3c594658d6c3ec0b"
+constitution: "573391b421fd31c4d4be1f0f0e540d51bc1a08fb"
 tags:
   - lodestack
   - test-standards
@@ -85,7 +85,7 @@ A test suite that only proves the happy path proves the code ran
 once, not that it holds.
 
 ## Sources
-Constitution: `constitution/LodeStack.md` at `74386bb`.
+Constitution: `constitution/LodeStack.md` at `573391b`.
 Context: [Reference.md](Reference.md). v1 `test-standards` ported
 per the per-rule review; additions: one-test-per-rule, ADR
 Verification-block derivation.

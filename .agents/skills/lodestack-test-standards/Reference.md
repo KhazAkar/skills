@@ -1,7 +1,7 @@
 # lodestack-test-standards - Reference
 
 Interpretations and context for the Test Standards contract.
-Consumed during assembly: `constitution/LodeStack.md` @ `74386bb`,
+Consumed during assembly: `constitution/LodeStack.md` @ `573391b`,
 the 2026-11-14 assembly digest (sections 5-7), v1 `test-standards`
 (rules ported nearly whole per the per-rule review).
 
