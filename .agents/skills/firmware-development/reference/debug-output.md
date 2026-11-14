@@ -60,7 +60,7 @@ SEGGER_RTT_WriteString(0, "boot\n");
 ```
 
 With OpenOCD, the shared dynamic-debugging reference has the session commands:
-**[../../_shared/dynamic-debugging.md](../../_shared/dynamic-debugging.md)**.
+**[../../shared/dynamic-debugging.md](../../shared/dynamic-debugging.md)**.
 Record the control-block address and RAM region in `lode/toolchain.md`.
 
 Rust can use `rtt-target`:

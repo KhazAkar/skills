@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Consistency gates for the skills repo (the AGENTS.md contract).
 
-Per skill under .agents/skills/ (excluding _shared):
+Per skill under .agents/skills/ (excluding shared):
 - SKILL.md frontmatter: all required fields present (name, description,
   version, author, license, tags), description nonempty and <= 1024 chars,
   version is semver MAJOR.MINOR.PATCH
@@ -63,7 +63,7 @@ def frontmatter_fields(text):
     return fields
 
 
-for skill_dir in sorted(p for p in SKILLS.iterdir() if p.is_dir() and p.name != "_shared"):
+for skill_dir in sorted(p for p in SKILLS.iterdir() if p.is_dir() and p.name != "shared"):
     name = skill_dir.name
     skill_md = skill_dir / "SKILL.md"
     meta_path = skill_dir / "metadata.json"

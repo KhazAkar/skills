@@ -32,8 +32,9 @@ One skill per folder under `.agents/skills/`:
   safe flashing.
 - **firmware-reverse-engineering** — dump and back up firmware before
   anything else; datasheets and errata as ground truth.
-- `_shared/` — firmware topic references shared by both firmware
-  skills.
+- `shared/` — cross-skill references promoted by the 2+ rule
+  (currently firmware topic references shared by both firmware
+  skills).
 
 ## Conventions
 

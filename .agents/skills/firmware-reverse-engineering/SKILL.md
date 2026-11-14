@@ -43,7 +43,7 @@ names (see *Lode files* below).
 - Onboarding a new target into an existing reversing effort
 
 ## Shared references
-Shared content lives in `../_shared/` and is used by
+Shared content lives in `../shared/` and is used by
 firmware-development too. Link to it, never copy it.
 
 ## Phase 0: Inventory available hardware (prerequisite)
@@ -85,7 +85,7 @@ OTP, calibration). Preserve fuses/OTP/calibration separately; they are often
 one-way writes. Confirm the backup is restorable before touching the live
 device further. Work only from copies after this point.
 
-See **[../_shared/backup.md](../_shared/backup.md)** for `flashrom` and `openocd`
+See **[../shared/backup.md](../shared/backup.md)** for `flashrom` and `openocd`
 dump/verify commands, the lowest-invasive-path selection, and the SHA-256
 checksum step.
 
@@ -97,7 +97,7 @@ addresses, and errata notes. Build a register/address map from the datasheet
 and cross-reference it against the binary. Never reason about a register
 address without the matching datasheet entry.
 
-See **[../_shared/datasheets.md](../_shared/datasheets.md)** for the `anydoc`
+See **[../shared/datasheets.md](../shared/datasheets.md)** for the `anydoc`
 PDF→markdown flow, grep patterns, and the datasheet/errata research loop.
 
 ### 3. Lode files
@@ -137,18 +137,18 @@ spare chip; never mutate the only good copy. Drive the core over JTAG/SWD with
 the openocd server for source-level stepping, and run/step suspect code off
 the hardware with QEMU.
 
-See **[../_shared/dynamic-debugging.md](../_shared/dynamic-debugging.md)** for
+See **[../shared/dynamic-debugging.md](../shared/dynamic-debugging.md)** for
 the `openocd` session examples (halt/reg/mem/breakpoints/flash/RTT), UART
 console setup, `gdb`-over-`openocd`, and QEMU user/system mode.
 
 If the target speaks USB, Ethernet, or CAN, also see the protocol-specific
 references for descriptors/framing, transfer/frame types, and capture with
 Wireshark:
-- **[../_shared/usb.md](../_shared/usb.md)** — USB descriptors, transfer types,
+- **[../shared/usb.md](../shared/usb.md)** — USB descriptors, transfer types,
   device/interface/endpoint layout, class codes, enumeration, and capture.
-- **[../_shared/ethernet.md](../_shared/ethernet.md)** — Ethernet framing, MAC,
+- **[../shared/ethernet.md](../shared/ethernet.md)** — Ethernet framing, MAC,
   VLAN, ARP, and live capture with tcpdump/Wireshark.
-- **[../_shared/can.md](../_shared/can.md)** — CAN CC/FD/XL frames, IDs, arbitration,
+- **[../shared/can.md](../shared/can.md)** — CAN CC/FD/XL frames, IDs, arbitration,
   and capture with `can-utils`/`ip`/Wireshark (SocketCAN).
 
 Record every dynamic session (commands issued, register/memory state, UART,
@@ -169,7 +169,7 @@ starts from current truth, not memory.
 
 ## Datasheet/Errata Research Loop
 The loop lives in
-[../_shared/datasheets.md](../_shared/datasheets.md) — link, do not restate.
+[../shared/datasheets.md](../shared/datasheets.md) — link, do not restate.
 
 ## Commands (Natural Language)
 - *"Inventory my hardware"* → run Phase 0, record answers in
@@ -193,7 +193,7 @@ The loop lives in
 - **Static analysis** — `binwalk`/`strings`/`xxd`, cross binutils
   (`objdump`/`readelf`/`nm`), and Ghidra. See `reference/static-analysis.md`.
 - **Dynamic debugging** — `openocd`, cross `gdb`, UART terminal (`picocom`/
-  `screen`), and QEMU. See `../_shared/dynamic-debugging.md`.
-- **USB** — `lsusb`, `usbmon`, Wireshark. See `../_shared/usb.md`.
-- **Ethernet** — `tcpdump`, Wireshark. See `../_shared/ethernet.md`.
-- **CAN** — `can-utils`, `ip` (SocketCAN), Wireshark. See `../_shared/can.md`.
+  `screen`), and QEMU. See `../shared/dynamic-debugging.md`.
+- **USB** — `lsusb`, `usbmon`, Wireshark. See `../shared/usb.md`.
+- **Ethernet** — `tcpdump`, Wireshark. See `../shared/ethernet.md`.
+- **CAN** — `can-utils`, `ip` (SocketCAN), Wireshark. See `../shared/can.md`.

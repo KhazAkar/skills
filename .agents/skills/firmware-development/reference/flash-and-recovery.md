@@ -2,7 +2,7 @@ Reference for Phase 4 / section Flash safely of the workflow.
 
 ## Back up first
 
-Follow **[../../_shared/backup.md](../../_shared/backup.md)** before replacing
+Follow **[../../shared/backup.md](../../shared/backup.md)** before replacing
 an image already on the board. Keep the original dump read-only and record the
 probe, target, voltage, command, and checksum in `lode/backups.md`.
 

@@ -55,7 +55,9 @@ previous stage produced its artifact. Artifacts go in the commit body.
   50549fa7; 349d9a2d then 1a284393).
 - No `lode/` here: docs-only repo. Decisions live in commit bodies;
   the skills themselves are the memory.
-- `_shared/` holds firmware topic references only. Link, never copy.
+- `shared/` holds cross-skill references promoted by the 2+ rule:
+  a topic moves out of a skill's `refs/` when a second skill needs
+  it, keeping provenance to the origin skill. Link, never copy.
 - Commits end with a trailer stating the agent's official identity
   and a real contact address of the agent or its vendor, not
   Co-Authored-By:

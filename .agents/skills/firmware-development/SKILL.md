@@ -55,18 +55,18 @@ The four pillars, in strict order:
 - Onboarding to an existing firmware codebase
 
 ## Shared references
-Content that both firmware skills need lives in `../_shared/` and is linked,
+Content that both firmware skills need lives in `../shared/` and is linked,
 never copied:
 
-- **[../_shared/backup.md](../_shared/backup.md)** — dump + verify + checksum
+- **[../shared/backup.md](../shared/backup.md)** — dump + verify + checksum
   before writing anything.
-- **[../_shared/datasheets.md](../_shared/datasheets.md)** — `anydoc`
+- **[../shared/datasheets.md](../shared/datasheets.md)** — `anydoc`
   PDF→markdown flow and the datasheet/errata research loop.
-- **[../_shared/dynamic-debugging.md](../_shared/dynamic-debugging.md)** —
+- **[../shared/dynamic-debugging.md](../shared/dynamic-debugging.md)** —
   `openocd`, `gdb`, RTT/semihosting, UART console, QEMU.
-- **[../_shared/usb.md](../_shared/usb.md)**,
-  **[../_shared/ethernet.md](../_shared/ethernet.md)**,
-  **[../_shared/can.md](../_shared/can.md)** — protocol framing, IDs and
+- **[../shared/usb.md](../shared/usb.md)**,
+  **[../shared/ethernet.md](../shared/ethernet.md)**,
+  **[../shared/can.md](../shared/can.md)** — protocol framing, IDs and
   capture, when the target speaks one of them.
 
 ## Phase 0: Load lode, inventory hardware (prerequisite)
@@ -93,12 +93,12 @@ Record the fallback as an ADR.
 
 ## Mandatory Workflow (in order)
 Each phase is summarized here; commands and templates live in `reference/`
-and `../_shared/`. Load the linked file when you actually perform the phase.
+and `../shared/`. Load the linked file when you actually perform the phase.
 The `lode/` files each phase feeds are listed under *Lode files* below.
 
 ### 1. Know the silicon
 For the MCU and every peripheral IC you will drive, follow the
-datasheet/errata loop in **[../_shared/datasheets.md](../_shared/datasheets.md)**
+datasheet/errata loop in **[../shared/datasheets.md](../shared/datasheets.md)**
 *before* writing the driver — errata routinely change the register sequence a
 driver must use. Produce or update:
 
@@ -164,7 +164,7 @@ on-target smoke test.
 
 ### 4. Flash safely
 Before the first flash of any board that already contains firmware, run the
-backup procedure in **[../_shared/backup.md](../_shared/backup.md)** and log it
+backup procedure in **[../shared/backup.md](../shared/backup.md)** and log it
 in `lode/backups.md`. Then, every flash: **flash → verify → record the image
 hash**. Keep the last known-good image alongside the backups. Know the
 recovery path (BOOT pins, ROM bootloader, mass erase, readout-protection
@@ -217,7 +217,7 @@ being compiled out — test what you flash.
 See **[reference/debug-output.md](reference/debug-output.md)** for the
 transports, their wiring in C/C++ and Rust, and the trade-offs; the
 `openocd`/`gdb`/UART commands themselves are in
-**[../_shared/dynamic-debugging.md](../_shared/dynamic-debugging.md)**.
+**[../shared/dynamic-debugging.md](../shared/dynamic-debugging.md)**.
 
 ## Safety and Coding Standards
 If the firmware is safety-relevant or a customer requires it, adopt a coding
@@ -273,7 +273,7 @@ in `lode/build.md`.
   drivers, HAL, tests and build files alike.
 - **code-standards** — development principles (TDD, YAGNI) and the tier
   rules; firmware is a strict-tier candidate, adopted by ADR.
-- **firmware-reverse-engineering** — sibling skill; shares `../_shared/` and
+- **firmware-reverse-engineering** — sibling skill; shares `../shared/` and
   the lode file names. Load it when the board already carries firmware you
   need to understand.
 - **anydoc** (or equivalent PDF→markdown converter) — datasheets/errata.
