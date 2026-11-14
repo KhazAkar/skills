@@ -1,7 +1,7 @@
-# MISRA C:2025 — distilled digest (PENDING)
+# MISRA C:2025 - distilled digest (PENDING)
 
 Status: **pending distillation from the bought copy.**
-Paraphrase-only — never verbatim rule text (MISRA copyright).
+Paraphrase-only - never verbatim rule text (MISRA copyright).
 
 Purpose of this digest: the subset of MISRA C:2025 that folds into
 the universal rule set (SKILL.md), the rules that become

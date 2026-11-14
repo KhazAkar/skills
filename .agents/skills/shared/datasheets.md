@@ -13,11 +13,11 @@ register against the binary.
 
 From the vendor. Errata are mandatory: undocumented workarounds, disabled
 silicon, and reserved registers are where weird behavior lives. Errata change
-behavior — always read the errata, not just the datasheet.
+behavior - always read the errata, not just the datasheet.
 
 ## Convert PDFs to greppable markdown
 
-Using `anydoc` (or an equivalent PDF→markdown converter):
+Using `anydoc` (or an equivalent PDF->markdown converter):
 ```bash
 anydoc datasheet-<part>.pdf > datasheets/<part>.md
 anydoc errata-<part>.pdf   > datasheets/<part>-errata.md

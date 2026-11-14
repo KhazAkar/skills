@@ -1,6 +1,6 @@
-# lode-stone — shared knowledge hub (optional)
+# lode-stone - shared knowledge hub (optional)
 
-> Deferred to LodeStack v2.1 — not a launch blocker. This file records
+> Deferred to LodeStack v2.1 - not a launch blocker. This file records
 > the locked design so the runbook is ready when needed.
 
 Transforms the Memory contract into a multi-user, multi-project
@@ -20,23 +20,23 @@ Lode-stone transformed this project memory and now it lives here: <link_to_repos
 ## Layout
 
 ```
-lode/                          # the hub — a git submodule
-├── stone-map.md               # hub index; shared-knowledge entry point
-├── projects/
-│   └── <name>/                # one project's full lode structure
-│       └── lode-map.md        # project memory entry point
-├── systems/
-│   ├── <system>.md            # system-level overview
-│   └── <system>/
-│       ├── <project>.md           # per project in the system
-│       └── <project>-<module>.md  # per module, in depth
-└── shared/
-    └── <topic>/               # common knowledge: practices, quirks,
+lode/                          # the hub - a git submodule
+|-- stone-map.md               # hub index; shared-knowledge entry point
+|-- projects/
+|   \-- <name>/                # one project's full lode structure
+|       \-- lode-map.md        # project memory entry point
+|-- systems/
+|   |-- <system>.md            # system-level overview
+|   \-- <system>/
+|       |-- <project>.md           # per project in the system
+|       \-- <project>-<module>.md  # per module, in depth
+\-- shared/
+    \-- <topic>/               # common knowledge: practices, quirks,
                                # gotchas usable by more than one project
 ```
 
 `lode/tmp` moves OUT of the submodule to `tmp/` at the project repo
-root — scratch stays per-project; the hub carries only memory worth
+root - scratch stays per-project; the hub carries only memory worth
 sharing.
 
 The **2+ promotion rule**: an entry moves from a project slice into
@@ -45,7 +45,7 @@ to the origin project.
 
 ## Migration runbook
 
-1. `lode` → `lode-project` (rename in the project repo).
+1. `lode` -> `lode-project` (rename in the project repo).
 2. Add the knowledge hub as a submodule at `lode/`.
 3. `mkdir -p lode/projects/<project_name_taken_from_git>`; transfer
    `lode-project` content EXCEPT `lode/tmp` into it.
@@ -60,6 +60,6 @@ to the origin project.
     resolve, no memory stranded in `tmp`, marker exact.
 11. Propose the push; the developer verifies before accepting.
 
-Steps 8–9 close the two gaps found in the original 9-step sketch:
+Steps 8-9 close the two gaps found in the original 9-step sketch:
 without the hub push and the pin bump, teammates clone a marker that
 points at an old hub state.

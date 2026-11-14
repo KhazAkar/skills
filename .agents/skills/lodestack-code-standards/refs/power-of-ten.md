@@ -1,4 +1,4 @@
-# The Power of Ten — rationale digest
+# The Power of Ten - rationale digest
 
 Paraphrased digest of G. J. Holzmann, "The Power of 10: Rules for
 Developing Safety-Critical Code", IEEE Computer, June 2006, as hosted

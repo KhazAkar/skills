@@ -1,4 +1,4 @@
-# TigerStyle — rationale digest
+# TigerStyle - rationale digest
 
 Paraphrased digest of https://tigerstyle.dev, the methodology published
 by TigerBeetle, compiled 2026-11-07 for review-time and ADR-time
@@ -94,7 +94,7 @@ deadlines for exponential quality.
 
 - **Simplicity and elegance.** In Dijkstra's words, simple and elegant
   systems are easier to get right, more efficient to run, and much
-  more reliable — at the price of hard work and discipline.
+  more reliable - at the price of hard work and discipline.
 - **Nouns and verbs.** Names carry the mental model: name things for
   what they are or do, order words most-significant first so related
   names sort together, keep paired names the same length, use

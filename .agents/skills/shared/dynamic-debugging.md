@@ -5,7 +5,7 @@ firmware *can* do; dynamic observation tells you what it *does*. Always run
 dynamic steps against the backed-up image or a spare chip; never mutate the
 only good copy.
 
-## `openocd` (JTAG/SWD) — beyond dumping
+## `openocd` (JTAG/SWD) - beyond dumping
 
 Once the core is reachable, drive it through a session. Easiest path: start
 the openocd daemon and talk to it over its telnet command interface (port 4444)
@@ -43,7 +43,7 @@ openocd -f interface/<adapter>.cfg -f target/<chip>.cfg \
 Record the adapter, target config, and any register/MMIO writes you make in
 `lode/toolchain.md`; treat dynamic writes as a decision worth an ADR.
 
-## UART console — the cheapest live signal
+## UART console - the cheapest live signal
 
 Most boards expose a UART (boot log, U-Boot shell, kernel panic, vendor shell).
 Identify the pins with a multimeter (GND = continuity to ground; TX = idle-high
@@ -70,7 +70,7 @@ arm-none-eabi-gdb build/<device>.elf \
   -ex "break main" -ex "continue"
 ```
 
-## QEMU — run/step suspect code off the hardware
+## QEMU - run/step suspect code off the hardware
 
 For a position-independent ELF or a userland binary, use user-mode QEMU; for
 bare-metal/RTOS images, use system-mode QEMU with a matching machine and a
@@ -82,7 +82,7 @@ qemu-arm -g 1234 work/<device>.elf
 arm-none-eabi-gdb work/<device>.elf -ex "target remote :1234"
 
 # System mode (bare-metal/RTOS blob). lm3s6965evb maps flash at 0x00000000,
-# so do NOT force $pc to an STM32-style 0x08000000—let the reset vector run.
+# so do NOT force $pc to an STM32-style 0x08000000-let the reset vector run.
 qemu-system-arm -M lm3s6965evb -kernel work/<device>.bin -serial stdio -S -gdb tcp::1234
 arm-none-eabi-gdb work/<device>.bin \
   -ex "target remote :1234"

@@ -1,7 +1,7 @@
 ---
 name: "lodestack-memory"
-description: "Durable project memory — the LodeStack Memory contract. lode/ structure (lode-map, summary, terminology, practices, quirks-and-gotchas, adr/, plan/, architecture/, tmp/), the ADR spec (6xW, status machine, Verification block, TASKLIST bound), Plan and backlog formats, exploration lane, lode-stone shared-hub option. Load when starting projects, making architecture decisions, onboarding a codebase, or whenever a repo has lode/. Ships AGENTS.template.md."
-version: "1.0.0"
+description: "Durable project memory - the LodeStack Memory contract. lode/ structure (lode-map, summary, terminology, practices, quirks-and-gotchas, adr/, plan/, architecture/, tmp/), the ADR spec (6xW, status machine, Verification block, TASKLIST bound), Plan and backlog formats, exploration lane, lode-stone shared-hub option. Load when starting projects, making architecture decisions, onboarding a codebase, or whenever a repo has lode/. Ships AGENTS.template.md."
+version: "1.0.1"
 author: "Damian Zaręba"
 license: "MIT"
 constitution: "74386bb298143f6a43909b2e3c594658d6c3ec0b"
@@ -17,7 +17,7 @@ tags:
 # Skill: lodestack-memory
 
 ## Purpose
-Durable project memory in `lode/` — the Memory contract of the
+Durable project memory in `lode/` - the Memory contract of the
 LodeStack. The lode is external memory for the developer and agents.
 
 - **You own decisions. The agent owns memory.**
@@ -51,18 +51,18 @@ enforcement file ships here as
 ## Structure
 ```
 lode/
-├── lode-map.md          # index: ADR + Plan + architecture links
-├── summary.md           # technical project description, NOT a README
-├── terminology.md       # names and verbs, ELI5-level definitions
-├── practices.md         # project actions and tooling
-├── osmm.md              # latest dated OSMM pass table
-├── quirks-and-gotchas/  # unexpected/live behaviour findings
-│   ├── README.md            # main file
-│   └── <component>.md       # optional, for complex systems
-├── adr/                 # ADR-<YYYY-MM-DD>-<seq>.md + TASKLIST files
-├── plan/                # PLAN-*.md and BL-*.md
-├── architecture/        # system.md + <module>.md
-└── tmp/                 # scratch; folders per ADR/Plan; git-ignored
+|-- lode-map.md          # index: ADR + Plan + architecture links
+|-- summary.md           # technical project description, NOT a README
+|-- terminology.md       # names and verbs, ELI5-level definitions
+|-- practices.md         # project actions and tooling
+|-- osmm.md              # latest dated OSMM pass table
+|-- quirks-and-gotchas/  # unexpected/live behaviour findings
+|   |-- README.md            # main file
+|   \-- <component>.md       # optional, for complex systems
+|-- adr/                 # ADR-<YYYY-MM-DD>-<seq>.md + TASKLIST files
+|-- plan/                # PLAN-*.md and BL-*.md
+|-- architecture/        # system.md + <module>.md
+\-- tmp/                 # scratch; folders per ADR/Plan; git-ignored
 ```
 
 `practices.md` has four sections: necessary and opt-in tooling;
@@ -76,12 +76,12 @@ If `lode/` does not exist, ask before creating it. Add `lode/tmp/`
 to `.gitignore`.
 
 ## Cadence
-One cycle = one development cycle (ADR → Test → Code). The lode is
+One cycle = one development cycle (ADR -> Test -> Code). The lode is
 written at two moments:
 
-1. **Decision** — the ADR exists before the code it justifies.
+1. **Decision** - the ADR exists before the code it justifies.
    ADR-first is the rule, not the exception.
-2. **Acceptance** — when the developer accepts the work, update every
+2. **Acceptance** - when the developer accepts the work, update every
    affected lode file before the next request.
 
 Not per step, not per commit.
@@ -92,21 +92,21 @@ graduates to a Proposed ADR when it becomes real. This protects
 research-grade and spike work from ceremony it is not ready for.
 
 ## ADR
-An ADR is a permanent model of one decision — the input for the
+An ADR is a permanent model of one decision - the input for the
 executable specification (the test). Write it as a specification:
 applying its logic verbatim produces the test.
 
 ### 6xW fields
-1. **Status** — Proposed / Accepted / Superseded.
-2. **What** — feature or fix.
-3. **When** — Now / Backlog.
-4. **Specification** — the whole description of the feature, written
+1. **Status** - Proposed / Accepted / Superseded.
+2. **What** - feature or fix.
+3. **When** - Now / Backlog.
+4. **Specification** - the whole description of the feature, written
    as an executable specification and ending with a **Verification**
-   block: testable assertions (given X, when Y, then Z). The ADR→test
+   block: testable assertions (given X, when Y, then Z). The ADR->test
    derivation must be mechanical.
-5. **Pick** — technologies to use. The agent proposes a researched
+5. **Pick** - technologies to use. The agent proposes a researched
    list with reasoning; the developer picks and owns the reason.
-6. **Drop** — the rest of the proposed list. The developer owns the
+6. **Drop** - the rest of the proposed list. The developer owns the
    rejection reason for each, even when the agent writes it down.
 
 ### Rules
@@ -135,7 +135,7 @@ Continuous, riding existing checkpoints (ADR acceptance, release
 bumps, lode sync). The agent runs the pass against
 [../shared/osmm-checklist.md](../shared/osmm-checklist.md), presents
 it as a table; the developer judges content. The latest dated pass
-table lives at `lode/osmm.md` — its presence is the checkable
+table lives at `lode/osmm.md` - its presence is the checkable
 artifact.
 
 ## Handover (on request)
@@ -148,19 +148,19 @@ as a submodule. See [refs/lode-stone.md](refs/lode-stone.md) for the
 layout and the migration runbook.
 
 ## Language
-- English: ASD-STE100 Simplified Technical English — one word one
+- English: ASD-STE100 Simplified Technical English - one word one
   meaning, short sentences, active voice, present tense, no idioms.
 - Other languages: STE-100 in spirit.
 - Applies to lode files, ADRs, summaries and commit messages.
 
 ## Commands (natural language)
-- "What does the lode say about X?" → search lode files
-- "Create ADR for X" → the ADR spec above
-- "Update lode-map" → regenerate the index
-- "Review lode" → check for outdated entries
-- "Run OSMM assessment" → dated pass table into `lode/osmm.md`
-- "Handover" → write `lode/tmp/handover-<date>.md`
-- "Migrate this project to lode-stone" → `refs/lode-stone.md`
+- "What does the lode say about X?" -> search lode files
+- "Create ADR for X" -> the ADR spec above
+- "Update lode-map" -> regenerate the index
+- "Review lode" -> check for outdated entries
+- "Run OSMM assessment" -> dated pass table into `lode/osmm.md`
+- "Handover" -> write `lode/tmp/handover-<date>.md`
+- "Migrate this project to lode-stone" -> `refs/lode-stone.md`
 
 ## Sources
 Constitution: `constitution/LodeStack.md` at `74386bb`.
