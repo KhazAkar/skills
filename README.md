@@ -26,6 +26,10 @@ One skill per folder under `.agents/skills/`:
 - **lodestack-edit** — LodeStack v2 Edit contract: REASON, LOCATE,
   ANALYZE, EDIT (tree-sitter-edit primary, text-diff fallback),
   VERIFY with the 3-attempt break rule.
+- **lodestack-code-standards** — LodeStack v2 Code Standards: one
+  universal rule set distilled from MISRA, Power of Ten, TigerStyle,
+  Zen of Python, YAGNI, Grug-brain; junior-maintainable code; every
+  rule carries a gate (test / analyzer / review).
 - **code-standards** — engineering standards distilled from TigerStyle
   (tigerstyle.dev) and NASA JPL's Power of Ten: spirit tier in every
   repo, strict tier for unattended native cores, adopted by ADR.

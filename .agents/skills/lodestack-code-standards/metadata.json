@@ -1,0 +1,13 @@
+{
+  "id": "01a1dc6a-60f8-76b3-a941-f1d0a5415092",
+  "name": "lodestack-code-standards",
+  "version": 1,
+  "latestVersion": 1,
+  "createdAt": "2026-11-15T00:36:00.000Z",
+  "updatedAt": "2026-11-15T00:36:00.000Z",
+  "sharingScope": "workspace",
+  "notes": "",
+  "aliases": [
+    "main"
+  ]
+}
