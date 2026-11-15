@@ -7,7 +7,8 @@ Per skill under .agents/skills/ (excluding shared):
   version is semver MAJOR.MINOR.PATCH
 - metadata.json: name matches the folder, version == latestVersion (integers),
   createdAt/updatedAt are valid ISO 8601 UTC timestamps, updatedAt does not
-  go backwards vs the baseline ref
+  go backwards vs the baseline ref - unless it equals the skill registry's
+  own updated_at (the registry is the source of truth; its clock may lag)
 - README.md: ## Skill ID matches metadata id, ## Version matches metadata version
 
 Plus: every relative Markdown link in the repo resolves to an existing file.
@@ -15,9 +16,11 @@ Plus: every relative Markdown link in the repo resolves to an existing file.
 Exits non-zero and prints every violation if any check fails.
 """
 import json
+import os
 import re
 import subprocess
 import sys
+import urllib.request
 from datetime import datetime
 from pathlib import Path
 
@@ -49,6 +52,57 @@ def parse_ts(ts):
         return datetime.fromisoformat(ts.replace("Z", "+00:00"))
     except ValueError:
         return None
+
+
+REGISTRY_URL = "https://api.mistral.ai/mcp"
+_registry_skills = None
+
+
+def registry_updated_at(name):
+    """The skill registry's updated_at for name, or None.
+
+    Fetched lazily, once, over the MCP endpoint; needs MISTRAL_API_KEY
+    in the environment. Any failure returns None and the caller keeps
+    the plain baseline rule - the gate stays usable offline.
+    """
+    global _registry_skills
+    if _registry_skills is None:
+        _registry_skills = fetch_registry_skills()
+    return _registry_skills.get(name)
+
+
+def fetch_registry_skills():
+    """One list_skills call; returns {name: updated_at} or {}."""
+    key = os.environ.get("MISTRAL_API_KEY")
+    if not key:
+        return {}
+    rpc = {"jsonrpc": "2.0", "id": 1, "method": "tools/call",
+           "params": {"name": "list_skills", "arguments": {"limit": 200}}}
+    req = urllib.request.Request(
+        REGISTRY_URL, data=json.dumps(rpc).encode(),
+        headers={"Authorization": f"Bearer {key}",
+                 "Content-Type": "application/json",
+                 "Accept": "application/json, text/event-stream"})
+    try:
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            raw = resp.read().decode()
+    except OSError:
+        return {}
+    for line in raw.splitlines():
+        line = line.removeprefix("data:").strip()
+        try:
+            msg = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        for block in msg.get("result", {}).get("content", []):
+            if block.get("type") != "text":
+                continue
+            try:
+                data = json.loads(block["text"])
+            except (json.JSONDecodeError, KeyError):
+                continue
+            return {s["name"]: s["updated_at"] for s in data.get("skills", [])}
+    return {}
 
 
 def frontmatter_fields(text):
@@ -118,7 +172,9 @@ for skill_dir in sorted(p for p in SKILLS.iterdir() if p.is_dir() and p.name != 
                 old_ts = None
             new_ts = parse_ts(meta.get("updatedAt", ""))
             if old_ts is not None and new_ts is not None and new_ts < old_ts:
-                err(f"{name}: updatedAt went backwards vs {TARGET_REF} ({old.stdout and json.loads(old.stdout).get('updatedAt')} -> {meta.get('updatedAt')})")
+                reg_ts = parse_ts(registry_updated_at(name) or "")
+                if reg_ts != new_ts:
+                    err(f"{name}: updatedAt went backwards vs {TARGET_REF} ({old.stdout and json.loads(old.stdout).get('updatedAt')} -> {meta.get('updatedAt')})")
         # returncode != 0 with a valid baseline ref means the skill is new on
         # this branch: no baseline metadata exists, which is legitimate.
 
