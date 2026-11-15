@@ -1,10 +1,10 @@
 {
   "id": "01a1dc67-3af8-75e5-9357-7f717c58d985",
   "name": "lodestack-edit",
-  "version": 11,
-  "latestVersion": 11,
+  "version": 12,
+  "latestVersion": 12,
   "createdAt": "2026-11-15T00:35:00.000Z",
-  "updatedAt": "2026-11-15T16:19:00.407934Z",
+  "updatedAt": "2026-11-15T17:22:02.000Z",
   "sharingScope": "workspace",
   "notes": "",
   "aliases": [
