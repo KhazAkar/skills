@@ -23,6 +23,50 @@ Every universal rule exists to make modification safe: small units
 bound the blast radius, assertions are the guardrails, zero warnings
 keep the noise floor at zero so real problems are visible.
 
+Maintainable's upper bound is defensible: the owner can explain and
+debug every merged line without AI help (khazlas-engine's
+"understanding is the gate"). A diff the owner cannot defend does
+not ship - receipts are the ADR plus the owner's comprehension.
+
+## Prefer 90% at half the complexity
+
+The escape hatch is the standard machinery: complete-but-complex is
+an ADR opt-out receipt naming which requirement makes 90%
+insufficient - e.g. "full protocol coverage required by the safety
+contract; partial coverage fails certification". Absent a receipt,
+simple wins.
+
+## Comment discipline - examples
+
+A comment says what the code cannot say. It is generic - useful to
+any future reader, not tied to the change that produced it.
+
+```cpp
+// BAD - restates the code
+// Populate n_ctx from metadata key "context_length", default 1024
+n_ctx = read_metadata("context_length", 1024);
+
+// GOOD - none needed, the code says it
+n_ctx = read_metadata("context_length", 1024);
+```
+
+```cpp
+// BAD - task-specific, meaningless out of context
+// Reset n_tokens to 0 before releasing the slot. Fixes "phantom"
+// content preserved across multiple requests.
+n_tokens = 0;
+
+// GOOD - generic, still true next year
+// reset here, as we will release the slot below
+n_tokens = 0;
+// ... (a lot of code)
+release();
+```
+
+Comment the invariant, the non-obvious bound, the why that survives
+a refactor - never the diff's narrative and never copied code's
+provenance note.
+
 ## Gate annotations
 
 `gate: test` - the rule is behavioral; a targeted test executes it

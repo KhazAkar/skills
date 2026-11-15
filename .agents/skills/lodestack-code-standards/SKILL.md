@@ -1,7 +1,7 @@
 ---
 name: "lodestack-code-standards"
 description: "The LodeStack Code Standards contract - one universal rule set distilled from MISRA C:2025, MISRA C++:2023, NASA JPL Power of Ten, TigerStyle, Zen of Python, YAGNI and Grug-brain, annotated by gate (test / analyzer / review) so hard rules become executable checks. Junior-maintainable code is the first principle. Per-language additions and deviations (ADR receipts) live in Reference.md. Load when writing or reviewing code, adopting a linter or analyzer, or authoring lode/practices.md."
-version: "1.0.2"
+version: "1.0.3"
 author: "Damian Zaręba"
 license: "MIT"
 constitution: "573391b421fd31c4d4be1f0f0e540d51bc1a08fb"
@@ -22,6 +22,8 @@ code quality - **code a human of junior level can maintain without
 AI assistance**. Maintainable, not merely readable: a junior can
 change it safely because units are small, limits are explicit,
 assertions catch misuse, and the guardrails are in the code itself.
+And defensible: the owner can explain and debug every merged line
+without AI help - understanding is the acceptance test.
 
 Sibling contracts: **lodestack-memory** owns the ADRs deviations
 record; **lodestack-edit** runs the VERIFY gates these rules feed;
@@ -72,8 +74,15 @@ presence gated, content human.
 - **Boring over clever** - the obvious construct wins over the
   elegant one; cleverness that needs a comment to survive is
   technical debt at creation. `gate: review`
+- **Prefer 90% at half the complexity** - simple over complete wins
+  by default; choosing the complete-but-complex option is an ADR
+  opt-out receipt, not a habit. `gate: review`
 - **YAGNI** - build what the ADR needs now; no speculative
   features, abstractions or config knobs. `gate: review`
+- **Comment discipline** - a comment says what the code cannot:
+  generic and useful to any future reader; it never restates the
+  code, narrates the current task, or annotates copied code.
+  `gate: review`
 
 ### Control flow and memory (native-scope)
 Rules that apply where the language has the concept (C, C++, Rust,
