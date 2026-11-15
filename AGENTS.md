@@ -32,8 +32,8 @@ previous stage produced its artifact. Artifacts go in the commit body.
    license, tags; metadata.json id and version fields); 3. CLI help
    and man pages when tooling is involved. Model memory is not a
    source. Reuse first: copy the pattern of an existing skill. No
-   drive-by edits to other skills; adjacent problems go to the
-   backlog, not into the diff.
+   drive-by edits to other skills; adjacent problems go to
+   BACKLOG.md, not into the diff.
 5. **PROPAGATE.** Re-check every impact entry: edited as declared, or
    EXEMPT with a reason. This repo has no CI; the gates are: re-fetch
    the changed files and verify the content, and check the version
