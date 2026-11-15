@@ -1,6 +1,6 @@
 ---
 name: "firmware-development"
-description: "Use this skill for embedded firmware development in C, C++ or Rust: know the silicon (inventory + datasheets/errata) before coding, build reproducibly with a pinned toolchain, test on the host and in an emulator before flashing, flash with backup+verify and a recovery path — as a specialized path on top of the lode-programming backbone, which owns the lode/ folder, ADRs and their update cadence."
+description: "Use this skill for embedded firmware development in C, C++ or Rust: know the silicon (inventory + datasheets/errata) before coding, build reproducibly with a pinned toolchain, test on the host and in an emulator before flashing, flash with backup+verify and a recovery path — as a specialized path on top of the lodestack-memory backbone, which owns the lode/ folder, ADRs and their update cadence."
 version: "1.3.1"
 author: "Damian Zaręba"
 license: "MIT"
@@ -25,8 +25,8 @@ do we build firmware that does what we want*. Both share the same hardware
 knowledge, the same debug tooling and the same `lode/` file names, so a board
 understood with one skill is directly buildable with the other.
 
-**lode-programming is the backbone; this skill is a specialized path on it.**
-Load lode-programming first and follow its cadence: an ADR the moment an
+**lodestack-memory is the backbone; this skill is a specialized path on it.**
+Load lodestack-memory first and follow its cadence: an ADR the moment an
 architectural decision is taken (before the code it justifies), and the
 affected `lode/` files updated at the end of each cycle — one user
 prompt/feature. This skill adds only the firmware-specific file names (see
@@ -70,7 +70,7 @@ never copied:
   capture, when the target speaks one of them.
 
 ## Phase 0: Load lode, inventory hardware (prerequisite)
-Load **lode-programming** first; in an existing repo read `lode/lode-map.md`
+Load **lodestack-memory** first; in an existing repo read `lode/lode-map.md`
 before anything else.
 
 Then, identical to Phase 0 of firmware-reverse-engineering: ask the user once which
@@ -138,8 +138,8 @@ for toolchain pinning, CMake toolchain files, linker script skeleton, flags,
 "build twice, compare hashes" reproducibility check.
 
 ### 3. Test before you flash
-Follow TDD (the **code-standards** principle, on the AMDD cadence from
-lode-programming): the test comes before the code, on the host first. Structure firmware so that application logic depends
+Follow TDD (the **lodestack-code-standards** principle, on the AMDD cadence from
+lodestack-memory): the test comes before the code, on the host first. Structure firmware so that application logic depends
 on a thin HAL seam (C/C++ interface or Rust trait) that can be replaced by a
 fake on the host.
 
@@ -181,7 +181,7 @@ bootloaders), the dual-slot bootloader outline, and the unbrick procedures per
 chip family with their data-loss warnings.
 
 ## Lode files
-Structure, ADR format and update cadence come from **lode-programming**.
+Structure, ADR format and update cadence come from **lodestack-memory**.
 Firmware adds these files (shared with firmware-reverse-engineering where the
 name matches), each fed by the phase noted:
 
@@ -264,14 +264,14 @@ in `lode/build.md`.
   `lode/backups.md`.
 - *"How do I unbrick this?"* → `lode/recovery.md`.
 - *"What does the lode say about <topic>?"* → search lode files.
-- *"Create ADR for <decision>"* → use the lode ADR template.
+- *"Create ADR for <decision>"* → per the lodestack-memory ADR spec.
 
 ## Dependencies
-- **lode-programming** — the backbone: `lode/` structure, ADRs, update
+- **lodestack-memory** — the backbone: `lode/` structure, ADRs, update
   cadence. Loaded in Phase 0.
-- **code-edit** — the surgical edit contract for every code change:
+- **lodestack-edit** — the surgical edit contract for every code change:
   drivers, HAL, tests and build files alike.
-- **code-standards** — development principles (TDD, YAGNI) and the tier
+- **lodestack-code-standards** — development principles (TDD, YAGNI) and the tier
   rules; firmware is a strict-tier candidate, adopted by ADR.
 - **firmware-reverse-engineering** — sibling skill; shares `../shared/` and
   the lode file names. Load it when the board already carries firmware you

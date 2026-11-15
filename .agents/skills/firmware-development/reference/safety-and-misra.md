@@ -52,7 +52,7 @@ shift widths, enum ranges, interrupt sharing, and initialization order.
 
 ## Deviation ADR
 
-Use the lode-programming ADR format and include the rule identity:
+Use the lodestack-memory ADR format and include the rule identity:
 
 ```text
 Status: Accepted

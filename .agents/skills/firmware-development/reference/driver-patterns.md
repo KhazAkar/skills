@@ -118,7 +118,7 @@ buffer. Keep ISR ownership and memory ordering documented.
 Do not allocate dynamically after initialization (`malloc`/`new` in C/C++,
 heap growth in Rust) unless an ADR justifies it. Reserve fixed pools at
 startup; with no recursion this keeps stack and heap usage statically
-reviewable (strict-tier rule 3 in the code-standards skill).
+reviewable (strict-tier rule 3 in the lodestack-code-standards skill).
 
 ## Shared state
 
