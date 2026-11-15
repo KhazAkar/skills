@@ -6,4 +6,4 @@ The LodeStack Edit contract - the code-editing cycle for every code change: REAS
 01a1dc67-3af8-75e5-9357-7f717c58d985
 
 ## Version
-10
+11
