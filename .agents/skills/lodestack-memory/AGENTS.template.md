@@ -25,8 +25,10 @@ Project memory entry point: `lode/lode-map.md`.
 - Commits are authored by the developer's git identity; the agent
   never overrides author or committer. Agent assistance is recorded
   only in the trailer below.
-- Commits end with exactly one trailer:
-  `Assisted-By: <name-of-agent> <email@ofagent.xyz>`
+- Commits end with exactly one trailer stating the agent's official
+  identity and a real contact address of the agent or its vendor:
+  `Assisted-By: [agent name] <email>` (example:
+  `Assisted-By: Mistral Vibe <vibe@mistral.ai>`)
   Never Co-Authored-By.
 - Generated files are ASCII only: no em-dashes, en-dashes, or other
   non-ASCII punctuation; use plain hyphens.
