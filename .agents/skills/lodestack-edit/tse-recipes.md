@@ -1,9 +1,9 @@
-tree-sitter-edit: 0c1cd42c8fab2452cb871b5d5147a4c9406288f0
+tree-sitter-edit: 4cd18491238181f8e5f1ab5175c1d6bca0b065be
 
-Core subset of docs/agent-recipes.md at the pinned commit. Refresh
-trigger: re-check upstream when the tool's recipes change. Dropped
-recipe sections are covered by `tree-sitter-edit --help` or the
-notes at the end.
+Core subset of docs/agent-recipes.md at the pinned commit (tag
+v0.1.0 points at it). Refresh trigger: re-check upstream when the
+tool's recipes change. Dropped recipe sections are covered by
+`tree-sitter-edit --help` or the notes at the end.
 
 # Agent recipes (core)
 
@@ -47,7 +47,7 @@ tree-sitter-edit dump --query '((function_definition) @fn)' src/config.cpp
 
 `dump` exits 0 even on files with syntax errors (`ERROR` nodes are
 visible, `"has_errors": true` in JSON) — it inspects, it does not
-gate; the gate is the `(ERROR)/(MISSING)` query scan below. Node
+gate; the gate is `check` below. Node
 type names differ per grammar; `dump` is how you see them before
 writing a query.
 
@@ -112,6 +112,22 @@ cpp) and renames the definition and every reference in its scope,
 handling shadowing. Single-node replacement (no reference handling)
 is `edit` with `--text`.
 
+## List a symbol's references, or jump to its definition
+
+```sh
+# every site rename would touch - kind-tagged, byte-sorted
+tree-sitter-edit references --at-row-col 4:6 --format json main.go
+
+# the one definition for the symbol under a position
+tree-sitter-edit definition --at-byte 115 --format json main.go
+```
+
+Both take the same addressing as `rename` (`--query`/`--capture`/
+`--occurrence`, or a position). The JSON is LSP-shaped: `file`,
+`kind` (`definition`|`reference`), `text`, plus row:col and byte
+range fields. A position that is not a symbol returns
+`"locations": []`, exit 0.
+
 ## Edit one node: review the diff, then apply
 
 ```sh
@@ -131,16 +147,12 @@ Use `--occurrence N` (0-based) when the query matches several nodes.
 ## Batch: several edits in one invocation, one write
 
 ```sh
-# one --text per --query, paired by position
+# one --text per --query, paired by position; texts from one kind only
 tree-sitter-edit edit \
   --query '((function_declaration name: (identifier) @n) @fn (#eq? @n "alpha"))' --text-file alpha.txt \
   --query '((function_declaration name: (identifier) @n) @fn (#eq? @n "beta"))'  --text-file beta.txt \
   --capture fn \
-  --dry-run --format diff main.go    # review all hunks first
-tree-sitter-edit edit \
-  --query '((function_declaration name: (identifier) @n) @fn (#eq? @n "alpha"))' --text-file alpha.txt \
-  --query '((function_declaration name: (identifier) @n) @fn (#eq? @n "beta"))'  --text-file beta.txt \
-  --capture fn --in-place main.go
+  --dry-run --format diff main.go    # review all hunks first, then --in-place
 ```
 
 All targets resolve against the original parse (order-independent);
@@ -148,7 +160,22 @@ overlapping ranges are exit 2; one re-parse, one atomic write; a
 query matching nothing fails the batch (exit 1) before anything
 writes. `--all`/`--occurrence`/`--at-*` are rejected in batch;
 `--capture` and `--query-file` repeat per `--query` entry, paired
-positionally (query-file dodges shell quoting).
+positionally (query-file dodges shell quoting). Mixed operations
+per entry via `--op` (`replace`, `insert-before`, `insert-after`,
+`delete`):
+
+```sh
+tree-sitter-edit edit \
+  --query '(import_declaration) @i' --capture i \
+  --op insert-after --text $'\nimport "os"' \
+  --query '(call_expression) @c' --capture c \
+  --op insert-before --text $'fmt.Println("x")\n\t' \
+  --dry-run --format diff main.go
+```
+
+Insert payloads write at the node's boundary byte and carry their
+own newlines/indentation; an insert that breaks syntax is exit 1,
+two inserts on the same byte are exit 2.
 
 ## Delete a node
 
@@ -172,14 +199,42 @@ tree-sitter-edit edit --at-byte 1234 --text greet main.go
 
 `--at-row-col` is strict: `4:5:2` or `4:5x` are rejected with exit 2.
 
-## Scan a file for parse errors
+## Scan a file for parse errors (check)
 
 ```sh
-tree-sitter-edit query \
-  --query '(ERROR) @err (MISSING) @miss' \
-  --capture err --capture miss --format json src/big.cpp
-# empty output + exit 0 means the file parses cleanly
+tree-sitter-edit check src/big.cpp
+# exit 0 = clean, 1 = parse errors found (listed), 3 = file couldn't
+# be checked; multiple files report each in argument order
+
+tree-sitter-edit check --format json src/big.cpp | jq '.files[0].errors'
+# [{"type":"missing","text":"}","start_byte":...,"start_row":4,"start_col":0,...}]
 ```
+
+`check` reports each ERROR and MISSING node with its range; MISSING
+means the grammar expected a token that is absent (unclosed `}`, `)`,
+empty expression) - the `text` field names the missing symbol. Gate a
+pipeline on the exit code; inspect locations from the report.
+
+## Edit many files: --glob
+
+```sh
+# same operation on every match; one combined report
+tree-sitter-edit edit --all \
+  --query '(identifier) @n (#eq? @n "oldName")' --capture n \
+  --text newName --glob 'src/**/*.go' --in-place
+
+# dry-run the whole set first: per-file status + replacements, no writes
+tree-sitter-edit rename \
+  --query '(function_declaration name: (identifier) @name)' \
+  --text greet --glob 'src/**/*.go' --dry-run --format json
+```
+
+The file set is every pattern's matches, deduplicated and sorted.
+Semantics stay per-file: a file that fails reports
+`"status":"error"` and the rest still apply (exit 1 says some
+failed; the JSON says which); no cross-file analysis, no
+whole-batch rollback. Position flags and `--format diff` are
+rejected under `--glob`; use a query to address.
 
 ## Odds and ends
 
@@ -189,7 +244,8 @@ tree-sitter-edit query \
 - `--all` replaces every match of a single-query edit.
 - `-` as the file reads stdin and requires `--lang` (no extension to
   detect).
-- One file per invocation; loop over `grep -rl` for multi-file work.
 - QML is supported via a vendored qmljs grammar; same commands, but
   node shapes differ (`ui_binding`, `ui_property`).
+- For file sets a glob cannot express (changed files only,
+  grep-filtered), a shell loop over `grep -rl` still composes.
 - Flags come before the file argument (Go `flag` convention).

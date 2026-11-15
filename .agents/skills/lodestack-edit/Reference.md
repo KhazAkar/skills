@@ -43,6 +43,24 @@ the change waits; record the gap.
   and install-time cost; the developer gates it.
 - Adjacent problems go to the backlog, not into the diff.
 
+## tree-sitter-edit guarantees (the why of the primary mechanism)
+
+Copied from the recipes file; the engine's contract to its callers:
+
+- Every edit is re-parsed before it is written. If the result does
+  not parse, nothing is written and the exit code is 1.
+- `--in-place` and `-o` write atomically (temp file + rename) and
+  preserve the original file mode.
+- Exit codes: `0` success, `1` edit/parse/IO failure, `2` usage
+  error (bad flags, bad query, conflicting flags). stderr carries
+  the message; stdout carries only results.
+- Batch results are canonical: the JSON `replacements` list is
+  sorted by byte offset; `--query`/`--text` order does not change
+  the output source or the report.
+
+A text-diff edit carries none of these guarantees; that is the
+cost the record is tracking.
+
 ## VERIFY edges
 
 - Missing gate tool (linter, typechecker, scanner, formatter):
@@ -51,8 +69,10 @@ the change waits; record the gap.
 - `lode/` absent: LODE = `N/A`-recorded + offer setup
   (inform-and-offer-installation, AGENTS contract).
 - tree-sitter-edit fallback triggers: binary missing, grammar
-  unsupported, or the edit inexpressible as a query -> text-diff.
-  A failed VERIFY is inner-loop iteration, not a fallback.
+  unsupported, or the edit inexpressible as a query -> text-diff,
+  RECORDED (the report's mechanism line). Binary missing also earns
+  the install offer (one command, developer-gated like any tool
+  setup). A failed VERIFY is inner-loop iteration, not a fallback.
 - SECURITY scope: defensive coding strategies (input validation,
   bounded resources, safe defaults) AND tool scanning - both, not
   either.

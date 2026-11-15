@@ -1,7 +1,7 @@
 ---
 name: "lodestack-edit"
 description: "The LodeStack Edit contract - the code-editing cycle for every code change, review or refactor. REASON, LOCATE, ANALYZE (agent marks ACCEPT/REJECT per element, table to developer), EDIT via tree-sitter-edit with text-diff fallback, VERIFY gate (LINT, TYPECHECK, SECURITY, FORMAT, TEST, LODE, RECHECK) with an inner EDIT-VERIFY loop, the 3-attempt break rule and the wildcard mechanism on repeat breaks. Load for ALL code work in any project."
-version: "1.0.7"
+version: "1.0.8"
 author: "Damian Zaręba"
 license: "MIT"
 constitution: "a7033902800284dbfb8857af74558765243fb85b"
@@ -58,10 +58,26 @@ Only the sites and the ACCEPTed elements. Minimal viable diff, in
 cycles; remove removed code completely; match the file's style.
 
 Primary mechanism: **AST via `tree-sitter-edit`** - usage patterns in
-[tse-recipes.md](tse-recipes.md). Fall back to text-diff editing
-when: the binary is missing, the file's grammar is unsupported, or
-the edit cannot be expressed as a query. A failed VERIFY is not a
-fallback - it is an inner-loop iteration.
+[tse-recipes.md](tse-recipes.md). Why primary: every edit is
+re-parsed before it is written (unparseable output is refused,
+exit 1, nothing written), writes are atomic, and batch results are
+canonical - the reviewable diff is structurally sound. Minimal loop:
+
+```sh
+tree-sitter-edit dump --depth 2 <file>                    # shape first
+tree-sitter-edit edit --query '(...)' --capture n \
+  --text <payload> --dry-run --format diff <file>          # review the hunk
+tree-sitter-edit edit --query '(...)' --capture n \
+  --text <payload> --in-place <file>                      # apply, re-parsed
+```
+
+Fall back to text-diff editing when: the binary is missing, the
+file's grammar is unsupported, or the edit cannot be expressed as
+a query. An edit mechanism not used is recorded, never silently
+swapped: binary missing is recorded and earns the one-command
+install offer; the other triggers are recorded with a one-line
+reason in the report. A failed VERIFY is not a fallback - it is an
+inner-loop iteration.
 
 ### 5. VERIFY
 The gate, as checkboxes. Points a-d run specialized tools for the
@@ -126,6 +142,8 @@ After VERIFY passes, present in tabular form:
 1. Summary of what was done
 2. Findings made along the work
 3. Potential issues
+4. Edit mechanism per file: `tree-sitter-edit`, or text-diff with
+   the trigger recorded
 
 Present the VERIFY result itself as a list - one check per line,
 with its status - not as inline prose.
