@@ -63,7 +63,7 @@ _registry_skills = None
 def registry_fields(name):
     """The skill registry's {updated_at, version} for name, or {}.
 
-    Fetched lazily, once, over the MCP endpoint; needs MISTRAL_API_KEY
+    Fetched lazily, once, over the MCP endpoint; needs MISTRAL_MCP_API_KEY
     in the environment. Any failure returns {} and the caller keeps
     the plain baseline rule - the gate stays usable offline.
     """
@@ -85,7 +85,7 @@ def registry_version(name):
 
 def fetch_registry_skills():
     """One list_skills call; returns {name: updated_at} or {}."""
-    key = os.environ.get("MISTRAL_API_KEY")
+    key = os.environ.get("MISTRAL_MCP_API_KEY")
     if not key:
         return {}
     rpc = {"jsonrpc": "2.0", "id": 1, "method": "tools/call",
