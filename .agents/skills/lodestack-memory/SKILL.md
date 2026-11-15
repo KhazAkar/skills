@@ -1,10 +1,10 @@
 ---
 name: "lodestack-memory"
 description: "Durable project memory - the LodeStack Memory contract. lode/ structure (lode-map, summary, terminology, practices, quirks-and-gotchas, adr/, plan/, architecture/, tmp/), the ADR spec (6xW, status machine, Verification block, TASKLIST bound), Plan and backlog formats and exploration lane. Load when starting projects, making architecture decisions, onboarding a codebase, or whenever a repo has lode/. Ships AGENTS.template.md."
-version: "1.0.6"
+version: "1.0.7"
 author: "Damian Zaręba"
 license: "MIT"
-constitution: "573391b421fd31c4d4be1f0f0e540d51bc1a08fb"
+constitution: "a7033902800284dbfb8857af74558765243fb85b"
 tags:
   - lodestack
   - memory
@@ -108,6 +108,9 @@ applying its logic verbatim produces the test.
    derivation must be mechanical.
 5. **Pick** - technologies to use. The agent proposes a researched
    list with reasoning; the developer picks and owns the reason.
+   When the wildcard trigger fires, the proposal list carries
+   exactly one marked least-obvious option, reasoned like any
+   other.
 6. **Drop** - the rest of the proposed list. The developer owns the
    rejection reason for each, even when the agent writes it down.
 
@@ -168,5 +171,5 @@ approaches tried, blockers, next steps.
 - "Handover" -> write `lode/tmp/handover-<date>.md`
 
 ## Sources
-Constitution: `constitution/LodeStack.md` at `573391b`.
+Constitution: `constitution/LodeStack.md` at `a7033902`.
 Context and mappings: [Reference.md](Reference.md).

@@ -1,10 +1,10 @@
 ---
 name: "lodestack-code-standards"
-description: "The LodeStack Code Standards contract - one universal rule set distilled from MISRA C:2025, MISRA C++:2023, NASA JPL Power of Ten, TigerStyle, Zen of Python, YAGNI and Grug-brain, annotated by gate (test / analyzer / review) so hard rules become executable checks. Junior-maintainable code is the first principle. Per-language additions and deviations (ADR receipts) live in Reference.md. Load when writing or reviewing code, adopting a linter or analyzer, or authoring lode/practices.md."
-version: "1.0.3"
+description: "The LodeStack Code Standards contract - one universal rule set distilled from MISRA C:2025, MISRA C++:2023, NASA JPL Power of Ten, TigerStyle, Zen of Python, YAGNI and Grug-brain, annotated by gate (test / analyzer / review) so hard rules become executable checks. Junior-maintainable, junior-defendable code is the first principle. Per-language additions and deviations (ADR receipts) live in Reference.md. Load when writing or reviewing code, adopting a linter or analyzer, or authoring lode/practices.md."
+version: "1.0.4"
 author: "Damian Zaręba"
 license: "MIT"
-constitution: "573391b421fd31c4d4be1f0f0e540d51bc1a08fb"
+constitution: "a7033902800284dbfb8857af74558765243fb85b"
 tags:
   - lodestack
   - code-standards
@@ -33,8 +33,8 @@ verified. Link, do not restate.
 ## First principle
 Verbatim from the constitution:
 
-> Code with quality equal to being maintainable by a human, of
-> junior level skill level, without AI assistance.
+> Code with quality equal being maintainable and defendable by
+> human without AI assistance, of junior level skill level.
 
 Values in order: safety (correctness, bounded behavior), performance
 (including the developer's performance), experience (clarity,
@@ -136,5 +136,5 @@ Distilled rule digests per source in `refs/`: `power-of-ten.md`,
 - pending distillation from the bought copies; paraphrase-only,
 never verbatim rule text (copyright).
 
-Constitution: `constitution/LodeStack.md` at `573391b`.
+Constitution: `constitution/LodeStack.md` at `a7033902`.
 Context: [Reference.md](Reference.md).

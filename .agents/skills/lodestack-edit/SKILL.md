@@ -1,10 +1,10 @@
 ---
 name: "lodestack-edit"
-description: "The LodeStack Edit contract - the code-editing cycle for every code change, review or refactor. REASON, LOCATE, ANALYZE (agent marks ACCEPT/REJECT per element, table to developer), EDIT via tree-sitter-edit with text-diff fallback, VERIFY gate (LINT, TYPECHECK, SECURITY, FORMAT, TEST, LODE) with an inner EDIT-VERIFY loop and the 3-attempt break rule. Load for ALL code work in any project."
-version: "1.0.5"
+description: "The LodeStack Edit contract - the code-editing cycle for every code change, review or refactor. REASON, LOCATE, ANALYZE (agent marks ACCEPT/REJECT per element, table to developer), EDIT via tree-sitter-edit with text-diff fallback, VERIFY gate (LINT, TYPECHECK, SECURITY, FORMAT, TEST, LODE, RECHECK) with an inner EDIT-VERIFY loop, the 3-attempt break rule and the wildcard mechanism on repeat breaks. Load for ALL code work in any project."
+version: "1.0.6"
 author: "Damian Zaręba"
 license: "MIT"
-constitution: "573391b421fd31c4d4be1f0f0e540d51bc1a08fb"
+constitution: "a7033902800284dbfb8857af74558765243fb85b"
 tags:
   - lodestack
   - edit
@@ -96,6 +96,10 @@ break the cycle and surface to the developer as a table: found
 problems, a description of each, proposed solutions - one complete
 paragraph of reasoning per pain point. The developer picks.
 
+If the break rule fires twice on the same reason, the next
+proposal set MUST include one least-obvious wildcard option,
+reasoned seriously like any other (Wildcard mechanism).
+
 ## Reports
 
 After VERIFY passes, present in tabular form:
@@ -116,6 +120,6 @@ INTENT = REASON, IMPACT = ANALYZE, PROPAGATE absorbed into VERIFY
 still decode.
 
 ## Sources
-Constitution: `constitution/LodeStack.md` at `573391b`.
+Constitution: `constitution/LodeStack.md` at `a7033902`.
 Context: [Reference.md](Reference.md). Tool recipes:
 [tse-recipes.md](tse-recipes.md) - pinned by SHA header.
