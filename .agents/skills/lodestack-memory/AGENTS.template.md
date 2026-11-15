@@ -16,7 +16,10 @@ installation before proceeding.
 
 Project memory entry point: `lode/lode-map.md`.
 
-## Rules
+## Tools
+
+The LodeStack tools mechanize the contracts above. Prefer the
+ool over the manual path whenever it exists in this environment:
 
 - Follow loaded skills strictly.
 - Model files - every ADR, Plan and `lode/architecture/` file -
