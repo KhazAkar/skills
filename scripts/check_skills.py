@@ -8,7 +8,9 @@ Per skill under .agents/skills/ (excluding shared):
 - metadata.json: name matches the folder, version == latestVersion (integers),
   createdAt/updatedAt are valid ISO 8601 UTC timestamps, updatedAt does not
   go backwards vs the baseline ref - unless it equals the skill registry's
-  own updated_at (the registry is the source of truth; its clock may lag)
+  own updated_at (the registry is the source of truth; its clock may lag).
+  metadata version may not be ahead of the registry's version; the
+  registry may be ahead of the ledger between a push and its ledger sync
 - README.md: ## Skill ID matches metadata id, ## Version matches metadata version
 
 Plus: every relative Markdown link in the repo resolves to an existing file.
@@ -32,7 +34,7 @@ ISO8601 = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$")
 FRONTMATTER = re.compile(r"\A---\n(.*?)\n---\n", re.S)
 LINK = re.compile(r"\]\(([^)#\s]+)(?:#[^)]*)?\)")
 REQUIRED_FIELDS = ["name", "description", "version", "author", "license", "tags"]
-TARGET_REF = "origin/main"
+TARGET_REF = os.environ.get("TARGET_REF", "origin/main")
 # Illustrative example links that point at files a project would create,
 # not at files in this repo (kept as examples, not real links).
 EXAMPLE_LINKS = {"../decisions/adr-001.md", "subsystem-name/"}
@@ -58,17 +60,27 @@ REGISTRY_URL = "https://api.mistral.ai/mcp"
 _registry_skills = None
 
 
-def registry_updated_at(name):
-    """The skill registry's updated_at for name, or None.
+def registry_fields(name):
+    """The skill registry's {updated_at, version} for name, or {}.
 
     Fetched lazily, once, over the MCP endpoint; needs MISTRAL_API_KEY
-    in the environment. Any failure returns None and the caller keeps
+    in the environment. Any failure returns {} and the caller keeps
     the plain baseline rule - the gate stays usable offline.
     """
     global _registry_skills
     if _registry_skills is None:
         _registry_skills = fetch_registry_skills()
-    return _registry_skills.get(name)
+    return _registry_skills.get(name, {})
+
+
+def registry_updated_at(name):
+    """The skill registry's updated_at for name, or None."""
+    return registry_fields(name).get("updated_at")
+
+
+def registry_version(name):
+    """The skill registry's version for name, or None."""
+    return registry_fields(name).get("version")
 
 
 def fetch_registry_skills():
@@ -101,7 +113,9 @@ def fetch_registry_skills():
                 data = json.loads(block["text"])
             except (json.JSONDecodeError, KeyError):
                 continue
-            return {s["name"]: s["updated_at"] for s in data.get("skills", [])}
+            return {s["name"]: {"updated_at": s.get("updated_at"),
+                               "version": s.get("version")}
+                    for s in data.get("skills", [])}
     return {}
 
 
@@ -150,6 +164,9 @@ for skill_dir in sorted(p for p in SKILLS.iterdir() if p.is_dir() and p.name != 
     v, lv = meta.get("version"), meta.get("latestVersion")
     if not (isinstance(v, int) and isinstance(lv, int) and v == lv):
         err(f"{name}: metadata version/latestVersion must be equal integers, got {v!r}/{lv!r}")
+    reg_v = registry_version(name)
+    if reg_v is not None and isinstance(v, int) and v > reg_v:
+        err(f"{name}: metadata version {v} is ahead of the registry's {reg_v} - a ledger bump without a landed push")
     for ts_field in ("createdAt", "updatedAt"):
         ts = meta.get(ts_field, "")
         if parse_ts(ts) is None:

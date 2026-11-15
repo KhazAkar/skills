@@ -6,4 +6,5 @@ skill-consistency:
   image: python:3.12
   script:
     - git fetch origin main
+    - export TARGET_REF="${CI_COMMIT_SHA}^"
     - python scripts/check_skills.py

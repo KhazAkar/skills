@@ -54,6 +54,10 @@ One skill per folder under `.agents/skills/`:
 
 - Versioning: SKILL.md, metadata.json and README.md bump together.
 - Commits: conventional titles; a change commit, then a bump commit.
+- Mirrors: this repo is the single source for skill content. The
+  Mistral Skills registry and Devin Knowledge are push-only mirrors,
+  never edited directly. Devin mirrors carry a pointer summary plus
+  a trigger, never the full skill body.
 - code-edit and lode-programming are cross-wired: Code Discipline names
   the edit contract; the contract's Deployment carries the lode cadence.
 - code-standards joins the wiring: Code Discipline names it; its
