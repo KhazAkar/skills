@@ -46,7 +46,8 @@ enforcement file ships here as
    before exploring the codebase. The lode-map is the index.
 2. Show domain knowledge briefly before the first request.
 3. If a project has no `lode/`, work normally; when it would benefit,
-   inform and offer setup. The developer gates.
+   inform and offer setup - `lodectl init` is the one-command answer
+   when it is on PATH. The developer gates.
 
 ## Structure
 ```
@@ -154,6 +155,12 @@ layout and the migration runbook.
 - Applies to lode files, ADRs, summaries and commit messages.
 
 ## Commands (natural language)
+- "Set up lode/" -> run `lodectl init`
+  (gitlab.com/r3xxar/lodectl) when it is on PATH; else the Structure
+  section above
+- "What is open in the backlog?" -> run `bltool`
+  (gitlab.com/r3xxar/bltool) when it is on PATH; else search
+  `lode/plan/` and the marker list by hand
 - "What does the lode say about X?" -> search lode files
 - "Create ADR for X" -> the ADR spec above
 - "Update lode-map" -> regenerate the index
