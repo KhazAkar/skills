@@ -1,6 +1,6 @@
 ---
 name: "firmware-reverse-engineering"
-description: "Use this skill for firmware reverse-engineering work: inventory available hardware tools first, dump and back up target firmware before anything else, research datasheets/erratas (PDFs converted to markdown) to understand the hardware, and record it in lode/ as a specialized path on the lode-programming backbone."
+description: "Use this skill for firmware reverse-engineering work: inventory available hardware tools first, dump and back up target firmware before anything else, research datasheets/erratas (PDFs converted to markdown) to understand the hardware, and record it in lode/ as a specialized path on the lodestack-memory backbone."
 version: "1.9.1"
 author: "Damian Zaręba"
 license: "MIT"
@@ -27,7 +27,7 @@ pillars are, in strict order:
    interpreting the binary. Convert reference PDFs to markdown so they are
    greppable, then search them for registers, addresses, and errata notes.
 
-**lode-programming is the backbone; this skill is a specialized path on it.**
+**lodestack-memory is the backbone; this skill is a specialized path on it.**
 Load it first and follow its cadence: an ADR the moment a non-obvious
 decision is taken, the affected `lode/` files updated at the end of each
 cycle (one user prompt/feature). This skill adds only firmware-specific file
@@ -69,7 +69,7 @@ Then:
 - Map each planned step to a tool that is actually available.
 - If a needed method lacks its tool, either source the tool or choose the
   next-best **non-invasive** read path. Record the choice as an ADR
-  (using the lode-programming ADR template).
+  (per the lodestack-memory ADR spec).
 - Treat the inventory as a constraint on every later step: never assume a
   method is available without a tool to back it.
 
@@ -101,7 +101,7 @@ See **[../shared/datasheets.md](../shared/datasheets.md)** for the `anydoc`
 PDF→markdown flow, grep patterns, and the datasheet/errata research loop.
 
 ### 3. Lode files
-Structure, ADR format and update cadence come from **lode-programming**.
+Structure, ADR format and update cadence come from **lodestack-memory**.
 Firmware reverse-engineering adds these files (shared with
 firmware-development where the name matches):
 
@@ -179,12 +179,12 @@ The loop lives in
 - *"Research <part>"* → fetch datasheet+errata, `anydoc` to markdown, grep for
   registers/errata, update `lode/silicon-map.md` and `lode/register-map.md`.
 - *"What does the lode say about <peripheral>?"* → search lode files.
-- *"Create ADR for <decision>"* → use the lode ADR template.
+- *"Create ADR for <decision>"* → per the lodestack-memory ADR spec.
 
 ## Dependencies
-- **lode-programming** — the backbone: `lode/` structure, ADRs and update
+- **lodestack-memory** — the backbone: `lode/` structure, ADRs and update
   cadence. Loaded first.
-- **code-edit** and **code-standards** — load them when the work turns into
+- **lodestack-edit** and **lodestack-code-standards** — load them when the work turns into
   code: patches, emulator harnesses, extraction tools.
 - **anydoc** (or equivalent PDF→markdown converter) — to make datasheets/erratas
   greppable.
