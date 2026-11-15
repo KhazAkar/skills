@@ -1,10 +1,10 @@
 {
   "id": "01a0a202-6dd9-7050-80f2-cb465f89c59a",
   "name": "firmware-development",
-  "version": 4,
-  "latestVersion": 4,
+  "version": 5,
+  "latestVersion": 5,
   "createdAt": "2026-09-14T21:13:05Z",
-  "updatedAt": "2026-11-10T17:32:06.935362Z",
+  "updatedAt": "2026-11-15T11:40:00.000000Z",
   "sharingScope": "private",
   "notes": "",
   "aliases": [

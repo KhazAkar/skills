@@ -9,4 +9,4 @@ lodestack-memory backbone, which owns the lode/ folder, ADRs and cadence.
 01a0a202-6dd9-7050-80f2-cb465f89c59a
 
 ## Version
-4
+5
