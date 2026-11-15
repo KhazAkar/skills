@@ -19,7 +19,19 @@ Project memory entry point: `lode/lode-map.md`.
 ## Tools
 
 The LodeStack tools mechanize the contracts above. Prefer the
-ool over the manual path whenever it exists in this environment:
+tool over the manual path whenever it exists in this environment:
+
+- **tree-sitter-edit** (`tse`) - AST-based surgical edits; the
+  primary EDIT mechanism of lodestack-edit. Query syntax lives in
+  that skill's tse-recipes.md.
+- **lodectl** - scaffolds and checks the `lode/` structure.
+- **bltool** - GitLab release automation.
+
+A missing tool is never silently skipped: record it, offer
+installation, and only then take the manual or text-diff
+fallback, naming the trigger in the report.
+
+## Rules
 
 - Follow loaded skills strictly.
 - Model files - every ADR, Plan and `lode/architecture/` file -
