@@ -1,7 +1,7 @@
 ---
 name: "lodestack-edit"
 description: "The LodeStack Edit contract - the code-editing cycle for every code change, review or refactor. REASON, LOCATE, ANALYZE (agent marks ACCEPT/REJECT per element, table to developer), EDIT via tree-sitter-edit with text-diff fallback, VERIFY gate (LINT, TYPECHECK, SECURITY, FORMAT, TEST, LODE, RECHECK) with an inner EDIT-VERIFY loop, the 3-attempt break rule and the wildcard mechanism on repeat breaks. Load for ALL code work in any project."
-version: "1.0.8"
+version: "1.0.9"
 author: "Damian Zaręba"
 license: "MIT"
 constitution: "a7033902800284dbfb8857af74558765243fb85b"
@@ -73,11 +73,13 @@ tree-sitter-edit edit --query '(...)' --capture n \
 
 Fall back to text-diff editing when: the binary is missing, the
 file's grammar is unsupported, or the edit cannot be expressed as
-a query. An edit mechanism not used is recorded, never silently
-swapped: binary missing is recorded and earns the one-command
-install offer; the other triggers are recorded with a one-line
-reason in the report. A failed VERIFY is not a fallback - it is an
-inner-loop iteration.
+a query - a query compile error is first an EDIT-loop iteration
+(dump the file's node types, fix the query), fallback only when
+the grammar has no node type for the target. An edit mechanism
+not used is recorded, never silently swapped: binary missing is
+recorded and earns the one-command install offer; the other
+triggers are recorded with a one-line reason in the report. A
+failed VERIFY is not a fallback - it is an inner-loop iteration.
 
 ### 5. VERIFY
 The gate, as checkboxes. Points a-d run specialized tools for the
