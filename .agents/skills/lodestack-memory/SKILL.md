@@ -71,7 +71,8 @@ first setup; running; testing.
 
 Rules for every file: one topic per file; under 250 lines; link to
 code (`path/file.ext:line`); link between files; current state only
-(changelog goes to `tmp/`); all diagrams mermaid.
+(changelog goes to `tmp/`); all diagrams mermaid; every
+`architecture/` file carries one.
 
 If `lode/` does not exist, ask before creating it. Add `lode/tmp/`
 to `.gitignore`.
@@ -114,6 +115,8 @@ applying its logic verbatim produces the test.
 - Do not edit an Accepted ADR. One exception: a technology version
   bump updates the version line.
 - A Proposed ADR may iterate model and description; the topic stays.
+- Every ADR carries a mermaid diagram - it is the model the
+  Verification block and the test derive from.
 - Superseding is the default way to change a decision. Never mutate
   history.
 - Link the relevant technology documentation at the version in use.
@@ -128,7 +131,8 @@ applying its logic verbatim produces the test.
   for feature-sized backlog items.
 - Contents: a phase to-do list with a one-line title per phase; a
   high-level description of what each phase builds; a high-level
-  model of elements, connections and dependencies between phases.
+  mermaid model of elements, connections and dependencies between
+  phases.
 - An executing Plan can create one or several ADRs.
 
 ## OSMM assessment
@@ -165,6 +169,9 @@ layout and the migration runbook.
 - "Create ADR for X" -> the ADR spec above
 - "Update lode-map" -> regenerate the index
 - "Review lode" -> check for outdated entries
+- "Check lode" -> run `lodectl check`
+  (gitlab.com/r3xxar/lodectl) when it is on PATH; else the
+  model-file check in lodestack-edit VERIFY.f
 - "Run OSMM assessment" -> dated pass table into `lode/osmm.md`
 - "Handover" -> write `lode/tmp/handover-<date>.md`
 - "Migrate this project to lode-stone" -> `refs/lode-stone.md`
