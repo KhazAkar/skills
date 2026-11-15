@@ -1,10 +1,10 @@
 {
   "id": "01a1dc61-8b47-72cd-a454-5c24f2bc2f21",
   "name": "lodestack-memory",
-  "version": 7,
-  "latestVersion": 7,
+  "version": 8,
+  "latestVersion": 8,
   "createdAt": "2026-11-15T00:30:00.000Z",
-  "updatedAt": "2026-11-15T00:36:28.850193Z",
+  "updatedAt": "2026-11-15T01:09:28.980790Z",
   "sharingScope": "workspace",
   "notes": "",
   "aliases": [
