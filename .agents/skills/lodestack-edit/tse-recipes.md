@@ -1,9 +1,6 @@
-tree-sitter-edit: 4cd18491238181f8e5f1ab5175c1d6bca0b065be
+tree-sitter-edit: f4c082a280ae2087349910161d6a378575c211b4
 
-Core subset of docs/agent-recipes.md at the pinned commit (tag
-v0.1.0 points at it). Refresh trigger: re-check upstream when the
-tool's recipes change. Dropped recipe sections are covered by
-`tree-sitter-edit --help` or the notes at the end.
+Core subset of docs/agent-recipes.md at the pinned commit (refreshed from f4c082a on master; v0.1.0 tagged 4cd1849). Refresh trigger: re-check upstream when the tool's recipes change. Dropped recipe sections are covered by `tree-sitter-edit --help` or the notes at the end.
 
 # Agent recipes (core)
 
@@ -51,6 +48,11 @@ gate; the gate is `check` below. Node
 type names differ per grammar; `dump` is how you see them before
 writing a query.
 
+`dump --node-types <file>` lists the grammar's node types without the
+tree (one per line; json `node_types` array). Use it when a query fails
+with `unknown node type` - the exit-1 error hints at this command
+(ADR-2026-11-15-008).
+
 ## Node boundary trivia (per grammar)
 
 A payload replaces the node's exact bytes; trivia around the node
@@ -67,6 +69,12 @@ R:C`):
   accepts that glue (the re-parse gate is grammar-level, not
   compiler-level -- pinned in `internal/cli/hostile_test.go`), so
   `go build` remains the real check.
+
+- Markdown: the `atx_heading` node starts AFTER the `## ` marker, so
+  `--insert-before` on the heading node lands mid-heading (`## ## Tools`).
+  Anchor on the marker node instead:
+  `(atx_heading (atx_h2_marker) @m heading_content: (inline) @c (#eq? @c "Rules"))`
+  with `--capture m`.
 
 ## Find a definition by name
 
