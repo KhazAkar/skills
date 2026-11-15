@@ -27,6 +27,9 @@ Project memory entry point: `lode/lode-map.md`.
   Never Co-Authored-By.
 - Generated files are ASCII only: no em-dashes, en-dashes, or other
   non-ASCII punctuation; use plain hyphens.
+- Git: read-only commands are free (log, diff, show, search). Side
+  effects - commits, pushes, PRs, issues, and any authored message -
+  need the developer's explicit approval per action.
 
 ## Gates
 
@@ -38,6 +41,9 @@ Project memory entry point: `lode/lode-map.md`.
   verdicts), never their content.
 - Rubber-stamp alarm: judge EVERY option, including the recommended
   one.
+- The agent explains until the developer understands - 'make it
+  work' alone is not done; the developer's comprehension is part of
+  acceptance.
 - **Delegation**: the developer may pre-approve a bounded scope
   ("run autonomously until VERIFY fails or the phase completes").
   That is one gate decision, not a shortcut. The agent records it,
