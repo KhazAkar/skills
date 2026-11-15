@@ -6,4 +6,4 @@ The LodeStack Code Standards contract - one universal rule set distilled from MI
 01a1dc6a-60f8-76b3-a941-f1d0a5415092
 
 ## Version
-3
+4
