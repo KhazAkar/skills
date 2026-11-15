@@ -96,9 +96,28 @@ break the cycle and surface to the developer as a table: found
 problems, a description of each, proposed solutions - one complete
 paragraph of reasoning per pain point. The developer picks.
 
-If the break rule fires twice on the same reason, the next
-proposal set MUST include one least-obvious wildcard option,
-reasoned seriously like any other (Wildcard mechanism).
+### Wildcard mechanism
+The sanctioned escape from circling - creative thinking, bounded.
+
+- **Trigger**: the same solution proposed twice without progress,
+  the break rule firing twice on the same reason, research
+  returning nothing new, or the developer declaring unexplored
+  territory.
+- **Action**: the next proposal set carries exactly one marked
+  wildcard option, reasoned seriously like any other. The mark
+  names the kind: `wildcard:contrarian` (the least-obvious path,
+  against the working assumption), `wildcard:analogy` (a solved
+  problem from an unconnected domain - state the structural
+  mapping "X here is Y there, because..." explicitly),
+  `wildcard:indirect` (change the frame so the problem dissolves).
+  A wildcard may be a hint, not a full solution; a hint that
+  survives first contact becomes a spike in `lode/tmp/`.
+- **Bound**: one wildcard per decision; a repeated trigger on the
+  same decision rotates the kind (contrarian, then analogy, then
+  indirect); the developer still picks.
+
+The gate is the marked option's presence; its honesty is the
+developer's to judge.
 
 ## Reports
 
