@@ -51,10 +51,3 @@ Project memory entry point: `lode/lode-map.md`.
   ("run autonomously until VERIFY fails or the phase completes").
   That is one gate decision, not a shortcut. The agent records it,
   works the scope, and stops at the bound.
-
-<!--
-Lode-stone marker - delete this comment if unused, fill and keep
-as a plain line if the project memory lives in a shared hub:
-
-Lode-stone transformed this project memory and now it lives here: <link_to_repository>, linked as submodule named 'lode' with project memory entry point living here: lode/projects/<name>/lode-map.md. For shared knowledge entry point, use lode/stone-map.md.
--->

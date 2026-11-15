@@ -1,6 +1,6 @@
 ---
 name: "lodestack-memory"
-description: "Durable project memory - the LodeStack Memory contract. lode/ structure (lode-map, summary, terminology, practices, quirks-and-gotchas, adr/, plan/, architecture/, tmp/), the ADR spec (6xW, status machine, Verification block, TASKLIST bound), Plan and backlog formats, exploration lane, lode-stone shared-hub option. Load when starting projects, making architecture decisions, onboarding a codebase, or whenever a repo has lode/. Ships AGENTS.template.md."
+description: "Durable project memory - the LodeStack Memory contract. lode/ structure (lode-map, summary, terminology, practices, quirks-and-gotchas, adr/, plan/, architecture/, tmp/), the ADR spec (6xW, status machine, Verification block, TASKLIST bound), Plan and backlog formats and exploration lane. Load when starting projects, making architecture decisions, onboarding a codebase, or whenever a repo has lode/. Ships AGENTS.template.md."
 version: "1.0.5"
 author: "Damian Zaręba"
 license: "MIT"
@@ -147,11 +147,6 @@ artifact.
 Write `lode/tmp/handover-<date>.md`: task state, decisions,
 approaches tried, blockers, next steps.
 
-## Lode-stone (optional)
-Transforms `lode/` into a shared multi-project knowledge hub mounted
-as a submodule. See [refs/lode-stone.md](refs/lode-stone.md) for the
-layout and the migration runbook.
-
 ## Language
 - English: ASD-STE100 Simplified Technical English - one word one
   meaning, short sentences, active voice, present tense, no idioms.
@@ -165,16 +160,12 @@ layout and the migration runbook.
 - "What is open in the backlog?" -> run `bltool`
   (gitlab.com/r3xxar/bltool) when it is on PATH; else search
   `lode/plan/` and the marker list by hand
-- "What does the lode say about X?" -> search lode files
 - "Create ADR for X" -> the ADR spec above
-- "Update lode-map" -> regenerate the index
-- "Review lode" -> check for outdated entries
 - "Check lode" -> run `lodectl check`
   (gitlab.com/r3xxar/lodectl) when it is on PATH; else the
   model-file check in lodestack-edit VERIFY.f
 - "Run OSMM assessment" -> dated pass table into `lode/osmm.md`
 - "Handover" -> write `lode/tmp/handover-<date>.md`
-- "Migrate this project to lode-stone" -> `refs/lode-stone.md`
 
 ## Sources
 Constitution: `constitution/LodeStack.md` at `573391b`.
