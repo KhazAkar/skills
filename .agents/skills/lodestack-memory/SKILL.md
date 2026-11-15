@@ -110,9 +110,16 @@ applying its logic verbatim produces the test.
    list with reasoning; the developer picks and owns the reason.
    When the wildcard trigger fires, the proposal list carries
    exactly one marked least-obvious option, reasoned like any
-   other.
+   other (mechanism: lodestack-edit).
 6. **Drop** - the rest of the proposed list. The developer owns the
    rejection reason for each, even when the agent writes it down.
+
+### What-if analysis
+For decisions under deep uncertainty: explore 4 to 6 branches
+(best, likely, worst, wildcard, contrarian, second-order). Per
+branch: what must be true, what it costs and buys, the early
+signal that it is happening. The branch table is the artifact;
+it lives in the ADR or `lode/tmp/`.
 
 ### Rules
 - Do not edit an Accepted ADR. One exception: a technology version
