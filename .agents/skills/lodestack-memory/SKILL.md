@@ -1,7 +1,7 @@
 ---
 name: "lodestack-memory"
 description: "Durable project memory - the LodeStack Memory contract. lode/ structure (lode-map, summary, terminology, practices, quirks-and-gotchas, adr/, plan/, architecture/, tmp/), the ADR spec (6xW, status machine, Verification block, TASKLIST bound), Plan and backlog formats and exploration lane. Load when starting projects, making architecture decisions, onboarding a codebase, or whenever a repo has lode/. Ships AGENTS.template.md."
-version: "1.0.9"
+version: "1.0.10"
 author: "Damian Zaręba"
 license: "MIT"
 constitution: "a7033902800284dbfb8857af74558765243fb85b"
@@ -126,7 +126,9 @@ it lives in the ADR or `lode/tmp/`.
   bump updates the version line.
 - A Proposed ADR may iterate model and description; the topic stays.
 - Every ADR carries a mermaid diagram - it is the model the
-  Verification block and the test derive from.
+  Verification block and the test derive from. The diagram
+  lives in its own `## Model` section directly before the
+  Specification, never embedded mid-prose.
 - Superseding is the default way to change a decision. Never mutate
   history.
 - Link the relevant technology documentation at the version in use.

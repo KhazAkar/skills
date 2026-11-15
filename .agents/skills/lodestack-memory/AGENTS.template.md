@@ -21,7 +21,8 @@ Project memory entry point: `lode/lode-map.md`.
 - Follow loaded skills strictly.
 - Model files - every ADR, Plan and `lode/architecture/` file -
   carry a mermaid diagram. VERIFY/LODE rejects a model file
-  without one.
+  without one. An ADR presents its diagram in a dedicated
+  `## Model` section directly before the Specification.
 - Commits are authored by the developer's git identity; the agent
   never overrides author or committer. Agent assistance is recorded
   only in the trailer below.
