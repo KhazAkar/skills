@@ -1,7 +1,7 @@
 ---
 name: "lodestack-memory"
 description: "Durable project memory - the LodeStack Memory contract. lode/ structure (lode-map, summary, terminology, practices, quirks-and-gotchas, adr/, plan/, architecture/, tmp/), the ADR spec (6xW, status machine, Verification block, TASKLIST bound), Plan and backlog formats and exploration lane. Load when starting projects, making architecture decisions, onboarding a codebase, or whenever a repo has lode/. Ships AGENTS.template.md."
-version: "1.0.8"
+version: "1.0.9"
 author: "Damian Zaręba"
 license: "MIT"
 constitution: "a7033902800284dbfb8857af74558765243fb85b"
