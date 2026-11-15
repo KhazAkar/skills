@@ -1,10 +1,10 @@
 {
   "id": "01a1dc6a-95d8-73b6-a6c2-6e657ea6c733",
   "name": "lodestack-test-standards",
-  "version": 3,
-  "latestVersion": 3,
+  "version": 4,
+  "latestVersion": 4,
   "createdAt": "2026-11-15T00:36:00.000Z",
-  "updatedAt": "2026-11-14T23:53:24.597674Z",
+  "updatedAt": "2026-11-15T09:42:40.640595Z",
   "sharingScope": "workspace",
   "notes": "",
   "aliases": [
