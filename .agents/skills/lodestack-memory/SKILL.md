@@ -1,7 +1,7 @@
 ---
 name: "lodestack-memory"
 description: "Durable project memory - the LodeStack Memory contract. lode/ structure (lode-map, summary, terminology, practices, quirks-and-gotchas, adr/, plan/, architecture/, tmp/), the ADR spec (6xW, status machine, Verification block, TASKLIST bound), Plan and backlog formats and exploration lane. Load when starting projects, making architecture decisions, onboarding a codebase, or whenever a repo has lode/. Ships AGENTS.template.md."
-version: "1.0.10"
+version: "1.0.11"
 author: "Damian Zaręba"
 license: "MIT"
 constitution: "a7033902800284dbfb8857af74558765243fb85b"
@@ -70,7 +70,9 @@ lode/
 first setup; running; testing.
 
 Rules for every file: one topic per file; under 250 lines; link to
-code (`path/file.ext:line`); link between files; current state only
+code by path plus symbol name (`path/file.ext` + `symbol` - never a
+line number: lines rot, symbols are the stable anchor); link between
+files; current state only
 (changelog goes to `tmp/`); all diagrams mermaid; every
 `architecture/` file carries one.
 
