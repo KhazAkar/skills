@@ -1,7 +1,7 @@
 ---
 name: "lodestack-edit"
 description: "The LodeStack Edit contract - the code-editing cycle for every code change, review or refactor. REASON, LOCATE, ANALYZE (agent marks ACCEPT/REJECT per element, table to developer), EDIT via tree-sitter-edit with text-diff fallback, VERIFY gate (LINT, TYPECHECK, SECURITY, FORMAT, TEST, LODE) with an inner EDIT-VERIFY loop and the 3-attempt break rule. Load for ALL code work in any project."
-version: "1.0.2"
+version: "1.0.3"
 author: "Damian Zaręba"
 license: "MIT"
 constitution: "573391b421fd31c4d4be1f0f0e540d51bc1a08fb"
@@ -42,7 +42,9 @@ change. No evidence, no change.
 ### 2. LOCATE
 Find the edit sites by searching the codebase - never from memory.
 A bounded list of files/symbols. A long list means the task is too
-big: split it and say so.
+big: split it and say so. The same bound holds for the diff: if the
+developer cannot review the full diff in reasonable time, it is too
+big - split it.
 
 ### 3. ANALYZE
 List every dependent of the edit sites: callers, bindings,
@@ -75,6 +77,10 @@ silently absent.
 - e. **TEST** - the executable specification, derived from the ADR
 - f. **LODE** - the change checked against `lode/` itself; if `lode/`
   is absent, record `N/A` and offer setup (AGENTS contract)
+- g. **RECHECK** - the ANALYZE table re-run against the actual diff:
+  every entry edited as declared, or flipped to EXEMPT/REJECT with a
+  reason stated. Re-read the changed files: the reported diff must
+  be what actually landed, not merely what compiles.
 
 When VERIFY does not pass, run the smaller EDIT-VERIFY loop inside
 the stage. Edits stay minimal-viable: they must satisfy REASON and
@@ -102,8 +108,8 @@ developer check. The summary table doubles as the commit body.
 
 ## Aliases (v1 -> v2)
 INTENT = REASON, IMPACT = ANALYZE, PROPAGATE absorbed into VERIFY
-(commit and report duties carried). Old AGENTS.md copies still
-decode.
+(commit, report and re-check duties carried). Old AGENTS.md copies
+still decode.
 
 ## Sources
 Constitution: `constitution/LodeStack.md` at `573391b`.
