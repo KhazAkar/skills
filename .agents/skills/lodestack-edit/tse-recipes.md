@@ -1,29 +1,33 @@
 tree-sitter-edit: 0c1cd42c8fab2452cb871b5d5147a4c9406288f0
 
-Copied verbatim from docs/agent-recipes.md at the pinned commit.
-Refresh trigger: re-copy when the tool's recipes change upstream.
+Core subset of docs/agent-recipes.md at the pinned commit. Refresh
+trigger: re-check upstream when the tool's recipes change. Dropped
+recipe sections are covered by `tree-sitter-edit --help` or the
+notes at the end.
 
-# Agent recipes
+# Agent recipes (core)
 
-Ready-to-use snippets for driving `tree-sitter-edit` from an agent. Every
-command assumes the binary is on `PATH` (or use `alias tse=tree-sitter-edit`).
+Ready-to-use snippets for driving `tree-sitter-edit` from an agent.
+Every command assumes the binary is on `PATH` (or use
+`alias tse=tree-sitter-edit`).
 
 Guarantees you can rely on in scripts:
 
-- Every edit is re-parsed before it is written. If the result does not parse,
-  nothing is written and the exit code is 1.
-- `--in-place` and `-o` write atomically (temp file + rename) and preserve the
-  original file mode.
-- Exit codes: `0` success, `1` edit/parse/IO failure, `2` usage error (bad
-  flags, bad query, conflicting flags). stderr carries the message; stdout
-  carries only results.
-- Batch results are canonical: the JSON `replacements` list is sorted by byte
-  offset, and the order you pass `--query`/`--text` pairs in does not change
+- Every edit is re-parsed before it is written. If the result does
+  not parse, nothing is written and the exit code is 1.
+- `--in-place` and `-o` write atomically (temp file + rename) and
+  preserve the original file mode.
+- Exit codes: `0` success, `1` edit/parse/IO failure, `2` usage
+  error (bad flags, bad query, conflicting flags). stderr carries
+  the message; stdout carries only results.
+- Batch results are canonical: the JSON `replacements` list is
+  sorted by byte offset; `--query`/`--text` order does not change
   the output source or the report.
 
 ## Discover node shapes first: dump, then query
 
-Token-budget pattern: dump shallow to learn the shape, then drill by position.
+Token-budget pattern: dump shallow to learn the shape, then drill by
+position.
 
 ```sh
 # 1. shallow look at the shape (no default cap; bound it yourself)
@@ -41,24 +45,28 @@ tree-sitter-edit dump --format json --anonymous src/config.cpp
 tree-sitter-edit dump --query '((function_definition) @fn)' src/config.cpp
 ```
 
-`dump` exits 0 even on files with syntax errors (`ERROR` nodes are visible,
-`"has_errors": true` in JSON) — it inspects, it does not gate; the gate is
-the `(ERROR)/(MISSING)` query scan below. Node type names differ per
-grammar; `dump` is how you see them before writing a query.
+`dump` exits 0 even on files with syntax errors (`ERROR` nodes are
+visible, `"has_errors": true` in JSON) — it inspects, it does not
+gate; the gate is the `(ERROR)/(MISSING)` query scan below. Node
+type names differ per grammar; `dump` is how you see them before
+writing a query.
 
 ## Node boundary trivia (per grammar)
 
-A payload replaces the node's exact bytes; trivia around the node survives.
-Two cases bit us in the ags session -- check the node's exact range first
-(`query --format json`, or `dump --at-row-col R:C`):
+A payload replaces the node's exact bytes; trivia around the node
+survives. Two cases bit us in the ags session -- check the node's
+exact range first (`query --format json`, or `dump --at-row-col
+R:C`):
 
-- Rust: `field_declaration` and `shorthand_field_initializer` EXCLUDE the
-  trailing comma. The payload must not repeat it: `health: u32,\n    ticks: u32,`
-  produces a double comma and the re-parse gate rejects the edit (exit 1).
-- Go: `expression_case` INCLUDES its trailing newline. A payload without one
-  glues the next `case` onto the same line. tree-sitter accepts that glue
-  (the re-parse gate is grammar-level, not compiler-level -- pinned in
-  `internal/cli/hostile_test.go`), so `go build` remains the real check.
+- Rust: `field_declaration` and `shorthand_field_initializer`
+  EXCLUDE the trailing comma. The payload must not repeat it:
+  `health: u32,\n    ticks: u32,` produces a double comma and the
+  re-parse gate rejects the edit (exit 1).
+- Go: `expression_case` INCLUDES its trailing newline. A payload
+  without one glues the next `case` onto the same line. tree-sitter
+  accepts that glue (the re-parse gate is grammar-level, not
+  compiler-level -- pinned in `internal/cli/hostile_test.go`), so
+  `go build` remains the real check.
 
 ## Find a definition by name
 
@@ -79,12 +87,12 @@ tree-sitter-edit query \
   --capture name --format json src/config.cpp
 ```
 
-Note: in the Go grammar plain functions are `function_declaration` but methods
-are `method_declaration`; in C++ both are `function_definition` and differ by
-declarator shape. Run `query` first to discover the node types of your target.
-
-`--format json` gives byte offsets and row:col for each match. Use
-`--capture name` to print only that capture when a query has several.
+In the Go grammar plain functions are `function_declaration` but
+methods are `method_declaration`; in C++ both are
+`function_definition` and differ by declarator shape. `query`
+discovers the node types of your target; `--format json` gives byte
+offsets and row:col per match, `--capture` prints one capture when a
+query has several.
 
 ## Rename a symbol, definition plus all references
 
@@ -99,9 +107,10 @@ tree-sitter-edit rename \
   --in-place main.go
 ```
 
-`rename` uses vendored locals queries (go, python, rust, typescript, cpp) and
-renames the definition and every reference in its scope, handling shadowing.
-Single-node replacement (no reference handling) is `edit` with `--text`.
+`rename` uses vendored locals queries (go, python, rust, typescript,
+cpp) and renames the definition and every reference in its scope,
+handling shadowing. Single-node replacement (no reference handling)
+is `edit` with `--text`.
 
 ## Edit one node: review the diff, then apply
 
@@ -119,26 +128,10 @@ tree-sitter-edit edit \
 
 Use `--occurrence N` (0-based) when the query matches several nodes.
 
-## Replace a node with multi-line text from a file or a pipe
-
-```sh
-# new body in a file; bytes are used verbatim (trailing newline kept)
-tree-sitter-edit edit \
-  --query '((function_definition declarator: (function_declarator declarator: (qualified_identifier name: (identifier) @name)) body: (compound_statement) @body) (#eq? @name "clear"))' \
-  --capture body --text-file /tmp/new_body.cpp \
-  --in-place src/config.cpp
-
-# or straight from stdin - no shell quoting hazards
-tree-sitter-edit edit --query '...' --capture body --text-file - src/config.cpp < /tmp/new_body.cpp
-```
-
-`--text-file` is mutually exclusive with `--text` and `--delete`. `-` reads
-stdin, but not when the input file is also `-`.
-
 ## Batch: several edits in one invocation, one write
 
 ```sh
-# one --text per --query, paired by position; texts from one kind only
+# one --text per --query, paired by position
 tree-sitter-edit edit \
   --query '((function_declaration name: (identifier) @n) @fn (#eq? @n "alpha"))' --text-file alpha.txt \
   --query '((function_declaration name: (identifier) @n) @fn (#eq? @n "beta"))'  --text-file beta.txt \
@@ -150,56 +143,12 @@ tree-sitter-edit edit \
   --capture fn --in-place main.go
 ```
 
-Semantics: all targets resolve against the original parse (order-independent);
-overlapping ranges are exit 2; one re-parse, one atomic write; a query that
-matches nothing fails the whole batch (exit 1) before anything is written.
-`--all`, `--occurrence`, `--at-byte`, `--at-row-col` are rejected in batch mode.
-`--capture` is repeatable in batch mode: one per `--query`, paired
-positionally (ADR-011). Entries without a capture fall back to the first
-capture of the match. Same for `--query-file`: repeatable, one per entry,
-mutually exclusive with `--query` (ADR-013) — predicates with embedded
-quotes never see a shell:
-
-```sh
-tree-sitter-edit edit \
-  --query-file alpha.scm --query-file beta.scm \
-  --capture fn --capture name \
-  --text-file alpha.txt --text-file beta.txt \
-  --in-place main.go
-```
-
-```sh
-# quick batch with inline --text pairs: rename two declarations, no call sites
-tree-sitter-edit edit \
-  --query '((function_declaration name: (identifier) @n) (#eq? @n "alpha"))' --text a2 \
-  --query '((function_declaration name: (identifier) @n) (#eq? @n "beta"))'  --text b2 \
-  --capture n \
-  --dry-run --format diff main.go   # all hunks in one diff
-
-# batch delete: remove two neighboring functions; their touching ranges merge
-# into a single diff hunk
-tree-sitter-edit edit \
-  --query '((function_declaration name: (identifier) @n) @fn (#eq? @n "alpha"))' \
-  --query '((function_declaration name: (identifier) @n) @fn (#eq? @n "beta"))' \
-  --capture fn --delete --in-place main.go
-
-# machine-readable report: replacements sorted by start_byte, entry order
-# does not matter
-tree-sitter-edit edit \
-  --query '...' --text '...' \
-  --query '...' --text '...' \
-  --dry-run --format json main.go
-# {"file":"main.go","count":2,"replacements":[{"start_byte":19,...},{"start_byte":50,...}]}
-```
-
-## Replace in every match
-
-```sh
-tree-sitter-edit edit \
-  --query '(identifier) @id' --capture id \
-  --text newName --all \
-  main.go        # prints "replaced N node(s)" on stderr
-```
+All targets resolve against the original parse (order-independent);
+overlapping ranges are exit 2; one re-parse, one atomic write; a
+query matching nothing fails the batch (exit 1) before anything
+writes. `--all`/`--occurrence`/`--at-*` are rejected in batch;
+`--capture` and `--query-file` repeat per `--query` entry, paired
+positionally (query-file dodges shell quoting).
 
 ## Delete a node
 
@@ -209,9 +158,9 @@ tree-sitter-edit edit \
   --delete --in-place main.go
 ```
 
-`--delete` removes the node's exact bytes only. Surrounding blank lines and
-list separators (commas) survive; if that leaves unparseable code, the
-re-parse check rejects the edit with exit 1.
+`--delete` removes the node's exact bytes only. Surrounding blank
+lines and list separators (commas) survive; if that leaves
+unparseable code, the re-parse check rejects the edit with exit 1.
 
 ## Address a node by position (from grep, an editor, or an LSP)
 
@@ -232,73 +181,15 @@ tree-sitter-edit query \
 # empty output + exit 0 means the file parses cleanly
 ```
 
-## Pipe mode (stdin to stdout)
+## Odds and ends
 
-```sh
-cat main.go | tree-sitter-edit edit --lang go \
-  --query '(function_declaration name: (identifier) @name)' \
-  --capture name --text greet -
-```
-
-`-` as the file reads stdin and requires `--lang` (no extension to detect).
-
-## Get a machine-readable change report
-
-```sh
-tree-sitter-edit edit --query '...' --text '...' --dry-run --format json main.go
-# {"file":"main.go","count":1,"replacements":[{"start_byte":19,"end_byte":24,"old_text":"hello","new_text":"greet"}]}
-```
-
-## Edit many files (the tool is single-file; loop yourself)
-
-```sh
-for f in $(grep -rl 'oldName' --include='*.go' src/); do
-  tree-sitter-edit rename --query '(identifier) @id' --capture id \
-    --text newName --occurrence 0 --in-place "$f" || exit 1
-done
-```
-
-Scope is one file per invocation. For a project-wide, scope-aware rename,
-loop `rename` per file; there is no cross-file analysis.
-
-## Clear a node's content without deleting the node
-
-```sh
-tree-sitter-edit edit --query '(interpreted_string_literal) @s' --capture s \
-  --text '' main.go
-```
-
-## QML (`.qml` files)
-
-QML is supported via a vendored qmljs grammar blob (ADR-010); `rename` is
-scope-aware there too. Node shapes differ from JS: bindings are `ui_binding`,
-properties are `ui_property`, and `Component.onCompleted` uses a
-`nested_identifier` name.
-
-```sh
-# list binding and property names with positions
-tree-sitter-edit query \
-  --query '[(ui_binding name: (identifier) @name) (ui_property (identifier) @name)]' \
-  --capture name --format json qml/pages/UserView.qml
-
-# change a property's string value
-tree-sitter-edit edit \
-  --query '((ui_property (identifier) @n (expression_statement (string) @s)) (#eq? @n "title"))' \
-  --capture s --text '"hi"' \
-  --dry-run --format diff qml/pages/UserView.qml
-
-# rename a JS function inside QML, definition + call sites
-tree-sitter-edit rename \
-  --query '((function_declaration name: (identifier) @n) (#eq? @n "greet"))' \
-  --capture n --text salute \
-  --in-place qml/pages/UserView.qml
-```
-
-## Tips
-
-- Node type names differ per grammar (see the find-by-name recipes above). Run
-  `query` first to discover the shape; use the `(ERROR)`/`(MISSING)` scan to
-  check a file parses before editing.
-- `--dry-run --format diff` is the review step: it prints the exact hunks that
-  `--in-place` would write, and writes nothing.
-- Flags must come before the file argument (Go `flag` convention).
+- `--text-file FILE` reads a payload verbatim (trailing newline
+  kept); `-` reads stdin, but not when the input file is also `-`.
+  Mutually exclusive with `--text` and `--delete`.
+- `--all` replaces every match of a single-query edit.
+- `-` as the file reads stdin and requires `--lang` (no extension to
+  detect).
+- One file per invocation; loop over `grep -rl` for multi-file work.
+- QML is supported via a vendored qmljs grammar; same commands, but
+  node shapes differ (`ui_binding`, `ui_property`).
+- Flags come before the file argument (Go `flag` convention).
