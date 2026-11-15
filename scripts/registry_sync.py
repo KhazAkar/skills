@@ -4,14 +4,20 @@
 write_skill replaces content wholesale, so this sends the complete
 SKILL.md body plus every other file in the directory as an asset
 (except metadata.json and README.md - repo ledgers, not skill
-content). Prints the resulting revision and updated_at so the
-metadata.json ledger can mirror them.
+content).
+
+After the push it fetches the skill's catalogue row and mirrors the
+registry truth back into the ledgers: metadata.json version /
+latestVersion / updatedAt / sharingScope and README.md ## Version.
+The registry assigns revisions per push, never per local bump - the
+ledger mirrors the server, not the other way round.
 
 Usage: registry_sync.py .agents/skills/<name>
 Needs MISTRAL_API_KEY in the environment.
 """
 import json
 import os
+import re
 import sys
 import urllib.request
 from pathlib import Path
@@ -54,6 +60,59 @@ def frontmatter_field(body, field):
     raise SystemExit(f"SKILL.md: no {field} field in frontmatter")
 
 
+def fetch_skill_row(name, meta_id, key):
+    """The skill's catalogue row from list_skills: match by id, then
+    name (the registry allows same-name skills; the ledger id wins)."""
+    cursor = None
+    while True:
+        args = {"limit": 200}
+        if cursor:
+            args["cursor"] = cursor
+        data = rpc("list_skills", args, key)
+        rows = data.get("skills", [])
+        for row in rows:
+            if meta_id and row.get("id") == meta_id:
+                return row
+        for row in rows:
+            if row.get("name") == name:
+                return row
+        cursor = data.get("next_cursor")
+        if not cursor:
+            return None
+
+
+def mirror_ledgers(d, row):
+    """Write the registry truth into the repo ledgers; return the list
+    of files mirrored (or warnings for anything missing)."""
+    mirrored = []
+    meta_path = d / "metadata.json"
+    if meta_path.is_file():
+        meta = json.loads(meta_path.read_text(encoding="utf-8"))
+        meta["version"] = meta["latestVersion"] = row["version"]
+        if row.get("updated_at"):
+            meta["updatedAt"] = row["updated_at"]
+        if row.get("sharing"):
+            meta["sharingScope"] = row["sharing"]
+        meta_path.write_text(json.dumps(meta, indent=2) + "\n",
+                             encoding="utf-8")
+        mirrored.append("metadata.json")
+    else:
+        mirrored.append("metadata.json MISSING")
+    readme = d / "README.md"
+    if readme.is_file():
+        text = readme.read_text(encoding="utf-8")
+        new, n = re.subn(r"(## Version\s*\n)\d+",
+                         rf"\g<1>{row['version']}", text, count=1)
+        if n:
+            readme.write_text(new, encoding="utf-8")
+            mirrored.append("README.md")
+        else:
+            mirrored.append("README.md: no ## Version line")
+    else:
+        mirrored.append("README.md MISSING")
+    return mirrored
+
+
 def main():
     if len(sys.argv) != 2:
         raise SystemExit("usage: registry_sync.py <skill-dir>")
@@ -76,8 +135,15 @@ def main():
         "body": body,
         "assets": assets,
     }, key)
+    meta_id = None
+    meta_path = d / "metadata.json"
+    if meta_path.is_file():
+        meta_id = json.loads(meta_path.read_text(encoding="utf-8")).get("id")
+    row = fetch_skill_row(d.name, meta_id, key)
+    mirrored = mirror_ledgers(d, row) if row else ["registry row not found"]
     print(json.dumps({"name": res.get("name"), "version": res.get("version"),
-                      "assets": len(assets)}))
+                      "deduplicated": res.get("deduplicated", False),
+                      "assets": len(assets), "mirrored": mirrored}))
 
 
 if __name__ == "__main__":
