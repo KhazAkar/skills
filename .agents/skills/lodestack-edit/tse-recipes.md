@@ -20,6 +20,11 @@ Guarantees you can rely on in scripts:
 - Batch results are canonical: the JSON `replacements` list is
   sorted by byte offset; `--query`/`--text` order does not change
   the output source or the report.
+- Machine output is compact by default: json is one line, the dump
+  sexp is one line. `--pretty` (every subcommand with `--format`)
+  indents json / renders the dump sexp multi-line (v0.3.0).
+- After a single-file `--in-place` edit, the landed diff hunk is
+  printed to stderr; stdout stays empty (v0.3.0).
 
 ## Discover node shapes first: dump, then query
 
@@ -263,3 +268,6 @@ rejected under `--glob`; use a query to address.
 - For file sets a glob cannot express (changed files only,
   grep-filtered), a shell loop over `grep -rl` still composes.
 - Flags come before the file argument (Go `flag` convention).
+- `check` accepts directories (recurses, hidden dirs skipped); `dump`
+  prints exactly one tree, so a directory argument is exit 2 (v0.3.0).
+
