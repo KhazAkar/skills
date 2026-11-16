@@ -189,7 +189,7 @@ SECURITY (c) - means the defensive strategies used in programming which enhance 
 
 LODE (f) - verified against `lode/` itself
 
-Editing of code primarily shall be done using AST, performed using `tree-sitter-edit` (https://gitlab.com/khazlabz/tree-sitter-edit) command, with text-diff based fallback.
+Editing of code primarily shall be done using AST, performed using `tree-sitter-edit` (https://gitlab.com/r3xxar/tree-sitter-edit) command, with text-diff based fallback.
 
 Present to developer ANALYZE status as a table, with short reason for each element - first is agent
 
