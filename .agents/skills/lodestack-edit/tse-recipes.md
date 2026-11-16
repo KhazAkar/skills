@@ -1,6 +1,6 @@
-tree-sitter-edit: defb3d95521ef85f3781bb878914091ccfcba9a4
+tree-sitter-edit: 17382c3e8651632598182abeb7f9225ea935c76b
 
-Core subset of docs/agent-recipes.md at the pinned commit (refreshed from defb3d9 on master). Refresh trigger: re-check upstream when the tool's recipes change. Dropped recipe sections are covered by `tree-sitter-edit --help` or the notes at the end.
+Core subset of docs/agent-recipes.md at the pinned commit (refreshed from 17382c3, tag v0.3.0). Refresh trigger: re-check upstream when the tool's recipes change. Dropped recipe sections are covered by `tree-sitter-edit --help` or the notes at the end.
 
 # Agent recipes (core)
 
@@ -69,6 +69,12 @@ R:C`):
   accepts that glue (the re-parse gate is grammar-level, not
   compiler-level -- pinned in `internal/cli/hostile_test.go`), so
   `go build` remains the real check.
+
+- Python: a `function_definition` node starts AT the `def` keyword, so the
+  line's leading indent survives the replacement. A payload that repeats it
+  doubles the indent (node at column 4 + payload's 4 spaces = 8); the
+  re-parse gate still passes that, and `edit` prints an indentation warning
+  on stderr (ADR-2026-11-16-005). Drop the payload's leading indent.
 
 - Markdown: the `atx_heading` node starts AFTER the `## ` marker, so
   `--op insert-before` on the heading node lands mid-heading (`## ## Tools`).
