@@ -1,6 +1,6 @@
-tree-sitter-edit: 17382c3e8651632598182abeb7f9225ea935c76b
+tree-sitter-edit: caa10ac6ce59bca6a28f56e9f3336ec8f7bb7f5a
 
-Core subset of docs/agent-recipes.md at the pinned commit (refreshed from 17382c3, tag v0.3.0). Refresh trigger: re-check upstream when the tool's recipes change. Dropped recipe sections are covered by `tree-sitter-edit --help` or the notes at the end.
+Core subset of docs/agent-recipes.md at the pinned commit (refreshed from caa10ac on master, post-v0.3.0). Refresh trigger: re-check upstream when the tool's recipes change. Dropped recipe sections are covered by `tree-sitter-edit --help` or the notes at the end.
 
 # Agent recipes (core)
 
@@ -15,8 +15,9 @@ Guarantees you can rely on in scripts:
 - `--in-place` and `-o` write atomically (temp file + rename) and
   preserve the original file mode.
 - Exit codes: `0` success, `1` edit/parse/IO failure, `2` usage
-  error (bad flags, bad query, conflicting flags). stderr carries
-  the message; stdout carries only results.
+  error (bad flags, bad query, conflicting flags), `3` check-runtime
+  failure (a file could not be checked at all - outranks the 0/1
+  verdict). stderr carries the message; stdout carries only results.
 - Batch results are canonical: the JSON `replacements` list is
   sorted by byte offset; `--query`/`--text` order does not change
   the output source or the report.
@@ -267,6 +268,10 @@ rejected under `--glob`; use a query to address.
   node shapes differ (`ui_binding`, `ui_property`).
 - For file sets a glob cannot express (changed files only,
   grep-filtered), a shell loop over `grep -rl` still composes.
+- Two different "missing" behaviors: an unknown node type in a query is a
+  compile error (exit 1, with a hint - list the real node types via
+  `dump --node-types`); a valid query whose `--capture` names no capture in
+  the match is a filter - exit 0 with empty output.
 - Flags come before the file argument (Go `flag` convention).
 - `check` accepts directories (recurses, hidden dirs skipped); `dump`
   prints exactly one tree, so a directory argument is exit 2 (v0.3.0).
