@@ -112,6 +112,7 @@ Memory system should have following characteristics and specs:
 - lode-map for ADR + Plan + Architecture links
 - lode/tmp/ for temporary work, with folders per ADR/Plan
 - lode/adr/ holding ADRs
+- lode/tasks/ holding TASKLIST work-step files
 - lode/plan/ holding plans and feature-sized backlog items
 - lode/quirks-and-gotchas, collecting whole project findings, gotchas and quirks describing unexpected/live behaviour of system with optional extension of lode/quirks-and-gotchas/<system-component>.md for more complex systems
 - lode/summary.md - holds project summary description. Should NEVER be a simple README.md - it's more technical than user-facing document
@@ -146,7 +147,7 @@ Template-less, specification made from aboce should be precise and strict enough
 4. Each ADR should have linked relevant technology documentation in currently used version. When developer will ask for upgrades - edit ADR.
 5. Superseding is the default way of handling changes in ADR.
 6. ADR name format: `ADR-<date>-XXX.md`
-7. Work steps are recorded in dedicated TASKLIST file, stored in `lode/adr/TASKLIST-ADR-<date>-XXX.md`
+7. Work steps are recorded in dedicated TASKLIST file, stored in `lode/tasks/TASKLIST-ADR-<date>-XXX.md`
 
 ### Plan
 
