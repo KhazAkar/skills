@@ -1,6 +1,6 @@
-tree-sitter-edit: f4c082a280ae2087349910161d6a378575c211b4
+tree-sitter-edit: defb3d95521ef85f3781bb878914091ccfcba9a4
 
-Core subset of docs/agent-recipes.md at the pinned commit (refreshed from f4c082a on master; v0.1.0 tagged 4cd1849). Refresh trigger: re-check upstream when the tool's recipes change. Dropped recipe sections are covered by `tree-sitter-edit --help` or the notes at the end.
+Core subset of docs/agent-recipes.md at the pinned commit (refreshed from defb3d9 on master). Refresh trigger: re-check upstream when the tool's recipes change. Dropped recipe sections are covered by `tree-sitter-edit --help` or the notes at the end.
 
 # Agent recipes (core)
 
@@ -71,7 +71,7 @@ R:C`):
   `go build` remains the real check.
 
 - Markdown: the `atx_heading` node starts AFTER the `## ` marker, so
-  `--insert-before` on the heading node lands mid-heading (`## ## Tools`).
+  `--op insert-before` on the heading node lands mid-heading (`## ## Tools`).
   Anchor on the marker node instead:
   `(atx_heading (atx_h2_marker) @m heading_content: (inline) @c (#eq? @c "Rules"))`
   with `--capture m`.
@@ -170,7 +170,7 @@ writes. `--all`/`--occurrence`/`--at-*` are rejected in batch;
 `--capture` and `--query-file` repeat per `--query` entry, paired
 positionally (query-file dodges shell quoting). Mixed operations
 per entry via `--op` (`replace`, `insert-before`, `insert-after`,
-`delete`):
+`delete`); a single `--op` value broadcasts to all entries:
 
 ```sh
 tree-sitter-edit edit \
@@ -190,10 +190,10 @@ two inserts on the same byte are exit 2.
 ```sh
 tree-sitter-edit edit \
   --query '(expression_statement) @stmt' --capture stmt \
-  --delete --in-place main.go
+  --op delete --in-place main.go
 ```
 
-`--delete` removes the node's exact bytes only. Surrounding blank
+`--op delete` removes the node's exact bytes only. Surrounding blank
 lines and list separators (commas) survive; if that leaves
 unparseable code, the re-parse check rejects the edit with exit 1.
 
@@ -248,7 +248,7 @@ rejected under `--glob`; use a query to address.
 
 - `--text-file FILE` reads a payload verbatim (trailing newline
   kept); `-` reads stdin, but not when the input file is also `-`.
-  Mutually exclusive with `--text` and `--delete`.
+  Mutually exclusive with `--text` and `--op delete`.
 - `--all` replaces every match of a single-query edit.
 - `-` as the file reads stdin and requires `--lang` (no extension to
   detect).
