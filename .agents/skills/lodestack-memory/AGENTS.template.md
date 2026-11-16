@@ -46,6 +46,9 @@ fallback, naming the trigger in the report.
   `Assisted-By: [agent name] <email>` (example:
   `Assisted-By: Mistral Vibe <vibe@mistral.ai>`)
   Never Co-Authored-By.
+- Commit titles follow conventional-commit style:
+  `type(scope): summary` with types `feat`, `fix`, `docs`,
+  `chore`, `refactor`, `test`; the body carries the why.
 - Generated files are ASCII only: no em-dashes, en-dashes, or other
   non-ASCII punctuation; use plain hyphens.
 - Git: read-only commands are free (log, diff, show, search). Side
