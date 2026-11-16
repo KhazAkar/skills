@@ -72,7 +72,9 @@ plus a few creates:
    `lode/architecture/` with `system.md`, and `lode/osmm.md` on the
    first pass.
 4. Update `lode/lode-map.md` links; keep `lode/tmp/` as is.
-5. Old AGENTS.md stage names map: INTENT = REASON, IMPACT = ANALYZE,
+5. Move `lode/adr/TASKLIST-*.md` to `lode/tasks/` (their home
+   since the tasks/ split).
+6. Old AGENTS.md stage names map: INTENT = REASON, IMPACT = ANALYZE,
    PROPAGATE absorbed into VERIFY.
 
 Old repos may stay on v1 schema until touched; migrate a lode when

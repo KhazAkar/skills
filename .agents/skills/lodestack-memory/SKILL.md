@@ -1,10 +1,10 @@
 ---
 name: "lodestack-memory"
-description: "Durable project memory - the LodeStack Memory contract. lode/ structure (lode-map, summary, terminology, practices, quirks-and-gotchas, adr/, plan/, architecture/, tmp/), the ADR spec (6xW, status machine, Verification block, TASKLIST bound), Plan and backlog formats and exploration lane. Load when starting projects, making architecture decisions, onboarding a codebase, or whenever a repo has lode/. Ships AGENTS.template.md."
+description: "Durable project memory - the LodeStack Memory contract. lode/ structure (lode-map, summary, terminology, practices, quirks-and-gotchas, adr/, tasks/, plan/, architecture/, tmp/), the ADR spec (6xW, status machine, Verification block, TASKLIST bound), Plan and backlog formats and exploration lane. Load when starting projects, making architecture decisions, onboarding a codebase, or whenever a repo has lode/. Ships AGENTS.template.md."
 version: "1.0.12"
 author: "Damian Zaręba"
 license: "MIT"
-constitution: "a7033902800284dbfb8857af74558765243fb85b"
+constitution: "753997cbaf01e79114bc2c58f687225cfc52ff7c"
 tags:
   - lodestack
   - memory
@@ -60,7 +60,8 @@ lode/
 |-- quirks-and-gotchas/  # unexpected/live behaviour findings
 |   |-- README.md            # main file
 |   \-- <component>.md       # optional, for complex systems
-|-- adr/                 # ADR-<YYYY-MM-DD>-<seq>.md + TASKLIST files
+|-- adr/                 # ADR-<YYYY-MM-DD>-<seq>.md files
+|-- tasks/               # TASKLIST-ADR-<YYYY-MM-DD>-<seq>.md files
 |-- plan/                # PLAN-*.md and BL-*.md
 |-- architecture/        # system.md + <module>.md
 \-- tmp/                 # scratch; folders per ADR/Plan; git-ignored
@@ -136,7 +137,7 @@ it lives in the ADR or `lode/tmp/`.
 - Link the relevant technology documentation at the version in use.
 - Name: `ADR-<YYYY-MM-DD>-<seq>.md`; `<seq>` is a zero-padded number
   per day (`ADR-2026-11-15-001.md`).
-- Work steps live in `lode/adr/TASKLIST-ADR-<YYYY-MM-DD>-<seq>.md`.
+- Work steps live in `lode/tasks/TASKLIST-ADR-<YYYY-MM-DD>-<seq>.md`.
 - A TASKLIST growing past ~10 steps means the ADR is too big: split
   it into multiple ADRs and say so.
 
@@ -182,5 +183,5 @@ approaches tried, blockers, next steps.
 - "Handover" -> write `lode/tmp/handover-<date>.md`
 
 ## Sources
-Constitution: `constitution/LodeStack.md` at `a7033902`.
+Constitution: `constitution/LodeStack.md` at `753997cb`.
 Context and mappings: [Reference.md](Reference.md).
