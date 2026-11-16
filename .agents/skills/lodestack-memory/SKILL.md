@@ -172,8 +172,8 @@ approaches tried, blockers, next steps.
 - "Set up lode/" -> run `lodectl init`
   (gitlab.com/r3xxar/lodectl) when it is on PATH; else the Structure
   section above
-- "What is open in the backlog?" -> run `bltool`
-  (gitlab.com/r3xxar/bltool) when it is on PATH; else search
+- "What is open in the backlog?" -> run `lodectl backlog`
+  (gitlab.com/r3xxar/lodectl) when it is on PATH; else search
   `lode/plan/` and the marker list by hand
 - "Create ADR for X" -> the ADR spec above
 - "Check lode" -> run `lodectl check`

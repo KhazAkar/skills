@@ -24,8 +24,8 @@ tool over the manual path whenever it exists in this environment:
 - **tree-sitter-edit** (`tse`) - AST-based surgical edits; the
   primary EDIT mechanism of lodestack-edit. Query syntax lives in
   that skill's tse-recipes.md.
-- **lodectl** - scaffolds and checks the `lode/` structure.
-- **bltool** - GitLab release automation.
+- **lodectl** - scaffolds and checks the `lode/` structure,
+  reports the open backlog (`lodectl backlog`).
 
 A missing tool is never silently skipped: record it, offer
 installation, and only then take the manual or text-diff
