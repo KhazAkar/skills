@@ -24,8 +24,11 @@ tool over the manual path whenever it exists in this environment:
 - **tree-sitter-edit** (`tse`) - AST-based surgical edits; the
   primary EDIT mechanism of lodestack-edit. Query syntax lives in
   that skill's tse-recipes.md.
-- **lodectl** - scaffolds and checks the `lode/` structure,
-  reports the open backlog (`lodectl backlog`).
+- **lodectl** - scaffolds the `lode/` structure, runs the check
+  suite (including mermaid presence and syntax validation), and
+  reports the open backlog (`lodectl backlog`). Usage:
+  `lodectl help`, `lodectl <command> --help`, or `lodectl man`
+  (search it: `lodectl man | grep <topic>`).
 
 A missing tool is never silently skipped: record it, offer
 installation, and only then take the manual or text-diff
@@ -35,8 +38,9 @@ fallback, naming the trigger in the report.
 
 - Follow loaded skills strictly.
 - Model files - every ADR, Plan and `lode/architecture/` file -
-  carry a mermaid diagram. VERIFY/LODE rejects a model file
-  without one. An ADR presents its diagram in a dedicated
+  carry a valid mermaid diagram. VERIFY/LODE rejects a model file
+  without one (mermaid-presence) or with an invalid one
+  (mermaid-syntax). An ADR presents its diagram in a dedicated
   `## Model` section directly before the Specification.
 - Commits are authored by the developer's git identity; the agent
   never overrides author or committer. Agent assistance is recorded

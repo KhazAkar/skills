@@ -74,7 +74,7 @@ Rules for every file: one topic per file; under 250 lines; link to
 code by path plus symbol name (`path/file.ext` + `symbol` - never a
 line number: lines rot, symbols are the stable anchor); link between
 files; current state only
-(changelog goes to `tmp/`); all diagrams mermaid; every
+(changelog goes to `tmp/`); all diagrams valid mermaid; every
 `architecture/` file carries one.
 
 If `lode/` does not exist, ask before creating it. Add `lode/tmp/`
@@ -128,7 +128,8 @@ it lives in the ADR or `lode/tmp/`.
 - Do not edit an Accepted ADR. One exception: a technology version
   bump updates the version line.
 - A Proposed ADR may iterate model and description; the topic stays.
-- Every ADR carries a mermaid diagram - it is the model the
+- Every ADR carries a valid mermaid diagram (presence and syntax,
+  gated by `lodectl check`) - it is the model the
   Verification block and the test derive from. The diagram
   lives in its own `## Model` section directly before the
   Specification, never embedded mid-prose.
@@ -177,8 +178,12 @@ approaches tried, blockers, next steps.
   `lode/plan/` and the marker list by hand
 - "Create ADR for X" -> the ADR spec above
 - "Check lode" -> run `lodectl check`
-  (gitlab.com/r3xxar/lodectl) when it is on PATH; else the
-  model-file check in lodestack-edit VERIFY.f
+  (gitlab.com/r3xxar/lodectl) when it is on PATH - it gates
+  mermaid-presence and mermaid-syntax among the other checks;
+  else the LODE gate in lodestack-edit VERIFY.f
+- "How do I use lodectl?" -> `lodectl help` or
+  `lodectl <command> --help`; full reference page: `lodectl man`
+  (search it: `lodectl man | grep <topic>`)
 - "Run OSMM assessment" -> dated pass table into `lode/osmm.md`
 - "Handover" -> write `lode/tmp/handover-<date>.md`
 
