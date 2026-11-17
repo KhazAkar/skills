@@ -22,8 +22,9 @@ The LodeStack tools mechanize the contracts above. Prefer the
 tool over the manual path whenever it exists in this environment:
 
 - **tree-sitter-edit** (`tse`) - AST-based surgical edits; the
-  primary EDIT mechanism of lodestack-edit. Query syntax lives in
-  that skill's tse-recipes.md.
+  primary EDIT mechanism of lodestack-edit. Query syntax and recipes
+  live in the binary itself: `tree-sitter-edit recipes` (markdown
+  cookbook) or `tree-sitter-edit man` (roff page, RECIPES section).
 - **lodectl** - scaffolds the `lode/` structure, runs the check
   suite (including mermaid presence and syntax validation), and
   reports the open backlog (`lodectl backlog`). Usage:

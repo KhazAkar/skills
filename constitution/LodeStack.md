@@ -22,7 +22,7 @@ Each contract is made in following way:
 
 If more than one reference is needed, put them in `refs/` directory
 
-Edit contract also gains `tse-recipes.md`, which contains the core subset of usage examples for tree-sitter-edit tool, copied from tree-sitter-edit at the pinned commit (header: `tree-sitter-edit: <tree-sitter-edit_SHA>`); what it drops is covered by `tree-sitter-edit --help`
+Edit contract points at the tree-sitter-edit binary itself for usage examples and query syntax: `tree-sitter-edit recipes` prints the embedded markdown cookbook and `tree-sitter-edit man` carries it as the RECIPES section of the man page. The binary is the single source of truth; no bundled recipe copy ships with the skill (supersedes the earlier pinned `tse-recipes.md` subset, whose curation desynced from the tool)
 
 **Everything is kept minimal and unambiguous**
 

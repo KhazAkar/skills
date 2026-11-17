@@ -57,8 +57,10 @@ developer reviews it. No silent members.
 Only the sites and the ACCEPTed elements. Minimal viable diff, in
 cycles; remove removed code completely; match the file's style.
 
-Primary mechanism: **AST via `tree-sitter-edit`** - usage patterns in
-[tse-recipes.md](tse-recipes.md). Why primary: every edit is
+Primary mechanism: **AST via `tree-sitter-edit`** - usage patterns:
+run `tree-sitter-edit recipes` (embedded markdown cookbook) or
+`tree-sitter-edit man` (roff page, RECIPES section); the binary is the
+ground truth. Why primary: every edit is
 re-parsed before it is written (unparseable output is refused,
 exit 1, nothing written), writes are atomic, and batch results are
 canonical - the reviewable diff is structurally sound. Minimal loop:
@@ -163,4 +165,6 @@ still decode.
 ## Sources
 Constitution: `constitution/LodeStack.md` at `a7033902`.
 Context: [Reference.md](Reference.md). Tool recipes:
-[tse-recipes.md](tse-recipes.md) - pinned by SHA header.
+`tree-sitter-edit recipes` prints the embedded cookbook (the single
+source); `tree-sitter-edit man` carries it as the RECIPES section. No
+bundled copy ships with the skill - the binary is the ground truth.
