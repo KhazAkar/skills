@@ -13,7 +13,7 @@ The registry assigns revisions per push, never per local bump - the
 ledger mirrors the server, not the other way round.
 
 Usage: registry_sync.py .agents/skills/<name>
-Needs MISTRAL_API_KEY in the environment.
+Needs MISTRAL_MCP_API_KEY in the environment.
 """
 import json
 import os
@@ -126,9 +126,9 @@ def main():
         for p in sorted(d.rglob("*"))
         if p.is_file() and p.name not in LEDGER_FILES | {"SKILL.md"}
     }
-    key = os.environ.get("MISTRAL_API_KEY")
+    key = os.environ.get("MISTRAL_MCP_API_KEY")
     if not key:
-        raise SystemExit("MISTRAL_API_KEY not set in environment")
+        raise SystemExit("MISTRAL_MCP_API_KEY not set in environment")
     res = rpc("write_skill", {
         "name": d.name,
         "description": frontmatter_field(body, "description"),
