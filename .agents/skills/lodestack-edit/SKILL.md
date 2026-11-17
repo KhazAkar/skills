@@ -95,10 +95,12 @@ silently absent.
 - e. **TEST** - the executable specification, derived from the ADR
 - f. **LODE** - the change checked against `lode/` itself. Touched
   model files - `lode/adr/ADR-*.md`, `lode/plan/PLAN-*.md`,
-  `lode/architecture/*.md` - must carry a mermaid diagram: run
-  `lodectl check` when it is on PATH; else `grep -L mermaid` on the
-  touched model files must list none of them. If `lode/` is absent,
-  record `N/A` and offer setup (AGENTS contract)
+  `lode/architecture/*.md` - must carry a valid mermaid diagram:
+  run `lodectl check` when it is on PATH (it gates mermaid-presence
+  and mermaid-syntax). If lodectl is not on PATH, record `N/A` and
+  offer installation (`go install gitlab.com/r3xxar/lodectl@latest`).
+  If `lode/` is absent, record `N/A` and offer setup (AGENTS
+  contract)
 - g. **RECHECK** - the ANALYZE table re-run against the actual diff:
   every entry edited as declared, or flipped to EXEMPT/REJECT with a
   reason stated. Re-read the changed files: the reported diff must
