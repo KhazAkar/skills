@@ -64,37 +64,6 @@ fallback, naming the trigger in the report.
 - Adjacent problems found mid-work go to BACKLOG.md, never into the
   current diff.
 
-## Project specific
-
-The rules that are contract, not memory: project-bound agent rules
-that hold in this repository while the LodeStack skills stay
-universal. One bullet per rule, each checkable by the developer.
-
-- One skill per folder under `.agents/skills/<name>/`: SKILL.md,
-  README.md, metadata.json; optional Reference.md, `refs/`,
-  `templates/` support files.
-- Version triple-sync: SKILL.md `version:` (semver), metadata.json
-  `version`/`latestVersion` (integer revision) and
-  `updatedAt`, README.md `## Version` (integer) bump together in
-  the bump commit. Never skip a file: the 2026-11-03 1.3.0 bump
-  skipped two and created ledger drift.
-- The registry is the source of truth for the integer revision: a
-  landed `scripts/registry_sync.py` push assigns it and mirrors
-  it back into the ledgers; the ledger never runs ahead of the
-  registry.
-- Commit pair per skill release: a change commit, then a
-  version-bump commit; scope = the skill name.
-- `shared/` holds cross-skill references promoted by the 2+
-  rule: a topic moves out of a skill's `refs/` when a second
-  skill needs it, keeping provenance to the origin skill. Link,
-  never copy.
-- `retired/` holds skills superseded by the v2 contracts, moved
-  out of `.agents/skills/` verbatim on 2026-11-20. Do not load
-  them, do not link them from live skills; edit the v2 successor
-  instead.
-- Docs-only repo: no `lode/`, CI = scripts/check_skills.py
-  (frontmatter, ledger sync, repo-wide relative-link check).
-
 ## Gates
 
 - The developer IS the gate - technically the weakest gate (no
@@ -112,4 +81,32 @@ universal. One bullet per rule, each checkable by the developer.
   ("run autonomously until VERIFY fails or the phase completes").
   That is one gate decision, not a shortcut. The agent records
   it, works the scope, and stops at the bound.
+
+## Project specific
+
+Since this is the r3xxar/skills repository, few extra rules apply:
+
+- Keep one skill per folder under `.agents/skills/<name>/`:
+  SKILL.md, README.md, metadata.json; optional Reference.md,
+  `refs/`, `templates/`.
+- Bump the version triple together in the bump commit, never skip
+  a file: SKILL.md `version:` (semver), metadata.json
+  `version`/`latestVersion`/`updatedAt`, README.md
+  `## Version`. The 2026-11-03 1.3.0 bump skipped two and created
+  ledger drift.
+- Land every skill release through `scripts/registry_sync.py`:
+  the push assigns the integer revision; mirror it back into the
+  ledgers. The ledger never runs ahead of the registry.
+- Ship each skill release as a commit pair: a change commit, then
+  a version-bump commit; scope = the skill name.
+- Promote into `shared/` by the 2+ rule: a topic moves out of a
+  skill's `refs/` when a second skill needs it, keeping
+  provenance to the origin skill. Link, never copy.
+- Treat `retired/` as history: skills superseded by the v2
+  contracts, moved out of `.agents/skills/` verbatim on 2026-11-20.
+  Do not load them, do not link them from live skills; edit the v2
+  successor instead.
+- Keep CI green: docs-only repo, no `lode/`;
+  scripts/check_skills.py gates frontmatter, ledger sync and the
+  repo-wide relative-link check on every push.
 
