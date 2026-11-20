@@ -1,7 +1,7 @@
 ---
 name: "lodestack-edit"
 description: "The LodeStack Edit contract - the code-editing cycle for every code change, review or refactor. REASON, LOCATE, ANALYZE (agent marks ACCEPT/REJECT per element, table to developer), EDIT via tree-sitter-edit with text-diff fallback, VERIFY gate (LINT, TYPECHECK, SECURITY, FORMAT, TEST, LODE, RECHECK) with an inner EDIT-VERIFY loop, the 3-attempt break rule and the wildcard mechanism on repeat breaks. Load for ALL code work in any project."
-version: "1.0.15"
+version: "1.0.16"
 author: "Damian Zaręba"
 license: "MIT"
 constitution: "a7033902800284dbfb8857af74558765243fb85b"
@@ -97,11 +97,15 @@ silently absent.
 - e. **TEST** - the executable specification, derived from the ADR
 - f. **LODE** - the change checked against `lode/` itself. Touched
   model files - `lode/adr/ADR-*.md`, `lode/plan/PLAN-*.md`,
-  `lode/architecture/*.md` - must carry a valid mermaid diagram:
-  run `lodectl check` when it is on PATH (it gates mermaid-presence
-  and mermaid-syntax). If lodectl is not on PATH, record `N/A` and
-  offer installation (`go install gitlab.com/r3xxar/lodectl@latest`).
-  If `lode/` is absent, record `N/A` and offer setup (AGENTS
+  `lode/architecture/*.md` - must carry a valid mermaid diagram.
+  In a repo with `lode/`, `lodectl check` is mandatory equipment
+  (it gates mermaid-presence and mermaid-syntax): run it and
+  report the verdict. If it is not on PATH, install it
+  (`go install gitlab.com/r3xxar/lodectl@latest`), with developer
+  approval, before the gate closes; `N/A` is not an exit here. A
+  failing check is not silenced: surface the findings and let the
+  developer judge - the developer is the gate, not the tool. If
+  `lode/` is absent, record `N/A` and offer setup (AGENTS
   contract)
 - g. **RECHECK** - the ANALYZE table re-run against the actual diff:
   every entry edited as declared, or flipped to EXEMPT/REJECT with a

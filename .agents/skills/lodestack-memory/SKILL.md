@@ -1,7 +1,7 @@
 ---
 name: "lodestack-memory"
 description: "Durable project memory - the LodeStack Memory contract. lode/ structure (lode-map, summary, terminology, practices, quirks-and-gotchas, adr/, tasks/, plan/, architecture/, tmp/), the ADR spec (6xW, status machine, Verification block, TASKLIST bound), Plan and backlog formats and exploration lane. Load when starting projects, making architecture decisions, onboarding a codebase, or whenever a repo has lode/. Ships AGENTS.template.md."
-version: "1.2.1"
+version: "1.3.0"
 author: "Damian Zaręba"
 license: "MIT"
 constitution: "753997cbaf01e79114bc2c58f687225cfc52ff7c"
@@ -46,8 +46,10 @@ enforcement file ships here as
    before exploring the codebase. The lode-map is the index.
 2. Show domain knowledge briefly before the first request.
 3. If a project has no `lode/`, work normally; when it would benefit,
-   inform and offer setup - `lodectl init` is the one-command answer
-   when it is on PATH. The developer gates.
+   inform and offer setup - `lodectl init` is the one-command answer.
+   In repositories with `lode/`, lodectl is mandatory equipment:
+   run it and report its verdict; install it, with developer
+   approval, when the binary is missing. The developer gates.
 
 ## Structure
 ```
@@ -171,16 +173,19 @@ approaches tried, blockers, next steps.
 
 ## Commands (natural language)
 - "Set up lode/" -> run `lodectl init`
-  (gitlab.com/r3xxar/lodectl) when it is on PATH; else the Structure
-  section above
+  (gitlab.com/r3xxar/lodectl); if the binary is missing, install it
+  (`go install gitlab.com/r3xxar/lodectl@latest`) with developer
+  approval - the Structure section above is the fallback only
+  until the install lands
 - "What is open in the backlog?" -> run `lodectl backlog`
-  (gitlab.com/r3xxar/lodectl) when it is on PATH; else search
-  `lode/plan/` and the marker list by hand
+  (gitlab.com/r3xxar/lodectl); install first when missing, as above
 - "Create ADR for X" -> the ADR spec above
 - "Check lode" -> run `lodectl check`
-  (gitlab.com/r3xxar/lodectl) when it is on PATH - it gates
-  mermaid-presence and mermaid-syntax among the other checks;
-  else the LODE gate in lodestack-edit VERIFY.f
+  (gitlab.com/r3xxar/lodectl) - it gates mermaid-presence and
+  mermaid-syntax among the other checks. Mandatory in repos with
+  `lode/`: run and report its verdict; a missing binary means
+  install first, and a failing check is surfaced to the developer,
+  never silenced (the LODE gate in lodestack-edit VERIFY.f)
 - "How do I use lodectl?" -> `lodectl help` or
   `lodectl <command> --help`; full reference page: `lodectl man`
   (search it: `lodectl man | grep <topic>`)

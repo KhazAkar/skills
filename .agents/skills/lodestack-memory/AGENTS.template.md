@@ -31,6 +31,14 @@ tool over the manual path whenever it exists in this environment:
   `lodectl help`, `lodectl <command> --help`, or `lodectl man`
   (search it: `lodectl man | grep <topic>`).
 
+In a repo with `lode/`, lodectl is mandatory equipment, not
+optional: run `lodectl check` and report its verdict; when the
+binary is missing, install it with developer approval before the
+gated work proceeds, instead of recording `N/A`. `N/A` applies
+only to repositories without `lode/`. A failing or false-positive
+check is never silenced: surface the findings; the developer
+judges - the developer is the gate, not the tool.
+
 A missing tool is never silently skipped: record it, offer
 installation, and only then take the manual or text-diff
 fallback, naming the trigger in the report.
