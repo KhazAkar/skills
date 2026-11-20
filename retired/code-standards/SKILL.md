@@ -43,7 +43,8 @@ it names its scope or moves to the strict tier.
 Judgment-level, moved from the lode Code Discipline on 2026-11-07, so
 the lode keeps pointers only:
 1. **YAGNI.** Build what is needed now. No speculative features,
-   abstractions, or config knobs.
+   abstractions, o
+r config knobs.
 2. **Test first.** Chat and design first (AMDD). Once the architecture
    skeleton exists, a failing test drives the implementation, red to
    green to blue. The failing test is the code-edit INTENT evidence.
@@ -79,7 +80,8 @@ the lode keeps pointers only:
    meaning — same rule as the STE language rule.
 6. **Zero warnings.** Compile at the most pedantic setting with zero
    warnings. Run at least one static analyzer in CI. If a tool gets
-   confused, rewrite the code; do not silence the tool. (P10 R10)
+   confused, rewrite the cod
+e; do not silence the tool. (P10 R10)
 7. **Sketch performance at design time.** For any hot path, record a
    back-of-envelope estimate in the ADR: network, storage, memory,
    compute; bandwidth and latency. Roughly right beats precisely late.
@@ -119,7 +121,8 @@ the lode keeps pointers only:
 ## When to Load
 - Writing or reviewing code, alongside code-edit.
 - Designing an interface, or an ADR with performance weight.
-- Creating or updating a repo's `lode/practices.md`.
+- Creating or updating a rep
+o's `lode/practices.md`.
 - Adopting the strict tier for a repo.
 
 ## Deployment

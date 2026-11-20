@@ -27,7 +27,8 @@ AI maintains the lode as a byproduct of your work.
 **Code Discipline** (how code gets written; pure pointers to the stack's sibling skills — single source of truth — the agent platform's memory and the project
 `lode/practices.md` link here, do not restate the rules):
 - **Surgical edits**: every code change also follows the **code-edit** skill — five non-negotiable stages (INTENT, LOCATE, IMPACT, EDIT, PROPAGATE). The stages nest into the lode cycle: INTENT enters at discussion, LOCATE + IMPACT are the just-in-time modeling before the decision, EDIT runs after the ADR exists, PROPAGATE is the acceptance where the lode updates land in the same moment. Commit bodies record the change; ADRs record the decision — both, not either.
-- **Code standards**: what good code looks like follows the **code-standards** skill — development principles (YAGNI, test first, junior-readable) and spirit rules in every repo, strict tier where a repo's ADR adopted it. The tier and the project dials are recorded in `lode/practices.md`.
+- **Code standards**: what good code looks like follows the **code-standards** skill — development principles (YAGNI, test first, junior-readable) and spirit rules in every repo, strict tier where a repo's ADR adopted it. The tier and the p
+roject dials are recorded in `lode/practices.md`.
 - **Test design**: what good tests look like follows the **test-standards** skill — test levels, one test file per specification, adversarial mindset. The chosen levels per feature are recorded in `lode/testing.md`.
 
 ## When to Load
@@ -70,7 +71,8 @@ implementation → acceptance. Main lode files are written at two moments:
    architecture part of AMDD).
 2. **At acceptance** ("looks good", "ship it", the request is done) —
    immediately update every affected lode file so it reflects the current
-   state, before moving to the next request.
+   state, before moving to the next requ
+est.
 
 Not per step, not per commit. Outside the cadence:
 
@@ -125,7 +127,8 @@ lode/
 Write lode files and code comments in plain, simple, direct language:
 
 - **English: follow ASD-STE100 Simplified Technical English** — one word, one meaning;
-  short sentences (max ~20 words); active voice; present tense; no idioms;
+  short sentences (max ~20 words); ac
+tive voice; present tense; no idioms;
   no inflated wording ("utilize" → "use", "in order to" → "to",
   "exacerbate" → "make worse"). Prefer the approved verb list mindset:
   if a simpler word fits, it is the right word.

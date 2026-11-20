@@ -36,7 +36,8 @@ compilers.
 3. **No dynamic allocation after initialization.** Allocators are
    unpredictable in time and error-prone in use (leaks,
    use-after-free, overruns, over-allocation). Pre-allocated memory
-   plus the recursion ban makes both heap and stack usage statically
+   plus the recursion ban makes 
+both heap and stack usage statically
    provable.
 4. **Functions short enough to print.** About 60 lines, one action per
    line. A function should be one reviewable, verifiable logical
@@ -69,7 +70,8 @@ compilers.
     compiler settings, warning-free builds, and at least one
     state-of-the-art static analyzer run daily. Even a seemingly bogus
     warning is a signal: rewrite the code until the tool understands
-    it, because "invalid" warnings have a track record of being right
+    it,
+ because "invalid" warnings have a track record of being right
     in less obvious ways.
 
 ## Why the set hangs together

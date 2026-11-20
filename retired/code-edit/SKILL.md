@@ -36,7 +36,8 @@ description, or session note). Every point is non-negotiable.
    command, or file format against the real sources, in order —
    1. the codebase itself (how the same thing is already done there);
    2. official documentation of the library/framework/app;
-   3. CLI help (`--help`, `-h`) and man pages.
+   3. CLI help
+ (`--help`, `-h`) and man pages.
    Model memory is not a source. If sources disagree or cannot confirm,
    the change waits; record the gap. Reuse first: existing code in this
    repo, then stdlib/platform/framework; state what was reused and why

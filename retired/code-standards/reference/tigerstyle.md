@@ -39,7 +39,8 @@ limits are its three visible habits.
   state. Assert arguments, returns, and invariants, on both the
   expected side and the must-never-happen side. The payoff: programmer
   error surfaces at the fault instead of downstream, and fuzzing is
-  multiplied because every assertion is a tripwire.
+  multiplied because every assertion is a tr
+ipwire.
 - **Logical interfaces.** System quality tracks interface quality.
   Keep the surface small, state what can fail and how, wrap
   non-deterministic (physical, concurrent) things behind
@@ -78,7 +79,8 @@ like a carpenter with wood.
   sprints through large units of work.
 - **Bigger blocks.** Think about where hardware is going. Larger block
   sizes amortize fixed costs and cut control-plane overhead per byte;
-  embrace concurrency rather than fear it.
+  embr
+ace concurrency rather than fear it.
 - **Zero copy.** Per-core memory bandwidth is the modern bottleneck:
   take the most direct path, do not copy in the data plane, do not
   thrash the cache, do not serialize/deserialize, and lay out

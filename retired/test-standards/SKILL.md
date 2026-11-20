@@ -30,7 +30,8 @@ How to write tests — what good tests look like. The test-design layer next to 
 ## Test levels, in default order
 1. **System integration / system architecture level, for the most part.** Test the system as the user experiences it: components wired together, real data flow, real failure modes.
 2. **Executable specifications / contracts.** Execute each logical interface's contract (code-standards spirit rule 9) as a test. The contract is the specification; the test proves it.
-3. **Few E2E and few unit tests** — only where the system/integration level would not fit without substantial modifications to the system architecture. Before skipping a level, moving a test to the backlog, or proceeding right away, **ask the developer** — that rule is this skill's own. **code-edit** INTENT still requires acceptance evidence before any change. Link, do not restate.
+3. **Few E2E and few unit tests** — only where the system/integration level would not fit without substantial modifications to the system architecture. Before skipping a level, moving a test to the backlog, or proceeding right away, **ask the developer** — that rule is this skill's own. **code-edit** INTENT sti
+ll requires acceptance evidence before any change. Link, do not restate.
 
 ## Duplication and focus
 - Keep unique tests only. Do not write many variations of the same thing.
