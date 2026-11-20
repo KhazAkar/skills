@@ -60,6 +60,16 @@ fallback, naming the trigger in the report.
   effects - commits, pushes, PRs, issues, and any authored message -
   need the developer's explicit approval per action.
 
+## Project specific
+
+The rules that are contract, not memory: short, project-bound
+agent rules that must hold in this repository while the LodeStack
+skills stay universal. One bullet per rule, each checkable by the
+developer. An empty section is valid.
+
+Commands, workflows and tooling live in `lode/practices.md`
+(Memory contract). Link, never copy.
+
 ## Gates
 
 - The developer IS the gate - technically the weakest gate (no
