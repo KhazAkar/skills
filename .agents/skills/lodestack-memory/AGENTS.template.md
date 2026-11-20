@@ -68,16 +68,6 @@ fallback, naming the trigger in the report.
   effects - commits, pushes, PRs, issues, and any authored message -
   need the developer's explicit approval per action.
 
-## Project specific
-
-The rules that are contract, not memory: short, project-bound
-agent rules that must hold in this repository while the LodeStack
-skills stay universal. One bullet per rule, each checkable by the
-developer. An empty section is valid.
-
-Commands, workflows and tooling live in `lode/practices.md`
-(Memory contract). Link, never copy.
-
 ## Gates
 
 - The developer IS the gate - technically the weakest gate (no
@@ -95,3 +85,18 @@ Commands, workflows and tooling live in `lode/practices.md`
   ("run autonomously until VERIFY fails or the phase completes").
   That is one gate decision, not a shortcut. The agent records it,
   works the scope, and stops at the bound.
+
+## Project specific
+
+Project-bound rules that apply in this repository beyond the
+universal contracts. Written as enforceable orders in imperative
+voice: one rule per bullet, each checkable by the developer. A link
+is not a rule: when following a file is mandatory, state the duty
+as an enforceable clause, for example: "Before performing any
+action, read `lode/practices.md` in full and follow it to the
+letter." Commands, workflows and tooling stay in
+`lode/practices.md` (Memory contract); reach them from here only
+through such clauses, never as bare links. An empty section is
+valid.
+
+Since this is `<project>` repository, few extra rules apply:
