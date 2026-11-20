@@ -158,7 +158,7 @@ Memory system should have following characteristics and specs:
   a. system.md - Overall system diagram
   b. <module>.md - Module-level software diagram
 
-Template-less, specification made from abovac should be precise and strict enough to give similar designs.
+Template-less, specification made from aboce should be precise and strict enough to give similar designs.
 
 ### ADR
 
@@ -259,7 +259,7 @@ Based off following main standards living in automotive/aviation/space industrie
 
 Each of them shall be combined, de-duplicated and distilled into one, coherent set of coding rules - applicable universally across tech stacks, with distilled versions of each living in `refs/` directory
 
-Distilled version of rule set above is subject to interpretation for each specific project worked on and language used for - Language-specific coding practices should be applied as additions, verbatim, to rule set provided.
+Distilled version of rule set above is subject to interpretation for each specific project worked on and language used for code - Language-specific coding practices should be applied as additions, verbatim, to rule set provided.
 
 Hard rules described in documents like Power of Ten/MISRA should live as machine-checkable gates by utilizing targeted tests
 
@@ -281,7 +281,13 @@ Defendable: the owner can explain and debug every merged line without AI help; u
 
 Not a skill, but a template to fill.
 
-The Project specific field carries the order twins of binding practices: each order is the short, unambiguous twin of one binding practice in `lode/practices.md`; the explanation and the procedure stay in the practice entry (SKILL.md to Reference.md pattern: orders bind, the practice entry carries the why). Binding practices only; a practice and its order twin change together in one commit.
+The Project specific field carries the order twins of binding
+practices: each order is the short, unambiguous twin of one
+binding practice in `lode/practices.md`; the explanation and the
+procedure stay in the practice entry (SKILL.md to Reference.md
+pattern: orders bind, the practice entry carries the why).
+Binding practices only; a practice and its order twin change
+together in one commit.
 
 Contracts living as skills are mandatory to work on project; If not available - inform and offer installation
 
