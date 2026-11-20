@@ -1,7 +1,7 @@
 ---
 name: "lodestack-memory"
 description: "Durable project memory - the LodeStack Memory contract. lode/ structure (lode-map, summary, terminology, practices, quirks-and-gotchas, adr/, tasks/, plan/, architecture/, tmp/), the ADR spec (6xW, status machine, Verification block, TASKLIST bound), Plan and backlog formats and exploration lane. Load when starting projects, making architecture decisions, onboarding a codebase, or whenever a repo has lode/. Ships AGENTS.template.md."
-version: "1.3.1"
+version: "1.4.0"
 author: "Damian Zaręba"
 license: "MIT"
 constitution: "753997cbaf01e79114bc2c58f687225cfc52ff7c"
@@ -71,6 +71,12 @@ lode/
 
 `practices.md` has four sections: necessary and opt-in tooling;
 first setup; running; testing.
+Practices that bind the agent carry a short order twin in the
+repo AGENTS.md (`## Project specific`); explanations, procedures
+and options stay here (SKILL.md to Reference.md pattern: orders
+bind, the practice entry carries the why). Only binding
+practices get a twin; a practice changes only together with its
+order twin, in one commit.
 
 Rules for every file: one topic per file; under 250 lines; link to
 code by path plus symbol name (`path/file.ext` + `symbol` - never a
@@ -89,7 +95,8 @@ written at two moments:
 1. **Decision** - the ADR exists before the code it justifies.
    ADR-first is the rule, not the exception.
 2. **Acceptance** - when the developer accepts the work, update every
-   affected lode file before the next request.
+   affected lode file before the next request, and the AGENTS.md
+   order twin of any changed practice (same commit).
 
 Not per step, not per commit.
 

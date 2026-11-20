@@ -96,7 +96,16 @@ as an enforceable clause, for example: "Before performing any
 action, read `lode/practices.md` in full and follow it to the
 letter." Commands, workflows and tooling stay in
 `lode/practices.md` (Memory contract); reach them from here only
-through such clauses, never as bare links. An empty section is
-valid.
+through such clauses, never as bare links.
+Practice twins: each order here is the short, unambiguous twin of
+one entry in `lode/practices.md` - the same pairing as SKILL.md
+to Reference.md. Orders bind; the practice entry carries the
+explanation and the procedure. Only practices that bind the agent
+get a twin; informational ones live in `lode/practices.md`
+alone. End each twin with its provenance, for example: (full:
+Running, <practice>, lode/practices.md). A practice changes only
+together with its order twin, in one commit; when the two
+disagree, the agent reports the gap and asks before fixing
+either. An empty section is valid.
 
 Since this is `<project>` repository, few extra rules apply:
