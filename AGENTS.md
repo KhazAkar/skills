@@ -27,8 +27,11 @@ decision.
 
 ## Tools
 
-The LodeStack tools mechanize the contracts above. Prefer the tool
-over the manual path whenever it exists in this environment:
+The LodeStack tools are external tools: binaries invoked from
+the shell via PATH. A tool inventory listing is never the gate,
+and inventory absence never means unavailability - check PATH,
+not the inventory. Prefer the tool over the manual path whenever
+it exists in this environment:
 
 - **tree-sitter-edit** (`tse`) - AST-based surgical edits; the
   primary EDIT mechanism of lodestack-edit. Query syntax and
