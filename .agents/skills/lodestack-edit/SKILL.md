@@ -1,7 +1,7 @@
 ---
 name: "lodestack-edit"
 description: "The LodeStack Edit contract - the code-editing cycle for every code change, review or refactor. REASON, LOCATE, ANALYZE (agent marks ACCEPT/REJECT per element, table to developer), EDIT via tree-sitter-edit with text-diff fallback, VERIFY gate (LINT, TYPECHECK, SECURITY, FORMAT, TEST, LODE, RECHECK) with an inner EDIT-VERIFY loop, the 3-attempt break rule and the wildcard mechanism on repeat breaks. Load for ALL code work in any project."
-version: "1.0.16"
+version: "1.1.0"
 author: "Damian Zaręba"
 license: "MIT"
 constitution: "a7033902800284dbfb8857af74558765243fb85b"
@@ -57,7 +57,8 @@ developer reviews it. No silent members.
 Only the sites and the ACCEPTed elements. Minimal viable diff, in
 cycles; remove removed code completely; match the file's style.
 
-Primary mechanism: **AST via `tree-sitter-edit`** - usage patterns:
+Primary mechanism: **AST via `tree-sitter-edit` (external
+tool)** - usage patterns:
 run `tree-sitter-edit recipes` (embedded markdown cookbook) or
 `tree-sitter-edit man` (roff page, RECIPES section); the binary is the
 ground truth. Why primary: every edit is
@@ -98,13 +99,21 @@ silently absent.
 - f. **LODE** - the change checked against `lode/` itself. Touched
   model files - `lode/adr/ADR-*.md`, `lode/plan/PLAN-*.md`,
   `lode/architecture/*.md` - must carry a valid mermaid diagram.
-  In a repo with `lode/`, `lodectl check` is mandatory equipment
-  (it gates mermaid-presence and mermaid-syntax): run it and
-  report the verdict. If it is not on PATH, install it
+  In a repo with `lode/`, `lodectl check` (external tool) is
+  mandatory equipment - it gates the lode structure and hygiene
+  suite, incl. mermaid-presence and mermaid-syntax: run it and
+  deal with every finding in the same cycle, regardless of ADR
+  status, inside this gate's EDIT-VERIFY loop. Each finding takes
+  one recorded disposition: FIXED (the `lode/` edit landed),
+  REFUTED (one-line reason it is not a defect), or TOOL-LIMIT
+  (a named upstream follow-up; never weaken `lode/` to make a
+  finding pass). Never silenced, never ignored; the developer
+  gates the dispositions at review. Fixes touch lode hygiene -
+  statuses, links, names, TASKLIST bindings, diagrams; Accepted
+  ADR substance still changes only by superseding or an explicit
+  deviation receipt. If the binary is not on PATH, install it
   (`go install gitlab.com/r3xxar/lodectl@latest`), with developer
-  approval, before the gate closes; `N/A` is not an exit here. A
-  failing check is not silenced: surface the findings and let the
-  developer judge - the developer is the gate, not the tool. If
+  approval, before the gate closes; `N/A` is not an exit. If
   `lode/` is absent, record `N/A` and offer setup (AGENTS
   contract)
 - g. **RECHECK** - the ANALYZE table re-run against the actual diff:
