@@ -19,9 +19,13 @@ Amendment ledger (statuses 2026-11-20):
    maintainable and defendable by a junior without AI help.
    Mirrors into lodestack-code-standards as a new rule, gate:
    review. STAGED (in text; the skills rule is pending).
-2. LODE gate via lodectl: mandatory run and report semantics in
-   lode repos. DECIDED 2026-11-20; landed in the skills
-   (edit 1.0.16) and echoed in the Edit section below.
+2. LODE gate via lodectl: fixed-as-they-go semantics - every
+   finding is dealt with in the same cycle, regardless of ADR
+   status: fixed, refuted on record, or adjudged a tool limit
+   that goes upstream. DECIDED 2026-11-21 (supersedes the
+   2026-11-20 run-and-report-only decision); landed in the
+   skills (edit 1.1.0, memory 1.5.0) and echoed in the Edit
+   section below.
 3. Inner EDIT-VERIFY cycle also re-verifies the Proposed ADR
    mermaid chart. STAGED (in text).
 4. Test standards: regression testing can be introduced early.
@@ -35,6 +39,12 @@ Amendment ledger (statuses 2026-11-20):
    order twins of binding lode/practices.md practices. DECIDED
    2026-11-20; landed in the template and memory 1.4.0; echoed
    in the AGENTS.md section below.
+8. External tools term: tools named by the skills are external
+   tools - binaries invoked from the shell via PATH; a tool
+   inventory listing is never the gate. DECIDED 2026-11-21
+   (agent-observed: tool-inventory absence read as
+   unavailability); defined in the AGENTS.md section below,
+   carried by the template and the skills.
 
 Cognitive + execution partner for work
 
@@ -214,7 +224,7 @@ Points a-d shall be done using specialized tools for currently used programming 
 
 SECURITY (c) - means the defensive strategies used in programming which enhance code security, as well as scanning using specialized tools
 
-LODE (f) - verified against `lode/` itself by mandatory usage of `lodectl` tool, in run and report semantics: run `lodectl check` and report its verdict; when the binary is missing, install first instead of recording N/A; failing checks surface to the developer, never silenced (repos without `lode/` keep the record-and-offer pattern)
+LODE (f) - verified against `lode/` itself by mandatory usage of the external tool `lodectl`, in fix-as-they-go semantics: run `lodectl check` and deal with every finding in the same cycle, regardless of ADR status - fixed, refuted on record, or adjudged a tool limit that goes upstream; fixes touch lode hygiene only, Accepted ADR substance still changes by superseding; when the binary is missing, install first instead of recording N/A; findings are never silenced, never ignored (repos without `lode/` keep the record-and-offer pattern)
 
 Editing of code primarily shall be done using AST, performed using `tree-sitter-edit` ([https://gitlab.com/r3xxar/tree-sitter-edit](https://gitlab.com/r3xxar/tree-sitter-edit)) command, with text-diff based fallback.
 
@@ -280,6 +290,8 @@ Defendable: the owner can explain and debug every merged line without AI help; u
 ## AGENTS.md
 
 Not a skill, but a template to fill.
+
+Tools named by the skills are external tools: binaries invoked from the shell via PATH. A tool inventory listing (any agent's manifest of sanctioned runtime tools) is never the gate, and inventory absence never means unavailability - check PATH, not the inventory. A missing external tool is never silently skipped: record it, offer installation, then take the manual or text-diff fallback, naming the trigger in the report.
 
 The Project specific field carries the order twins of binding
 practices: each order is the short, unambiguous twin of one
