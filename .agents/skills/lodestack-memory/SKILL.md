@@ -1,7 +1,7 @@
 ---
 name: "lodestack-memory"
 description: "Durable project memory - the LodeStack Memory contract. lode/ structure (lode-map, summary, terminology, practices, quirks-and-gotchas, adr/, tasks/, plan/, architecture/, tmp/), the ADR spec (6xW, status machine, Verification block, TASKLIST bound), Plan and backlog formats and exploration lane. Load when starting projects, making architecture decisions, onboarding a codebase, or whenever a repo has lode/. Ships AGENTS.template.md."
-version: "1.4.0"
+version: "1.5.0"
 author: "Damian Zaręba"
 license: "MIT"
 constitution: "753997cbaf01e79114bc2c58f687225cfc52ff7c"
@@ -47,9 +47,12 @@ enforcement file ships here as
 2. Show domain knowledge briefly before the first request.
 3. If a project has no `lode/`, work normally; when it would benefit,
    inform and offer setup - `lodectl init` is the one-command answer.
-   In repositories with `lode/`, lodectl is mandatory equipment:
-   run it and report its verdict; install it, with developer
-   approval, when the binary is missing. The developer gates.
+   In repositories with `lode/`, lodectl (external tool) is
+   mandatory equipment: run `lodectl check` and deal with every
+   finding - fixed, refuted on record, or a named tool-limit
+   follow-up; install it, with developer approval, when the
+   binary is missing. The developer gates the dispositions at
+   review.
 
 ## Structure
 ```
@@ -188,11 +191,13 @@ approaches tried, blockers, next steps.
   (gitlab.com/r3xxar/lodectl); install first when missing, as above
 - "Create ADR for X" -> the ADR spec above
 - "Check lode" -> run `lodectl check`
-  (gitlab.com/r3xxar/lodectl) - it gates mermaid-presence and
-  mermaid-syntax among the other checks. Mandatory in repos with
-  `lode/`: run and report its verdict; a missing binary means
-  install first, and a failing check is surfaced to the developer,
-  never silenced (the LODE gate in lodestack-edit VERIFY.f)
+  (gitlab.com/r3xxar/lodectl) - it gates the lode structure and
+  hygiene suite, incl. mermaid-presence and mermaid-syntax among
+  the other checks. Mandatory in repos with `lode/`: deal with
+  every finding in the same cycle, regardless of ADR status -
+  fixed, refuted on record, or a named tool-limit follow-up; a
+  missing binary means install first, and a finding is never
+  silenced (the LODE gate in lodestack-edit VERIFY.f)
 - "How do I use lodectl?" -> `lodectl help` or
   `lodectl <command> --help`; full reference page: `lodectl man`
   (search it: `lodectl man | grep <topic>`)

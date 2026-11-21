@@ -18,8 +18,12 @@ Project memory entry point: `lode/lode-map.md`.
 
 ## Tools
 
-The LodeStack tools mechanize the contracts above. Prefer the
-tool over the manual path whenever it exists in this environment:
+The LodeStack tools are external tools: binaries invoked from
+the shell via PATH. A tool inventory listing (any manifest of
+sanctioned runtime tools) is never the gate, and inventory
+absence never means the tool is unavailable - check PATH, not
+the inventory. Prefer the tool over the manual path whenever it
+exists in this environment:
 
 - **tree-sitter-edit** (`tse`) - AST-based surgical edits; the
   primary EDIT mechanism of lodestack-edit. Query syntax and recipes
@@ -32,12 +36,15 @@ tool over the manual path whenever it exists in this environment:
   (search it: `lodectl man | grep <topic>`).
 
 In a repo with `lode/`, lodectl is mandatory equipment, not
-optional: run `lodectl check` and report its verdict; when the
-binary is missing, install it with developer approval before the
-gated work proceeds, instead of recording `N/A`. `N/A` applies
-only to repositories without `lode/`. A failing or false-positive
-check is never silenced: surface the findings; the developer
-judges - the developer is the gate, not the tool.
+optional: run `lodectl check` and deal with every finding before
+the gated work ends - fixed in `lode/`, refuted on record with a
+one-line reason, or adjudged a tool limit that goes upstream;
+findings are never silenced, never ignored, and the developer
+gates the dispositions at review. When the binary is missing,
+install it with developer approval instead of recording `N/A`.
+`N/A` applies only to repositories without `lode/`. Fixes touch
+lode hygiene; Accepted ADR substance still changes by
+superseding.
 
 A missing tool is never silently skipped: record it, offer
 installation, and only then take the manual or text-diff
