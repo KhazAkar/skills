@@ -1,6 +1,6 @@
 ---
 name: "lodestack-memory"
-description: "Durable project memory - the LodeStack Memory contract. lode/ structure (lode-map, summary, terminology, practices, quirks-and-gotchas, adr/, tasks/, plan/, architecture/, tmp/), the ADR spec (6xW, status machine, Verification block, TASKLIST bound), Plan and backlog formats and exploration lane. Load when starting projects, making architecture decisions, onboarding a codebase, or whenever a repo has lode/. Ships AGENTS.template.md."
+description: "Durable project memory - the LodeStack Memory contract. lode/ structure (lode-map, summary, terminology, practices, quirks-and-gotchas, adr/, tasks/, plan/, architecture/, tmp/), the ADR spec (octet slots, status machine, sibling Verification section, TASKLIST bound), Plan and backlog formats and exploration lane. Load when starting projects, making architecture decisions, onboarding a codebase, or whenever a repo has lode/. Ships AGENTS.template.md."
 version: "1.5.0"
 author: "Damian Zaręba"
 license: "MIT"
@@ -113,21 +113,32 @@ An ADR is a permanent model of one decision - the input for the
 executable specification (the test). Write it as a specification:
 applying its logic verbatim produces the test.
 
-### 6xW fields
+### Octet slots
+An ADR has eight slots: a Status field followed by seven H2
+sections. The document title carries the decision name; the slots
+below follow in this exact order.
 1. **Status** - Proposed / Accepted / Superseded.
-2. **What** - feature or fix.
+2. **What** - feature or fix, including the actor pain or context
+   that motivates it. The old Who slot folds here.
 3. **When** - Now / Backlog.
-4. **Specification** - the whole description of the feature, written
-   as an executable specification and ending with a **Verification**
-   block: testable assertions (given X, when Y, then Z). The ADR->test
-   derivation must be mechanical.
-5. **Pick** - technologies to use. The agent proposes a researched
+4. **Model** - the mermaid model, directly before Specification.
+5. **Specification** - the whole description of the feature, written
+   as an executable specification. Touched areas belong here; the
+   old Where slot folds here.
+6. **Verification** - a sibling H2 section directly after
+   Specification: testable assertions (given X, when Y, then Z).
+   The ADR->test derivation must be mechanical.
+7. **Pick** - technologies to use. The agent proposes a researched
    list with reasoning; the developer picks and owns the reason.
    When the wildcard trigger fires, the proposal list carries
    exactly one marked least-obvious option, reasoned like any
    other (mechanism: lodestack-edit).
-6. **Drop** - the rest of the proposed list. The developer owns the
+8. **Drop** - the rest of the proposed list. The developer owns the
    rejection reason for each, even when the agent writes it down.
+
+Do not use Who or Where headings in new ADRs. Their content is not
+lost: Who/context belongs in What, and Where/touched areas belongs
+in Specification.
 
 ### What-if analysis
 For decisions under deep uncertainty: explore 4 to 6 branches
@@ -137,12 +148,14 @@ signal that it is happening. The branch table is the artifact;
 it lives in the ADR or `lode/tmp/`.
 
 ### Rules
-- Do not edit an Accepted ADR. One exception: a technology version
-  bump updates the version line.
+- Do not edit an Accepted ADR. Exceptions: a technology version bump
+  updates the version line, and a repository-wide contract migration
+  may move existing content into new slots without rewriting the
+  decision substance.
 - A Proposed ADR may iterate model and description; the topic stays.
 - Every ADR carries a valid mermaid diagram (presence and syntax,
   gated by `lodectl check`) - it is the model the
-  Verification block and the test derive from. The diagram
+  Verification section and the test derive from. The diagram
   lives in its own `## Model` section directly before the
   Specification, never embedded mid-prose.
 - Superseding is the default way to change a decision. Never mutate

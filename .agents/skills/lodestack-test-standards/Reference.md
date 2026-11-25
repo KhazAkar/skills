@@ -22,8 +22,8 @@ Shared checklist:
 [../shared/amdd-mapping.md](../shared/amdd-mapping.md).
 In the ADR-Test-Code cycle this contract owns the middle:
 
-- **ADR** (the model) ends in a Verification block - testable
-  assertions written as Given/When/Then.
+- **ADR** (the model) carries a sibling Verification section after
+  Specification - testable assertions written as Given/When/Then.
 - **Test** (this contract) applies them verbatim. Mechanical
   derivation is the point: a test that needed interpretation is a
   specification that needs sharpening first - push back to the ADR.
