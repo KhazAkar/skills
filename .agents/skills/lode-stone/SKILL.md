@@ -40,7 +40,9 @@ Membership is two-sided. Both sides must exist.
 - Hub side: `lode/projects/<name>/` exists and the project is
   listed in `lode/stone-map.md`.
 - The membership decision is an ADR with status Accepted; the
-  marker and the stone-map entry both name its id.
+  stone-map entry names its id. The marker carries no id: it is the
+  constitution-verbatim membership signal grepped at every session
+  boot, and provenance lives with the records.
 
 The membership lifecycle rides the ADR status machine
 (Proposed / Accepted / Superseded), like every other decision.
@@ -57,6 +59,9 @@ parsed value, never a literal unformatted string.
 - ADR status not Accepted: refuse
 - ADR status Superseded: stop syncing; keep the last state
   with a RETIRED note; rejoining needs a new ADR
+- The stone-map entry's ADR id resolves to an Accepted ADR at
+  `lode/projects/<name>/adr/` in the hub - verify id, file and
+  status together, never the marker alone
 - The marker's hub link must match the hub repository
   actually in use
 
