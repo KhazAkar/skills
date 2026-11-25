@@ -58,6 +58,7 @@ def parse_ts(ts):
 
 REGISTRY_URL = "https://api.mistral.ai/mcp"
 _registry_skills = None
+_registry_status = "not requested"
 
 
 def registry_fields(name):
@@ -84,9 +85,17 @@ def registry_version(name):
 
 
 def fetch_registry_skills():
-    """One list_skills call; returns {name: updated_at} or {}."""
+    """One list_skills call; returns {name: updated_at} or {}.
+
+    The registry comparison is best-effort so the gate remains usable
+    offline, but its state is explicit in the final output. A missing
+    key or unavailable registry must never look like a successful
+    registry validation.
+    """
+    global _registry_status
     key = os.environ.get("MISTRAL_MCP_API_KEY")
     if not key:
+        _registry_status = "skipped: MISTRAL_MCP_API_KEY is not set"
         return {}
     rpc = {"jsonrpc": "2.0", "id": 1, "method": "tools/call",
            "params": {"name": "list_skills", "arguments": {"limit": 200}}}
@@ -98,7 +107,8 @@ def fetch_registry_skills():
     try:
         with urllib.request.urlopen(req, timeout=5) as resp:
             raw = resp.read().decode()
-    except OSError:
+    except OSError as exc:
+        _registry_status = f"unavailable: {exc}"
         return {}
     for line in raw.splitlines():
         line = line.removeprefix("data:").strip()
@@ -113,9 +123,12 @@ def fetch_registry_skills():
                 data = json.loads(block["text"])
             except (json.JSONDecodeError, KeyError):
                 continue
-            return {s["name"]: {"updated_at": s.get("updated_at"),
-                               "version": s.get("version")}
-                    for s in data.get("skills", [])}
+            skills = {s["name"]: {"updated_at": s.get("updated_at"),
+                                 "version": s.get("version")}
+                      for s in data.get("skills", [])}
+            _registry_status = f"active: {len(skills)} registry skills fetched"
+            return skills
+    _registry_status = "unavailable: unrecognised list_skills response"
     return {}
 
 
@@ -213,6 +226,7 @@ for md in sorted(ROOT.rglob("*.md")):
         if not target.exists():
             err(f"{md.relative_to(ROOT)}: broken link -> {link}")
 
+print(f"registry validation: {_registry_status}")
 if errors:
     print("SKILL CHECK FAILED:")
     for e in errors:
