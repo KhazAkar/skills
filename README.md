@@ -29,6 +29,10 @@ One skill per folder under `.agents/skills/`:
   are executable specifications derived from ADR Verification blocks;
   integration-level default; one test = one rule; adversarial
   safety-critical mindset.
+- **lode-stone** - the Lode-stone add-on from the constitution: one
+  hub repository for per-project lode memory plus shared knowledge;
+  membership by the AGENTS.md marker, two-sided verification, sync
+  at acceptance, commons promotion by the 2+ rule.
 - **firmware-development** - embedded firmware path on the lode
   backbone: silicon first, pinned toolchain, host and emulator tests,
   safe flashing.
