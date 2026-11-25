@@ -84,6 +84,26 @@ def registry_version(name):
     return registry_fields(name).get("version")
 
 
+def eligible_repo_skills():
+    """Folders the validation loop actually checks: a skill dir with
+    SKILL.md (parseable frontmatter), metadata.json and README.md.
+    The registry status denominator mirrors this set - the loop skips
+    anything less, so counting every directory would overstate
+    coverage."""
+    eligible = set()
+    for p in SKILLS.iterdir():
+        if not p.is_dir() or p.name == "shared":
+            continue
+        if not ((p / "SKILL.md").is_file()
+                and (p / "metadata.json").is_file()
+                and (p / "README.md").is_file()):
+            continue
+        if frontmatter_fields((p / "SKILL.md").read_text(encoding="utf-8")) is None:
+            continue
+        eligible.add(p.name)
+    return eligible
+
+
 def fetch_registry_skills():
     """One list_skills call; returns {name: updated_at} or {}.
 
@@ -130,19 +150,23 @@ def fetch_registry_skills():
             if not isinstance(data.get("skills"), list):
                 _registry_status = "unavailable: unrecognised list_skills response"
                 return {}
+            rows = data["skills"]
             skills = {s["name"]: {"updated_at": s.get("updated_at"),
                                  "version": s.get("version")}
-                      for s in data["skills"] if isinstance(s, dict) and "name" in s}
-            repo_names = {p.name for p in SKILLS.iterdir()
-                          if p.is_dir() and p.name != "shared"}
+                      for s in rows if isinstance(s, dict) and "name" in s}
+            if not skills:
+                _registry_status = (f"unavailable: {len(rows)} catalogue rows "
+                                    f"fetched, none carried a usable name")
+                return {}
+            repo_names = eligible_repo_skills()
             matched = len(repo_names & set(skills))
             if matched == 0:
-                _registry_status = (f"active: 0/{len(repo_names)} repository skills matched "
-                                    f"in registry ({len(skills)} rows fetched); "
+                _registry_status = (f"active: 0/{len(repo_names)} checked skills matched "
+                                    f"in registry ({len(skills)} of {len(rows)} rows usable); "
                                     f"verify registry account and scope")
             else:
-                _registry_status = (f"active: {matched}/{len(repo_names)} repository skills matched "
-                                    f"in registry ({len(skills)} rows fetched)")
+                _registry_status = (f"active: {matched}/{len(repo_names)} checked skills matched "
+                                    f"in registry ({len(skills)} of {len(rows)} rows usable)")
             return skills
     _registry_status = "unavailable: unrecognised list_skills response"
     return {}
