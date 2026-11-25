@@ -116,17 +116,32 @@ def fetch_registry_skills():
             msg = json.loads(line)
         except json.JSONDecodeError:
             continue
-        for block in msg.get("result", {}).get("content", []):
+        result = msg.get("result", {})
+        if result.get("isError"):
+            _registry_status = "unavailable: list_skills returned a tool error"
+            return {}
+        for block in result.get("content", []):
             if block.get("type") != "text":
                 continue
             try:
                 data = json.loads(block["text"])
             except (json.JSONDecodeError, KeyError):
                 continue
+            if not isinstance(data.get("skills"), list):
+                _registry_status = "unavailable: unrecognised list_skills response"
+                return {}
             skills = {s["name"]: {"updated_at": s.get("updated_at"),
                                  "version": s.get("version")}
-                      for s in data.get("skills", [])}
-            _registry_status = f"active: {len(skills)} registry skills fetched"
+                      for s in data["skills"] if isinstance(s, dict) and "name" in s}
+            repo_names = {p.name for p in SKILLS.iterdir()
+                          if p.is_dir() and p.name != "shared"}
+            matched = len(repo_names & set(skills))
+            if matched == 0:
+                _registry_status = (f"active: 0/{len(repo_names)} repository skills matched "
+                                    f"in registry; no registry comparisons ran")
+            else:
+                _registry_status = (f"active: {matched}/{len(repo_names)} repository skills matched "
+                                    f"in registry ({len(skills)} rows fetched)")
             return skills
     _registry_status = "unavailable: unrecognised list_skills response"
     return {}
