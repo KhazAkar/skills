@@ -138,7 +138,8 @@ def fetch_registry_skills():
             matched = len(repo_names & set(skills))
             if matched == 0:
                 _registry_status = (f"active: 0/{len(repo_names)} repository skills matched "
-                                    f"in registry; no registry comparisons ran")
+                                    f"in registry ({len(skills)} rows fetched); "
+                                    f"verify registry account and scope")
             else:
                 _registry_status = (f"active: {matched}/{len(repo_names)} repository skills matched "
                                     f"in registry ({len(skills)} rows fetched)")
