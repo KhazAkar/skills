@@ -101,7 +101,7 @@ silently absent.
   `lode/architecture/*.md` - must carry a valid mermaid diagram.
   In a repo with `lode/`, `lodectl check` (external tool) is
   mandatory equipment - it gates the lode structure and hygiene
-  suite, incl. mermaid-presence and mermaid-syntax: run it and
+  suite, incl. mermaid-missing and mermaid-syntax-error: run it and
   deal with every finding in the same cycle, regardless of ADR
   status, inside this gate's EDIT-VERIFY loop. Each finding takes
   one recorded disposition: FIXED (the `lode/` edit landed),
