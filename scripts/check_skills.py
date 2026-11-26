@@ -57,6 +57,7 @@ def parse_ts(ts):
 
 
 REGISTRY_URL = "https://api.mistral.ai/mcp"
+MAX_SKILL_DIRS = 500
 _registry_skills = None
 _registry_status = "not requested"
 
@@ -91,7 +92,9 @@ def eligible_repo_skills():
     anything less, so counting every directory would overstate
     coverage."""
     eligible = set()
-    for p in SKILLS.iterdir():
+    for idx, p in enumerate(SKILLS.iterdir(), 1):
+        if idx > MAX_SKILL_DIRS:
+            raise RuntimeError(f"skills directory exceeds bound ({MAX_SKILL_DIRS} entries)")
         if not p.is_dir() or p.name == "shared":
             continue
         if not ((p / "SKILL.md").is_file()
@@ -102,6 +105,31 @@ def eligible_repo_skills():
             continue
         eligible.add(p.name)
     return eligible
+
+
+def _parse_registry_rows(rows):
+    """Build {name: fields} and status string from a list_skills rows list."""
+    repo_names = eligible_repo_skills()
+    if not rows:
+        return {}, (f"active: 0/{len(repo_names)} checked skills matched "
+                    f"in registry (empty catalogue); "
+                    f"verify registry account and scope")
+    skills = {}
+    usable_rows = 0
+    for s in rows:
+        if isinstance(s, dict) and "name" in s:
+            usable_rows += 1
+            skills[s["name"]] = {"updated_at": s.get("updated_at"),
+                                 "version": s.get("version")}
+    if usable_rows == 0:
+        return {}, (f"unavailable: {len(rows)} catalogue rows "
+                    f"fetched, none carried a usable name")
+    matched = len(repo_names & set(skills))
+    base = (f"active: {matched}/{len(repo_names)} checked skills matched "
+            f"in registry ({usable_rows} of {len(rows)} rows usable)")
+    if matched == 0:
+        return skills, f"{base}; verify registry account and scope"
+    return skills, base
 
 
 def fetch_registry_skills():
@@ -150,23 +178,7 @@ def fetch_registry_skills():
             if not isinstance(data.get("skills"), list):
                 _registry_status = "unavailable: unrecognised list_skills response"
                 return {}
-            rows = data["skills"]
-            skills = {s["name"]: {"updated_at": s.get("updated_at"),
-                                 "version": s.get("version")}
-                      for s in rows if isinstance(s, dict) and "name" in s}
-            if not skills:
-                _registry_status = (f"unavailable: {len(rows)} catalogue rows "
-                                    f"fetched, none carried a usable name")
-                return {}
-            repo_names = eligible_repo_skills()
-            matched = len(repo_names & set(skills))
-            if matched == 0:
-                _registry_status = (f"active: 0/{len(repo_names)} checked skills matched "
-                                    f"in registry ({len(skills)} of {len(rows)} rows usable); "
-                                    f"verify registry account and scope")
-            else:
-                _registry_status = (f"active: {matched}/{len(repo_names)} checked skills matched "
-                                    f"in registry ({len(skills)} of {len(rows)} rows usable)")
+            skills, _registry_status = _parse_registry_rows(data["skills"])
             return skills
     _registry_status = "unavailable: unrecognised list_skills response"
     return {}
