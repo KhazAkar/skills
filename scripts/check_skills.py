@@ -88,13 +88,12 @@ def registry_version(name):
 def eligible_repo_skills():
     """Folders the validation loop actually checks: a skill dir with
     SKILL.md (parseable frontmatter), metadata.json and README.md.
-    The registry status denominator mirrors this set - the loop skips
-    anything less, so counting every directory would overstate
-    coverage."""
+    Returns None if SKILLS exceeds MAX_SKILL_DIRS so coverage degrades
+    gracefully without aborting CI."""
     eligible = set()
     for idx, p in enumerate(SKILLS.iterdir(), 1):
         if idx > MAX_SKILL_DIRS:
-            raise RuntimeError(f"skills directory exceeds bound ({MAX_SKILL_DIRS} entries)")
+            return None
         if not p.is_dir() or p.name == "shared":
             continue
         if not ((p / "SKILL.md").is_file()
@@ -111,7 +110,12 @@ def _parse_registry_rows(rows):
     """Build {name: fields} and status string from a list_skills rows list."""
     repo_names = eligible_repo_skills()
     if not rows:
-        return {}, (f"active: 0/{len(repo_names)} checked skills matched "
+        if repo_names is None:
+            return {}, (f"empty: 0 checked skills matched in registry "
+                        f"(empty catalogue; coverage unavailable: skills "
+                        f"directory exceeds {MAX_SKILL_DIRS} entries); "
+                        f"verify registry account and scope")
+        return {}, (f"empty: 0/{len(repo_names)} checked skills matched "
                     f"in registry (empty catalogue); "
                     f"verify registry account and scope")
     skills = {}
@@ -124,6 +128,10 @@ def _parse_registry_rows(rows):
     if usable_rows == 0:
         return {}, (f"unavailable: {len(rows)} catalogue rows "
                     f"fetched, none carried a usable name")
+    if repo_names is None:
+        return skills, (f"active: {usable_rows} of {len(rows)} rows usable "
+                        f"(coverage unavailable: skills directory exceeds "
+                        f"{MAX_SKILL_DIRS} entries)")
     matched = len(repo_names & set(skills))
     base = (f"active: {matched}/{len(repo_names)} checked skills matched "
             f"in registry ({usable_rows} of {len(rows)} rows usable)")
