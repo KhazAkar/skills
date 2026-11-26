@@ -55,8 +55,8 @@ fallback, naming the trigger in the report.
 - Follow loaded skills strictly.
 - Model files - every ADR, Plan and `lode/architecture/` file -
   carry a valid mermaid diagram. VERIFY/LODE rejects a model file
-  without one (mermaid-presence) or with an invalid one
-  (mermaid-syntax). An ADR presents its diagram in a dedicated
+  without one (mermaid-missing) or with an invalid one
+  (mermaid-syntax-error). An ADR presents its diagram in a dedicated
   `## Model` section directly before the Specification.
 - Commits are authored by the developer's git identity; the agent
   never overrides author or committer. Agent assistance is recorded
