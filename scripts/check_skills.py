@@ -57,7 +57,9 @@ def parse_ts(ts):
 
 
 REGISTRY_URL = "https://api.mistral.ai/mcp"
+MAX_SKILL_DIRS = 500
 _registry_skills = None
+_registry_status = "not requested"
 
 
 def registry_fields(name):
@@ -83,10 +85,73 @@ def registry_version(name):
     return registry_fields(name).get("version")
 
 
+def eligible_repo_skills():
+    """Folders the validation loop actually checks: a skill dir with
+    SKILL.md (parseable frontmatter), metadata.json and README.md.
+    Returns None if SKILLS exceeds MAX_SKILL_DIRS so coverage degrades
+    gracefully without aborting CI."""
+    eligible = set()
+    for idx, p in enumerate(SKILLS.iterdir(), 1):
+        if idx > MAX_SKILL_DIRS:
+            return None
+        if not p.is_dir() or p.name == "shared":
+            continue
+        if not ((p / "SKILL.md").is_file()
+                and (p / "metadata.json").is_file()
+                and (p / "README.md").is_file()):
+            continue
+        if frontmatter_fields((p / "SKILL.md").read_text(encoding="utf-8")) is None:
+            continue
+        eligible.add(p.name)
+    return eligible
+
+
+def _parse_registry_rows(rows):
+    """Build {name: fields} and status string from a list_skills rows list."""
+    repo_names = eligible_repo_skills()
+    if not rows:
+        if repo_names is None:
+            return {}, (f"empty: 0 checked skills matched in registry "
+                        f"(empty catalogue; coverage unavailable: skills "
+                        f"directory exceeds {MAX_SKILL_DIRS} entries); "
+                        f"verify registry account and scope")
+        return {}, (f"empty: 0/{len(repo_names)} checked skills matched "
+                    f"in registry (empty catalogue); "
+                    f"verify registry account and scope")
+    skills = {}
+    usable_rows = 0
+    for s in rows:
+        if isinstance(s, dict) and "name" in s:
+            usable_rows += 1
+            skills[s["name"]] = {"updated_at": s.get("updated_at"),
+                                 "version": s.get("version")}
+    if usable_rows == 0:
+        return {}, (f"unavailable: {len(rows)} catalogue rows "
+                    f"fetched, none carried a usable name")
+    if repo_names is None:
+        return skills, (f"active: {usable_rows} of {len(rows)} rows usable "
+                        f"(coverage unavailable: skills directory exceeds "
+                        f"{MAX_SKILL_DIRS} entries)")
+    matched = len(repo_names & set(skills))
+    base = (f"active: {matched}/{len(repo_names)} checked skills matched "
+            f"in registry ({usable_rows} of {len(rows)} rows usable)")
+    if matched == 0:
+        return skills, f"{base}; verify registry account and scope"
+    return skills, base
+
+
 def fetch_registry_skills():
-    """One list_skills call; returns {name: updated_at} or {}."""
+    """One list_skills call; returns {name: updated_at} or {}.
+
+    The registry comparison is best-effort so the gate remains usable
+    offline, but its state is explicit in the final output. A missing
+    key or unavailable registry must never look like a successful
+    registry validation.
+    """
+    global _registry_status
     key = os.environ.get("MISTRAL_MCP_API_KEY")
     if not key:
+        _registry_status = "skipped: MISTRAL_MCP_API_KEY is not set"
         return {}
     rpc = {"jsonrpc": "2.0", "id": 1, "method": "tools/call",
            "params": {"name": "list_skills", "arguments": {"limit": 200}}}
@@ -98,7 +163,8 @@ def fetch_registry_skills():
     try:
         with urllib.request.urlopen(req, timeout=5) as resp:
             raw = resp.read().decode()
-    except OSError:
+    except OSError as exc:
+        _registry_status = f"unavailable: {exc}"
         return {}
     for line in raw.splitlines():
         line = line.removeprefix("data:").strip()
@@ -106,16 +172,23 @@ def fetch_registry_skills():
             msg = json.loads(line)
         except json.JSONDecodeError:
             continue
-        for block in msg.get("result", {}).get("content", []):
+        result = msg.get("result", {})
+        if result.get("isError"):
+            _registry_status = "unavailable: list_skills returned a tool error"
+            return {}
+        for block in result.get("content", []):
             if block.get("type") != "text":
                 continue
             try:
                 data = json.loads(block["text"])
             except (json.JSONDecodeError, KeyError):
                 continue
-            return {s["name"]: {"updated_at": s.get("updated_at"),
-                               "version": s.get("version")}
-                    for s in data.get("skills", [])}
+            if not isinstance(data.get("skills"), list):
+                _registry_status = "unavailable: unrecognised list_skills response"
+                return {}
+            skills, _registry_status = _parse_registry_rows(data["skills"])
+            return skills
+    _registry_status = "unavailable: unrecognised list_skills response"
     return {}
 
 
@@ -213,6 +286,7 @@ for md in sorted(ROOT.rglob("*.md")):
         if not target.exists():
             err(f"{md.relative_to(ROOT)}: broken link -> {link}")
 
+print(f"registry validation: {_registry_status}")
 if errors:
     print("SKILL CHECK FAILED:")
     for e in errors:
