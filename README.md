@@ -16,7 +16,7 @@ One skill per folder under `.agents/skills/`:
 ## Skills (live)
 
 - **lodestack-memory** - LodeStack v2 Memory contract: lode/ structure,
-  ADR (6xW, Verification block) and Plan specs, exploration lane.
+  ADR (octet slots, sibling Verification section) and Plan specs, exploration lane.
   Ships AGENTS.template.md.
 - **lodestack-edit** - LodeStack v2 Edit contract: REASON, LOCATE,
   ANALYZE, EDIT (tree-sitter-edit primary, text-diff fallback),
