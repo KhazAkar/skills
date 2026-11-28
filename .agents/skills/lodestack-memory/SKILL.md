@@ -1,7 +1,7 @@
 ---
 name: "lodestack-memory"
 description: "Durable project memory - the LodeStack Memory contract. lode/ structure (lode-map, summary, terminology, practices, quirks-and-gotchas, adr/, tasks/, plan/, architecture/, tmp/), the ADR spec (octet slots, status machine, sibling Verification section, TASKLIST bound), Plan and backlog formats and exploration lane. Load when starting projects, making architecture decisions, onboarding a codebase, or whenever a repo has lode/. Ships AGENTS.template.md."
-version: "2.0.0"
+version: "2.0.1"
 author: "Damian Zaręba"
 license: "MIT"
 constitution: "753997cbaf01e79114bc2c58f687225cfc52ff7c"
@@ -205,7 +205,7 @@ approaches tried, blockers, next steps.
 - "Create ADR for X" -> the ADR spec above
 - "Check lode" -> run `lodectl check`
   (gitlab.com/r3xxar/lodectl) - it gates the lode structure and
-  hygiene suite, incl. mermaid-presence and mermaid-syntax among
+  hygiene suite, incl. mermaid-missing and mermaid-syntax-error among
   the other checks. Mandatory in repos with `lode/`: deal with
   every finding in the same cycle, regardless of ADR status -
   fixed, refuted on record, or a named tool-limit follow-up; a
@@ -213,7 +213,8 @@ approaches tried, blockers, next steps.
   silenced (the LODE gate in lodestack-edit VERIFY.f)
 - "How do I use lodectl?" -> `lodectl help` or
   `lodectl <command> --help`; full reference page: `lodectl man`
-  (search it: `lodectl man | grep <topic>`)
+  (search it: `lodectl man | grep <topic>`); finding explanations:
+  `lodectl recipes`
 - "Run OSMM assessment" -> dated pass table into `lode/osmm.md`
 - "Handover" -> write `lode/tmp/handover-<date>.md`
 

@@ -1,7 +1,7 @@
 ---
 name: "lodestack-edit"
 description: "The LodeStack Edit contract - the code-editing cycle for every code change, review or refactor. REASON, LOCATE, ANALYZE (agent marks ACCEPT/REJECT per element, table to developer), EDIT via tree-sitter-edit with text-diff fallback, VERIFY gate (LINT, TYPECHECK, SECURITY, FORMAT, TEST, LODE, RECHECK) with an inner EDIT-VERIFY loop, the 3-attempt break rule and the wildcard mechanism on repeat breaks. Load for ALL code work in any project."
-version: "1.1.0"
+version: "1.1.1"
 author: "Damian Zaręba"
 license: "MIT"
 constitution: "a7033902800284dbfb8857af74558765243fb85b"
@@ -101,7 +101,7 @@ silently absent.
   `lode/architecture/*.md` - must carry a valid mermaid diagram.
   In a repo with `lode/`, `lodectl check` (external tool) is
   mandatory equipment - it gates the lode structure and hygiene
-  suite, incl. mermaid-presence and mermaid-syntax: run it and
+  suite, incl. mermaid-missing and mermaid-syntax-error: run it and
   deal with every finding in the same cycle, regardless of ADR
   status, inside this gate's EDIT-VERIFY loop. Each finding takes
   one recorded disposition: FIXED (the `lode/` edit landed),
